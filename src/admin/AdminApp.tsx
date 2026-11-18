@@ -15,6 +15,7 @@ import { Tags } from "./pages/Tags";
 import { MediaLibrary } from "./pages/MediaLibrary";
 import { Authors } from "./pages/Authors";
 import { Users } from "./pages/Users";
+import { Profile } from "./pages/Profile";
 import { Comments } from "./pages/Comments";
 import { SeoManager } from "./pages/SeoManager";
 import { Settings } from "./pages/Settings";
@@ -50,6 +51,7 @@ export function AdminApp() {
             <Route path="media" element={<MediaLibrary />} />
             <Route path="authors" element={<Authors />} />
             <Route path="users" element={<Users />} />
+            <Route path="profile" element={<Profile />} />
             <Route path="comments" element={<Comments />} />
             <Route path="seo" element={<SeoManager />} />
             <Route path="settings" element={<Settings />} />
