@@ -141,6 +141,12 @@ export interface ListResult<T> {
   pagination?: Pagination;
 }
 
+export interface ProfileUpdateInput {
+  name?: string;
+  email?: string;
+  bio?: string | null;
+}
+
 export interface ArticleInput {
   title: string;
   subtitle?: string | null;
@@ -320,9 +326,28 @@ export const adminApi = {
   },
 
   // --- Users / authors ------------------------------------------------------
-  // The API only exposes GET /admin/users (admin only). There are NO
-  // create/update/delete user endpoints — the Users/Authors pages are
-  // read-only and say so; these methods throw rather than fake it.
+  // Own profile CAN be edited (PATCH /auth/me, POST /auth/me/password —
+  // name/email/bio + own password only; roles can never change through
+  // them). There are still NO endpoints to create/delete users or to
+  // change another user's role — the Users/Authors pages stay read-only
+  // and say so; these methods throw rather than fake it.
+  /** Update the signed-in user's own profile (name / email / bio).
+   *  The server never accepts a role here, so this cannot change roles. */
+  updateProfile: async (input: ProfileUpdateInput): Promise<SessionUser> => {
+    const { data } = await request<{ user: SessionUser }>("/auth/me", {
+      method: "PATCH",
+      body: JSON.stringify(input),
+    });
+    return data.user;
+  },
+  /** Change the signed-in user's own password. Requires the current
+   *  password; other sessions for this user are signed out by the server. */
+  changePassword: async (input: { current_password: string; new_password: string }): Promise<void> => {
+    await request("/auth/me/password", {
+      method: "POST",
+      body: JSON.stringify(input),
+    });
+  },
   listUsers: async (params: { page?: number; limit?: number } = {}): Promise<ListResult<User>> => {
     const { data, pagination } = await request<User[]>(
       `/admin/users${qs({ page: params.page ?? 1, limit: params.limit ?? 50 })}`,
@@ -337,7 +362,7 @@ export const adminApi = {
     throw new ApiError(0, "The API has no user-creation endpoint (only GET /api/v1/admin/users). Ask an admin to create the account another way.");
   },
   updateUser: async (): Promise<never> => {
-    throw new ApiError(0, "The API has no user-update endpoint (only GET /api/v1/admin/users). Roles and profiles cannot be changed from this dashboard.");
+    throw new ApiError(0, "There is no endpoint to edit another user's account — only your own profile can be changed, from My Profile.");
   },
   deleteUser: async (): Promise<never> => {
     throw new ApiError(0, "The API has no user-delete endpoint (only GET /api/v1/admin/users).");
