@@ -173,10 +173,10 @@ export function ArticlePage({ slug }: { slug: string }) {
           {article.featured_image_url && (
             <figure className="mt-6">
               <img
-                src={thumbUrl(article.featured_image_url, 800)}
+                src={thumbUrl(article.featured_image_url, 960)}
                 alt={article.image_caption || article.title}
                 decoding="async"
-                fetchpriority="high"
+                fetchPriority="high"
                 className="w-full object-cover"
               />
               {(article.image_caption || article.image_credit) && (

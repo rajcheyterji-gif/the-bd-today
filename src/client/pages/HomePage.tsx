@@ -5,6 +5,7 @@ import { useHome } from "../hooks/useArticles";
 import { useSiteData } from "../hooks/useCategories";
 import { enrichArticles } from "../lib/api";
 import { formatRelative } from "../lib/format";
+import { thumbUrl } from "../../shared/utils";
 import { Seo } from "../components/Seo";
 import { HeroArticle } from "../components/HeroArticle";
 import { ArticleCard, ArticleRow, TextStory } from "../components/ArticleCard";
@@ -45,9 +46,10 @@ function TwoColList({ articles }: { articles: Article[] }) {
               {a.featured_image_url && (
                 <Link to={`/article/${a.slug}`} className="mb-2 block overflow-hidden" aria-label={a.title}>
                   <img
-                    src={a.featured_image_url}
+                    src={thumbUrl(a.featured_image_url, 330)}
                     alt={a.image_caption || a.title}
                     loading="lazy"
+                    decoding="async"
                     className="aspect-[16/9] w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
                   />
                 </Link>
@@ -75,9 +77,10 @@ function PhotoCard({ article }: { article: Article }) {
       <Link to={`/article/${article.slug}`} className="relative block overflow-hidden" aria-label={article.title}>
         {article.featured_image_url ? (
           <img
-            src={article.featured_image_url}
+            src={thumbUrl(article.featured_image_url, 330)}
             alt={article.image_caption || article.title}
             loading="lazy"
+            decoding="async"
             className="aspect-[4/3] w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
           />
         ) : (
@@ -146,9 +149,10 @@ function OtherCategories({ sections }: { sections: { category: Category; article
                 <Link to={`/article/${top.slug}`} className="group mt-3 block">
                   {top.featured_image_url ? (
                     <img
-                      src={top.featured_image_url}
+                      src={thumbUrl(top.featured_image_url, 330)}
                       alt={top.image_caption || top.title}
                       loading="lazy"
+                      decoding="async"
                       className="aspect-[4/3] w-full object-cover"
                     />
                   ) : (
@@ -172,9 +176,10 @@ function OtherCategories({ sections }: { sections: { category: Category; article
                   </span>
                   {a.featured_image_url && (
                     <img
-                      src={a.featured_image_url}
+                      src={thumbUrl(a.featured_image_url, 250)}
                       alt={a.image_caption || a.title}
                       loading="lazy"
+                      decoding="async"
                       className="h-14 w-20 shrink-0 object-cover"
                     />
                   )}
