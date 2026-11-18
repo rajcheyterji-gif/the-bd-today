@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { adminApi } from "../lib/adminApi";
 import { useToast } from "../components/Toast";
 import { useAuth } from "../hooks/useAuth";
@@ -30,7 +30,7 @@ export function Login() {
     e.preventDefault();
     setError(null);
     if (!email.trim() || !password) {
-      setError("Enter your email and password.");
+      setError("ইমেইল ও পাসওয়ার্ড দিন।");
       return;
     }
     setBusy(true);
@@ -40,7 +40,7 @@ export function Login() {
       toast.success("Welcome back.");
       navigate("/admin", { replace: true });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed. Check your email and password.");
+      setError(err instanceof Error ? err.message : "সাইন ইন ব্যর্থ হয়েছে। ইমেইল ও পাসওয়ার্ড যাচাই করুন।");
     } finally {
       setBusy(false);
     }
@@ -50,7 +50,7 @@ export function Login() {
     e.preventDefault();
     setError(null);
     if (!token.trim() || name.trim().length < 2 || !email.trim() || password.length < 12) {
-      setError("Enter the init token, your name, a valid email, and a password of at least 12 characters.");
+      setError("ইনিট টোকেন, আপনার নাম, সঠিক ইমেইল এবং কমপক্ষে ১২ অক্ষরের পাসওয়ার্ড দিন।");
       return;
     }
     setBusy(true);
@@ -60,36 +60,51 @@ export function Login() {
       setShowSetup(false);
       toast.success("First admin account created — now sign in with it.");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Setup failed.");
+      setError(err instanceof Error ? err.message : "সেটআপ ব্যর্থ হয়েছে।");
     } finally {
       setBusy(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-white px-4 py-10">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-white px-4 py-10">
       <div className="w-full max-w-md">
-        <div className="mb-6 text-center">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#c1121f]">The BD Today</p>
-          <h1 className="mt-2 text-2xl font-bold text-slate-900">{showSetup ? "Set up your newsroom" : "Admin sign in"}</h1>
+        {/* Newspaper brand */}
+        <div className="mb-5 text-center">
+          <Link to="/" className="inline-block" aria-label="THE BD TODAY — সাইটে ফিরে যান">
+            <span className="font-serif text-[32px] font-black leading-none tracking-tight text-slate-900">
+              THE BD <span className="text-[#c1121f]">TODAY</span>
+            </span>
+          </Link>
+          <p className="mt-1.5 font-bengali text-sm text-slate-500">দ্য বিডি টুডে — সত্য, সবার আগে</p>
+          <div className="mx-auto mt-4 max-w-xs border-t-[3px] border-slate-900" aria-hidden="true" />
+        </div>
+
+        <div className="mb-5 text-center">
+          <h1 className="font-bengali text-2xl font-bold text-slate-900">
+            {showSetup ? "প্রথম অ্যাডমিন তৈরি করুন" : "নিউজরুমে সাইন ইন"}
+          </h1>
           <p className="mt-1 text-sm text-slate-500">
-            {showSetup ? "No admin account exists yet — create the first admin with the init token." : "Editors and administrators only."}
+            {showSetup
+              ? "এখনো কোনো অ্যাডমিন অ্যাকাউন্ট নেই — ইনিট টোকেন দিয়ে প্রথম অ্যাডমিন তৈরি করুন।"
+              : "শুধুমাত্র সম্পাদক ও প্রশাসকদের জন্য।"}
           </p>
         </div>
+
         <Card className="p-5 sm:p-6">
           {showSetup ? (
             <form onSubmit={setup} className="space-y-4">
-              <Field label="Init token" required hint="The ADMIN_INIT_TOKEN configured on the server.">
-                <TextInput aria-label="Init token" autoComplete="off" placeholder="Init token" value={token} onChange={(e) => setToken(e.target.value)} />
+              <Field label="ইনিট টোকেন" required hint="সার্ভারে কনফিগার করা ADMIN_INIT_TOKEN।">
+                <TextInput aria-label="ইনিট টোকেন" autoComplete="off" placeholder="ইনিট টোকেন" value={token} onChange={(e) => setToken(e.target.value)} />
               </Field>
-              <Field label="Your name" required>
-                <TextInput aria-label="Your name" autoComplete="name" placeholder="Your name" value={name} onChange={(e) => setName(e.target.value)} />
+              <Field label="আপনার নাম" required>
+                <TextInput aria-label="আপনার নাম" autoComplete="name" placeholder="আপনার নাম" value={name} onChange={(e) => setName(e.target.value)} />
               </Field>
-              <Field label="Email" required>
-                <TextInput aria-label="Email" type="email" autoComplete="email" placeholder="you@thebdtoday.example" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <Field label="ইমেইল" required>
+                <TextInput aria-label="ইমেইল" type="email" autoComplete="email" placeholder="you@thebdtoday.online" value={email} onChange={(e) => setEmail(e.target.value)} />
               </Field>
-              <Field label="Password" required hint="At least 12 characters.">
-                <TextInput aria-label="Password" type="password" autoComplete="new-password" placeholder="••••••••••••" value={password} onChange={(e) => setPassword(e.target.value)} />
+              <Field label="পাসওয়ার্ড" required hint="কমপক্ষে ১২ অক্ষর।">
+                <TextInput aria-label="পাসওয়ার্ড" type="password" autoComplete="new-password" placeholder="••••••••••••" value={password} onChange={(e) => setPassword(e.target.value)} />
               </Field>
               {error ? (
                 <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800" role="alert">
@@ -97,23 +112,23 @@ export function Login() {
                 </p>
               ) : null}
               <Button type="submit" className="w-full" disabled={busy}>
-                {busy ? "Creating account…" : "Create admin account"}
+                {busy ? "তৈরি হচ্ছে…" : "অ্যাডমিন অ্যাকাউন্ট তৈরি করুন"}
               </Button>
               <Button type="button" variant="ghost" className="w-full" onClick={() => { setShowSetup(false); setError(null); }}>
-                Back to sign in
+                সাইন ইনে ফিরে যান
               </Button>
             </form>
           ) : (
             <form onSubmit={submit} className="space-y-4">
-              <Field label="Email" required>
-                <TextInput aria-label="Email" type="email" autoComplete="email" placeholder="you@thebdtoday.example" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <Field label="ইমেইল" required>
+                <TextInput aria-label="ইমেইল" type="email" autoComplete="email" placeholder="you@thebdtoday.online" value={email} onChange={(e) => setEmail(e.target.value)} />
               </Field>
-              <Field label="Password" required>
-                <TextInput aria-label="Password" type="password" autoComplete="current-password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} />
+              <Field label="পাসওয়ার্ড" required>
+                <TextInput aria-label="পাসওয়ার্ড" type="password" autoComplete="current-password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} />
               </Field>
               {setupDone ? (
                 <p className="rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-800" role="status">
-                  Admin account created — sign in with it now.
+                  অ্যাডমিন অ্যাকাউন্ট তৈরি হয়েছে — এখন সেটা দিয়ে সাইন ইন করুন।
                 </p>
               ) : null}
               {error ? (
@@ -122,15 +137,23 @@ export function Login() {
                 </p>
               ) : null}
               <Button type="submit" className="w-full" disabled={busy}>
-                {busy ? "Signing in…" : "Sign in"}
+                {busy ? "সাইন ইন হচ্ছে…" : "সাইন ইন"}
               </Button>
               <Button type="button" variant="ghost" className="w-full" onClick={() => { setShowSetup(true); setError(null); }}>
-                First time? Set up the first admin
+                প্রথমবার? প্রথম অ্যাডমিন সেট আপ করুন
               </Button>
             </form>
           )}
         </Card>
-        <p className="mt-4 text-center text-xs text-slate-400">Sessions are cookie-based and verified on every admin page.</p>
+
+        <p className="mt-5 text-center text-sm">
+          <Link to="/" className="font-medium text-[#c1121f] hover:underline">
+            ← সাইটে ফিরে যান
+          </Link>
+        </p>
+        <p className="mt-2 text-center text-xs text-slate-400">
+          সেশন কুকি-ভিত্তিক এবং প্রতিটি অ্যাডমিন পৃষ্ঠায় যাচাই করা হয়।
+        </p>
       </div>
     </div>
   );
