@@ -21,7 +21,7 @@ account.
   sitemaps.
 - `/rss.xml` — latest 50 published articles.
 - NewsArticle JSON-LD on every article page (headline, image, author,
-  dates, keywords) with the publisher logo (`/logo.jpg`).
+  dates, keywords) with the publisher logo (`/logo.png`).
 - NewsMediaOrganization JSON-LD on the homepage and all other pages.
 - Search Console verification support via the `GOOGLE_SITE_VERIFICATION`
   secret — see step 1. The Worker serves the HTML verification file AND
@@ -70,7 +70,7 @@ account.
    `https://www.thebdtoday.online/news-sitemap.xml`
 4. Fill in the publication details (description, logo, categories,
    language: Bengali). The site logo is at
-   `https://www.thebdtoday.online/logo.jpg`.
+   `https://www.thebdtoday.online/logo.png`.
 5. Submit for review. Google reviews the publication — inclusion in
    Google News is **not guaranteed** and can take days to weeks. Keep
    publishing fresh Bengali news meanwhile: the news sitemap only lists
