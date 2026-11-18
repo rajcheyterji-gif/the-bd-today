@@ -7,8 +7,8 @@ import { enrichArticles, publicApi } from "../lib/api";
 import { sanitizeHtml } from "../../shared/utils";
 import {
   formatDateBn,
-  formatDateEn,
   formatRelative,
+  formatTime,
   formatViews,
   readingTimeLabel,
 } from "../lib/format";
@@ -95,6 +95,7 @@ export function ArticlePage({ slug }: { slug: string }) {
     (a) => a.id !== article.id,
   );
   const authorBio = article.author?.bio ?? "";
+  const publishedAt = article.published_at ?? article.created_at;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
@@ -124,50 +125,47 @@ export function ArticlePage({ slug }: { slug: string }) {
             {article.category && (
               <Link
                 to={`/category/${article.category.slug}`}
-                className="text-xs font-bold uppercase tracking-wider text-[#c1121f] hover:underline"
+                className="font-bengali text-sm font-bold text-[#c1121f] hover:underline"
               >
-                {article.category.name_en}
-                {article.category.name_bn && article.category.name_bn !== article.category.name_en && (
-                  <span className="ml-2 font-bengali normal-case tracking-normal text-slate-500">
-                    {article.category.name_bn}
-                  </span>
-                )}
+                {article.category.name_bn ?? article.category.name_en}
               </Link>
             )}
-            <h1 className="mt-2 font-serif text-3xl font-black leading-tight text-slate-900 sm:text-4xl">
+            <h1 className="mt-2 font-serif text-[32px] font-black leading-[1.3] text-slate-900 sm:text-[40px]">
               {article.title}
             </h1>
-            {article.subtitle && (
-              <p className="mt-2 font-serif text-xl italic leading-relaxed text-slate-600">{article.subtitle}</p>
+            {(article.subtitle || article.excerpt) && (
+              <p className="mt-3 font-serif text-lg leading-relaxed text-slate-500 sm:text-xl">
+                {article.subtitle || article.excerpt}
+              </p>
             )}
-            <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-y border-slate-200 py-3 text-sm text-slate-600">
-              {article.author && (
-                <Link
-                  to={`/author/${article.author.id}`}
-                  className="inline-flex items-center gap-2 font-semibold text-slate-900 hover:text-[#c1121f]"
-                >
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#0f172a] text-white">
-                    <User size={16} />
+            <div className="mt-5 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-y border-slate-200 py-3">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                {article.author && (
+                  <Link
+                    to={`/author/${article.author.id}`}
+                    className="inline-flex items-center gap-2 font-bold text-slate-900 hover:text-[#c1121f]"
+                  >
+                    <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#0f172a] font-serif text-lg font-bold text-white">
+                      {article.author.name.charAt(0)}
+                    </span>
+                    {article.author.name}
+                  </Link>
+                )}
+                <p className="font-bengali text-xs text-slate-500">
+                  প্রকাশ: {formatDateBn(publishedAt)} , {formatTime(publishedAt, true)}
+                  <span className="mx-1.5 text-slate-300">|</span>
+                  আপডেট: {formatRelative(article.updated_at, true)}
+                </p>
+                <p className="flex items-center gap-3 text-xs text-slate-500">
+                  <span className="inline-flex items-center gap-1">
+                    <Clock size={12} /> {readingTimeLabel(article.reading_time_minutes)}
                   </span>
-                  {article.author.name}
-                </Link>
-              )}
-              <span>{formatDateEn(article.published_at ?? article.created_at)}</span>
-              <span className="font-bengali text-slate-500">
-                {formatDateBn(article.published_at ?? article.created_at)}
-              </span>
-              <span className="inline-flex items-center gap-1">
-                <Clock size={14} /> {readingTimeLabel(article.reading_time_minutes)}
-              </span>
-              <span className="inline-flex items-center gap-1">
-                <Eye size={14} /> {formatViews(article.views)} views
-              </span>
-            </div>
-            <div className="mt-3 flex items-center justify-between gap-3">
+                  <span className="inline-flex items-center gap-1">
+                    <Eye size={12} /> {formatViews(article.views)} views
+                  </span>
+                </p>
+              </div>
               <ShareButtons title={article.title} />
-              <span className="text-xs text-slate-400">
-                Updated {formatRelative(article.updated_at)}
-              </span>
             </div>
           </header>
 
@@ -176,10 +174,10 @@ export function ArticlePage({ slug }: { slug: string }) {
               <img
                 src={article.featured_image_url}
                 alt={article.image_caption || article.title}
-                className="w-full rounded object-cover"
+                className="w-full object-cover"
               />
               {(article.image_caption || article.image_credit) && (
-                <figcaption className="mt-2 text-xs text-slate-500">
+                <figcaption className="mt-2 border-b border-slate-200 pb-2 text-xs text-slate-500">
                   {article.image_caption}
                   {article.image_credit && <span> — {article.image_credit}</span>}
                 </figcaption>
@@ -199,7 +197,7 @@ export function ArticlePage({ slug }: { slug: string }) {
                 <Link
                   key={tag}
                   to={`/tag/${slugifyTag(tag)}`}
-                  className="rounded-full border border-slate-300 px-3 py-1 text-xs font-medium text-slate-700 hover:border-[#c1121f] hover:text-[#c1121f]"
+                  className="border border-slate-300 px-3 py-1 text-xs font-medium text-slate-700 hover:border-[#c1121f] hover:text-[#c1121f]"
                 >
                   {tag}
                 </Link>
@@ -208,7 +206,7 @@ export function ArticlePage({ slug }: { slug: string }) {
           )}
 
           {article.author && (
-            <section className="mt-8 flex gap-4 rounded border border-slate-200 bg-slate-50 p-5" aria-label="About the author">
+            <section className="mt-8 flex gap-4 border-y border-slate-200 py-5" aria-label="About the author">
               <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#0f172a] text-white">
                 <User size={24} />
               </span>
@@ -225,17 +223,17 @@ export function ArticlePage({ slug }: { slug: string }) {
           {/* Comments: submission only — the API has no public endpoint to
               list comments, so approved comments are not shown here. */}
           <section className="mt-10" aria-label="Comments">
-            <h2 className="flex items-center gap-2 border-b-2 border-[#0f172a] pb-2 font-serif text-xl font-black text-slate-900">
+            <h2 className="flex items-center gap-2 border-t-[3px] border-slate-800 pt-3 font-bengali text-xl font-black text-slate-900">
               <MessageSquare size={20} className="text-[#c1121f]" />
-              Comments
+              মন্তব্য
             </h2>
             {commentDone ? (
-              <p className="mt-4 flex items-center gap-2 rounded border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-900">
+              <p className="mt-4 flex items-center gap-2 border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-900">
                 <Check size={16} /> Thank you — your comment was submitted and is awaiting moderation.
               </p>
             ) : (
               <form
-                className="mt-4 flex flex-col gap-3 rounded border border-slate-200 p-4"
+                className="mt-4 flex flex-col gap-3 border border-slate-200 p-4"
                 onSubmit={submitComment}
               >
                 <h3 className="font-semibold text-slate-900">Leave a comment</h3>
@@ -247,7 +245,7 @@ export function ArticlePage({ slug }: { slug: string }) {
                       required
                       value={commentName}
                       onChange={(e) => setCommentName(e.target.value)}
-                      className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm focus:border-[#c1121f] focus:outline-none"
+                      className="mt-1 w-full border border-slate-300 px-3 py-2 text-sm focus:border-[#c1121f] focus:outline-none"
                     />
                   </div>
                   <div>
@@ -258,7 +256,7 @@ export function ArticlePage({ slug }: { slug: string }) {
                       required
                       value={commentEmail}
                       onChange={(e) => setCommentEmail(e.target.value)}
-                      className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm focus:border-[#c1121f] focus:outline-none"
+                      className="mt-1 w-full border border-slate-300 px-3 py-2 text-sm focus:border-[#c1121f] focus:outline-none"
                     />
                   </div>
                 </div>
@@ -270,13 +268,13 @@ export function ArticlePage({ slug }: { slug: string }) {
                     rows={4}
                     value={commentBody}
                     onChange={(e) => setCommentBody(e.target.value)}
-                    className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm focus:border-[#c1121f] focus:outline-none"
+                    className="mt-1 w-full border border-slate-300 px-3 py-2 text-sm focus:border-[#c1121f] focus:outline-none"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={commentPending}
-                  className="self-start rounded bg-[#c1121f] px-5 py-2 text-sm font-semibold text-white hover:bg-[#9e0e19] disabled:opacity-60"
+                  className="self-start bg-[#c1121f] px-5 py-2 text-sm font-semibold text-white hover:bg-[#9e0e19] disabled:opacity-60"
                 >
                   {commentPending ? "Submitting…" : "Post comment"}
                 </button>
@@ -289,10 +287,10 @@ export function ArticlePage({ slug }: { slug: string }) {
           </section>
         </article>
 
-        <aside className="flex flex-col gap-8">
+        <aside className="flex flex-col gap-8 lg:border-l lg:border-slate-200 lg:pl-8">
           {related.length > 0 && (
             <section aria-label="Related stories">
-              <h2 className="border-b-2 border-[#0f172a] pb-2 font-serif text-lg font-black text-slate-900">Related Stories</h2>
+              <h2 className="border-t-[3px] border-slate-800 pt-3 font-bengali text-lg font-black text-slate-900 lg:border-t-0 lg:pt-0">সম্পর্কিত খবর</h2>
               <div>
                 {related.map((a) => (
                   <ArticleRow key={a.id} article={a} />
@@ -302,7 +300,7 @@ export function ArticlePage({ slug }: { slug: string }) {
           )}
           {popular.length > 0 && (
             <section aria-label="Most read">
-              <h2 className="border-b-2 border-[#0f172a] pb-2 font-serif text-lg font-black text-slate-900">Most Read</h2>
+              <h2 className="border-t-[3px] border-slate-800 pt-3 font-bengali text-lg font-black text-slate-900 lg:border-t-0 lg:pt-0">সর্বাধিক পঠিত</h2>
               <div>
                 {popular.map((a) => (
                   <ArticleRow key={a.id} article={a} />
@@ -315,8 +313,8 @@ export function ArticlePage({ slug }: { slug: string }) {
 
       {related.length > 0 && (
         <section className="mt-12" aria-label="More from this section">
-          <h2 className="mb-4 border-b-2 border-[#0f172a] pb-2 font-serif text-2xl font-black text-slate-900">
-            More From {article.category?.name_en ?? "THE BD TODAY"}
+          <h2 className="mb-4 border-t-[3px] border-slate-800 pt-3 font-bengali text-2xl font-black text-slate-900">
+            আরও পড়ুন — {article.category?.name_bn ?? article.category?.name_en ?? "THE BD TODAY"}
           </h2>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {related.map((a) => (
