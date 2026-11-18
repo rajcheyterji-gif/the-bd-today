@@ -10,6 +10,13 @@ import { listArticles } from "../services/articles";
 import { articleListQuerySchema, commentCreateSchema } from "../validators/articles";
 import { newsletterSchema } from "../validators/categories";
 import { nowIso } from "../lib/db";
+import { cachedJson, getDefaultCache, getWaitUntil } from "../lib/cache";
+
+// Slow-changing public data (authors list, navigation): cached 5 minutes
+// with a 10-minute stale window, Worker Cache API + edge alike.
+const SLOW_TTL_MS = 300_000;
+const SLOW_SWR_MS = 600_000;
+const SLOW_CACHE_CONTROL = "public, max-age=300, stale-while-revalidate=600";
 
 type PublicEnv = { Bindings: Env; Variables: { user: SessionUser } };
 
@@ -18,21 +25,32 @@ const pub = new Hono<PublicEnv>();
 // --- Authors ---------------------------------------------------------------
 
 pub.get("/authors", async (c) => {
-  const { results } = await c.env.DB.prepare(
-    `SELECT u.id, u.name, u.role, u.avatar_url, u.bio,
-            COUNT(a.id) AS article_count
-     FROM users u
-     LEFT JOIN articles a ON a.author_id = u.id AND a.status = 'published'
-     GROUP BY u.id ORDER BY u.name ASC`,
-  ).all<{
-    id: number;
-    name: string;
-    role: string;
-    avatar_url: string | null;
-    bio: string | null;
-    article_count: number;
-  }>();
-  return ok(c, results ?? []);
+  const cached = await cachedJson({
+    cache: getDefaultCache(),
+    key: c.req.url,
+    ttlMs: SLOW_TTL_MS,
+    swrMs: SLOW_SWR_MS,
+    waitUntil: getWaitUntil(c),
+    load: async () => {
+      const { results } = await c.env.DB.prepare(
+        `SELECT u.id, u.name, u.role, u.avatar_url, u.bio,
+                COUNT(a.id) AS article_count
+         FROM users u
+         LEFT JOIN articles a ON a.author_id = u.id AND a.status = 'published'
+         GROUP BY u.id ORDER BY u.name ASC`,
+      ).all<{
+        id: number;
+        name: string;
+        role: string;
+        avatar_url: string | null;
+        bio: string | null;
+        article_count: number;
+      }>();
+      return { success: true as const, data: results ?? [] };
+    },
+  });
+  c.header("Cache-Control", SLOW_CACHE_CONTROL);
+  return c.json(cached.value);
 });
 
 pub.get("/authors/:id", async (c) => {
@@ -65,13 +83,17 @@ pub.get("/authors/:id", async (c) => {
       404,
     );
   }
-  const { articles: items } = await listArticles(c.env.DB, {
-    author: String(id),
-    status: "published",
-    page: 1,
-    limit: 10,
-    sort: "latest",
-  });
+  const { articles: items } = await listArticles(
+    c.env.DB,
+    {
+      author: String(id),
+      status: "published",
+      page: 1,
+      limit: 10,
+      sort: "latest",
+    },
+    { slim: true },
+  );
   return ok(c, { ...author, articles: items });
 });
 
@@ -114,30 +136,45 @@ pub.get("/search", async (c) => {
     );
   }
   const query = validateQuery(c, articleListQuerySchema);
-  const { articles: items, total } = await listArticles(c.env.DB, {
-    ...query,
-    search: q,
-    status: "published",
-  });
+  const { articles: items, total } = await listArticles(
+    c.env.DB,
+    {
+      ...query,
+      search: q,
+      status: "published",
+    },
+    { slim: true },
+  );
   return ok(c, items, 200, paginationMeta(total, query.page, query.limit));
 });
 
 // --- Navigation ------------------------------------------------------------
 
 pub.get("/navigation", async (c) => {
-  const { results } = await c.env.DB.prepare(
-    `SELECT id, label, label_bn, url, position, parent_id, is_active
-     FROM navigation WHERE is_active = 1 ORDER BY position ASC, id ASC`,
-  ).all<{
-    id: number;
-    label: string;
-    label_bn: string | null;
-    url: string;
-    position: number;
-    parent_id: number | null;
-    is_active: number;
-  }>();
-  return ok(c, results ?? []);
+  const cached = await cachedJson({
+    cache: getDefaultCache(),
+    key: c.req.url,
+    ttlMs: SLOW_TTL_MS,
+    swrMs: SLOW_SWR_MS,
+    waitUntil: getWaitUntil(c),
+    load: async () => {
+      const { results } = await c.env.DB.prepare(
+        `SELECT id, label, label_bn, url, position, parent_id, is_active
+         FROM navigation WHERE is_active = 1 ORDER BY position ASC, id ASC`,
+      ).all<{
+        id: number;
+        label: string;
+        label_bn: string | null;
+        url: string;
+        position: number;
+        parent_id: number | null;
+        is_active: number;
+      }>();
+      return { success: true as const, data: results ?? [] };
+    },
+  });
+  c.header("Cache-Control", SLOW_CACHE_CONTROL);
+  return c.json(cached.value);
 });
 
 // --- Media files (R2) --------------------------------------------------------

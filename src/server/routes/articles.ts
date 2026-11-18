@@ -9,18 +9,53 @@ import { validateQuery } from "../middleware/validate";
 import { getClientIp, sha256Hex } from "../middleware/auth";
 import { getArticleBySlug, getRelatedArticles, incrementArticleViews, listArticles } from "../services/articles";
 import { articleListQuerySchema } from "../validators/articles";
+import { cachedJson, getDefaultCache, getWaitUntil } from "../lib/cache";
 
 type ArticlesEnv = { Bindings: Env; Variables: { user: SessionUser } };
 
 const articles = new Hono<ArticlesEnv>();
 
+// Public list responses are Cache API-cached for 60s (stale-while-
+// revalidate 300s) and edge-cached the same way, so repeat visits —
+// including the homepage's 13 parallel list calls — answer from cache
+// instead of hitting D1 every time. A newly published story shows up
+// within about a minute. Search is never cached: it is per-query and
+// low-reuse, and searchers expect fresh results.
+const LIST_TTL_MS = 60_000;
+const LIST_SWR_MS = 300_000;
+const LIST_CACHE_CONTROL = "public, max-age=60, stale-while-revalidate=300";
+
 articles.get("/", async (c) => {
   const query = validateQuery(c, articleListQuerySchema);
-  const { articles: items, total } = await listArticles(c.env.DB, {
-    ...query,
-    status: "published",
+  if (query.search) {
+    const { articles: items, total } = await listArticles(
+      c.env.DB,
+      { ...query, status: "published" },
+      { slim: true },
+    );
+    return ok(c, items, 200, paginationMeta(total, query.page, query.limit));
+  }
+  const cached = await cachedJson({
+    cache: getDefaultCache(),
+    key: c.req.url,
+    ttlMs: LIST_TTL_MS,
+    swrMs: LIST_SWR_MS,
+    waitUntil: getWaitUntil(c),
+    load: async () => {
+      const { articles: items, total } = await listArticles(
+        c.env.DB,
+        { ...query, status: "published" },
+        { slim: true },
+      );
+      return {
+        success: true as const,
+        data: items,
+        pagination: paginationMeta(total, query.page, query.limit),
+      };
+    },
   });
-  return ok(c, items, 200, paginationMeta(total, query.page, query.limit));
+  c.header("Cache-Control", LIST_CACHE_CONTROL);
+  return c.json(cached.value);
 });
 
 articles.get("/:slug", async (c) => {
