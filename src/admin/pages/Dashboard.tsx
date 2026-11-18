@@ -78,7 +78,7 @@ export function Dashboard() {
         </div>
       </Card>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card>
           <CardHeader title="Articles by status" subtitle="Where the newsroom's stories stand" />
           <div className="p-4 sm:p-5">
@@ -115,7 +115,7 @@ export function Dashboard() {
                     className="min-w-0 flex-1 text-left"
                     onClick={() => navigate(`/admin/articles/${a.id}/edit`)}
                   >
-                    <p className="truncate text-sm font-medium text-slate-900 hover:text-[#c1121f]">{a.title}</p>
+                    <p className="text-sm font-medium text-slate-900 hover:text-[#c1121f]">{a.title}</p>
                     <p className="text-xs text-slate-500">
                       {a.category?.name_en ?? "—"} · {formatDate(a.updated_at)} · {formatNumber(a.views)} views
                     </p>
@@ -128,7 +128,7 @@ export function Dashboard() {
         </Card>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card>
           <CardHeader title="Recent comments" subtitle="Latest reader comments" action={<Button variant="outline" onClick={() => navigate("/admin/comments")}>Moderate</Button>} />
           {(stats.recent_comments ?? []).length === 0 ? (
@@ -138,8 +138,8 @@ export function Dashboard() {
               {(stats.recent_comments ?? []).slice(0, 5).map((c) => (
                 <li key={c.id} className="flex items-center justify-between gap-3 px-4 py-3 sm:px-5">
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-medium text-slate-900">{c.author_name} <span className="font-normal text-slate-500">on {c.article_title ?? "an article"}</span></p>
-                    <p className="truncate text-xs text-slate-500">{c.content} · {timeAgo(c.created_at)}</p>
+                    <p className="text-sm font-medium text-slate-900">{c.author_name} <span className="font-normal text-slate-500">on {c.article_title ?? "an article"}</span></p>
+                    <p className="text-xs text-slate-500">{c.content} · {timeAgo(c.created_at)}</p>
                   </div>
                   <Badge value={c.status} />
                 </li>
@@ -156,7 +156,7 @@ export function Dashboard() {
             <ul className="divide-y divide-slate-100">
               {(stats.recent_audit_logs ?? []).slice(0, 5).map((l) => (
                 <li key={l.id} className="flex items-center justify-between gap-3 px-4 py-3 sm:px-5">
-                  <p className="min-w-0 truncate text-sm text-slate-800">
+                  <p className="min-w-0 text-sm text-slate-800">
                     <span className="font-medium text-slate-900">{l.user_name ?? "—"}</span> · {l.action}
                     {l.entity_type ? ` · ${l.entity_type} ${l.entity_id ?? ""}` : ""}
                   </p>
