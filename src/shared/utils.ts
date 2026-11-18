@@ -73,6 +73,38 @@ export function absoluteUrl(siteUrl: string, path: string): string {
   return `${base}${suffix}`;
 }
 
+/**
+ * Ask Wikimedia Commons for a narrower render of a photo.
+ *
+ * Article photos are thumb.wikimedia.org URLs carrying the pixel width in
+ * the last path segment (…/1280px-Name.jpg). A 120px thumbnail was
+ * downloading the full 1280px file; requesting a narrower render makes
+ * the server downscale it, so phones fetch a fraction of the bytes
+ * (measured on live seed photos: 250px is ~91–94% smaller than 1280px,
+ * 330px ~86–90%, 500px ~80%, 960px ~35–39%).
+ *
+ * Wikimedia only serves a fixed whitelist of thumbnail widths and
+ * answers 400 ("Use thumbnail sizes listed on https://w.wiki/GHai") for
+ * anything else — arbitrary widths like 320/640/800 break every photo.
+ * The requested width is therefore snapped UP to the smallest standard
+ * step that covers it, so no caller can ever build a broken URL. Any URL
+ * that is not a thumb.wikimedia.org render (R2 /media-file links,
+ * absolute uploads, …) passes through unchanged, and a missing URL stays
+ * missing.
+ */
+const STANDARD_WIDTHS = [20, 40, 60, 120, 250, 330, 500, 960, 1280, 1920, 3840];
+
+export function thumbUrl(
+  url: string | undefined | null,
+  width: number,
+): string | undefined {
+  if (!url) return undefined;
+  const match = url.match(/^(https:\/\/thumb\.wikimedia\.org\/.*\/)\d+px-([^/]+)$/);
+  if (!match) return url;
+  const step = STANDARD_WIDTHS.find((w) => w >= width) ?? 3840;
+  return `${match[1]}${step}px-${match[2]}`;
+}
+
 // ---------------------------------------------------------------------------
 // Backend additions (appended by the backend builder; existing helpers
 // above are unchanged). These are the contract helpers the Worker API
