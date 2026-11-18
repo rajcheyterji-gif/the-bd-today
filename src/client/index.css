@@ -120,56 +120,15 @@
   font-weight: 700;
 }
 
-/* ------------------------------------------------------------------
-   Google Translate — ZERO visible trace.
-   The Eng toggle (lib/translate.ts) translates the whole page via
-   Google Translate, but the reader must never see any Google chrome:
-   no top banner, no "Powered by Google" attribution, no logo, no
-   watermark, no widget, no hover popup, no loading spinner. These
-   rules are preemptive (they exist before the script ever loads), so
-   nothing Google-branded can flash on screen even briefly.
-   ------------------------------------------------------------------ */
-
-/* The widget itself (hidden container + language combo inside it). */
-#google_translate_element,
-.goog-te-gadget,
-.goog-te-gadget-simple,
-.goog-te-combo {
-  display: none !important;
-}
-
-/* The top translation banner frame Google injects at the top of <body>. */
-.goog-te-banner-frame.skiptranslate,
-iframe.goog-te-banner-frame,
-iframe.skiptranslate {
-  display: none !important;
-  visibility: hidden !important;
-}
-
-/* Google pushes <body> down 40px for the banner — never allow it. */
-body {
-  top: 0 !important;
-}
-
-/* "Powered by Google Translate" attribution + Google logo. */
-.goog-logo-link,
-.goog-te-gadget-icon {
-  display: none !important;
-}
-
-/* Hover popup ("Translated by Google") and the language menu popup. */
-.goog-te-balloon-frame,
-.goog-te-menu-frame {
-  display: none !important;
-}
-
-/* Loading spinner Google shows while translating. */
-.goog-te-spinner-pos {
-  display: none !important;
-}
-
-/* Google highlights translated text on hover — keep text looking native. */
-.goog-text-highlight {
-  background-color: transparent !important;
-  box-shadow: none !important;
+/* Article drop cap: the first paragraph of a story opens with a big
+   red serif initial, like a printed newspaper. */
+.article-body > p:first-of-type::first-letter {
+  float: left;
+  font-family: "Noto Serif Bengali", Georgia, "Times New Roman", serif;
+  font-size: 3.1em;
+  font-weight: 900;
+  line-height: 0.85;
+  padding-right: 0.12em;
+  padding-top: 0.05em;
+  color: #c1121f;
 }

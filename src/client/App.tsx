@@ -15,11 +15,6 @@ import { Masthead } from "./components/Masthead";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
 import { Loading } from "./components/Loading";
-import {
-  ensureTranslateScript,
-  getSiteLanguage,
-  retranslateToEnglish,
-} from "./lib/translate";
 import { HomePage } from "./pages/HomePage";
 import { CategoryPage } from "./pages/CategoryPage";
 import { ArticlePage } from "./pages/ArticlePage";
@@ -45,38 +40,6 @@ function ScrollToTop() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
   }, [pathname, search]);
-  return null;
-}
-
-/**
- * Whole-site translation bootstrap (see lib/translate.ts). While the
- * reader is in English mode, load Google's translator on public pages
- * and re-trigger it after every route change, so freshly rendered
- * Bengali content gets translated too. The admin is never translated:
- * the script is skipped there and the admin root is wrapped in a
- * `notranslate` container below.
- */
-function TranslateBootstrap() {
-  const { pathname, search } = useLocation();
-  const isAdmin = pathname.startsWith("/admin");
-  useEffect(() => {
-    if (isAdmin || getSiteLanguage() !== "en") return;
-    let cancelled = false;
-    void ensureTranslateScript().then(() => {
-      if (cancelled) return;
-      // Google auto-translates on load from the googtrans cookie; this
-      // extra pass catches content React rendered after the widget did.
-      window.setTimeout(() => {
-        if (!cancelled) retranslateToEnglish();
-      }, 300);
-      window.setTimeout(() => {
-        if (!cancelled) retranslateToEnglish();
-      }, 900);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [pathname, search, isAdmin]);
   return null;
 }
 
@@ -121,12 +84,11 @@ export function App() {
   return (
     <>
       <ScrollToTop />
-      <TranslateBootstrap />
       <Routes>
         <Route
           path="/admin/*"
           element={
-            <div className="notranslate" translate="no">
+            <div>
               <Suspense fallback={<Loading label="Loading admin…" />}>
                 <AdminApp />
               </Suspense>
