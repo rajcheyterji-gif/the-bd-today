@@ -20,7 +20,17 @@
   // Workers runtime. Add the flag only if a dependency needs Node APIs.
   "assets": {
     "directory": "./dist/client",
-    "binding": "ASSETS"
+    "binding": "ASSETS",
+    // The Worker MUST run before Static Assets: without this, requests
+    // for "/" are served straight from dist/client/index.html and the
+    // Worker never sees them — so search bots would get the empty SPA
+    // shell instead of the server-rendered page (see
+    // src/server/lib/prerender.ts), and the per-page meta injection in
+    // src/server/index.ts would never run for the homepage either.
+    // With this on, the Worker handles every request first and fetches
+    // static files itself via the ASSETS binding — humans still get the
+    // exact same files, bots get the prerendered page.
+    "run_worker_first": true
   },
   "d1_databases": [
     {
