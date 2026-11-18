@@ -1,16 +1,18 @@
-// Public site shell: react-router-dom routing, global chrome (top bar,
-// masthead, nav, breaking ticker, footer) and the route table. All page
-// data comes from the API via hooks — no hardcoded articles anywhere.
+// Public site shell: react-router-dom routing, global chrome (masthead,
+// sticky category nav, footer) and the route table. All page data comes
+// from the API via hooks — no hardcoded articles anywhere.
+//
+// The masthead + nav match the Prothom Alo mobile header screenshots:
+// wordmark with search + Login, then the sticky category row. No date
+// strip and no breaking ticker — the screenshots show the header bare.
 //
 // The admin CMS (src/admin/*) mounts chrome-free under /admin/* via a lazy
 // import; that file is owned by a sibling agent.
 
 import { lazy, Suspense, useEffect, type ReactNode } from "react";
 import { Route, Routes, useLocation, useParams, useSearchParams } from "react-router-dom";
-import { TopBar } from "./components/TopBar";
 import { Masthead } from "./components/Masthead";
 import { Navbar } from "./components/Navbar";
-import { BreakingTicker } from "./components/BreakingTicker";
 import { Footer } from "./components/Footer";
 import { Loading } from "./components/Loading";
 import { HomePage } from "./pages/HomePage";
@@ -70,10 +72,8 @@ function TagRoute() {
 function PublicLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-white font-sans text-[#0f172a] antialiased">
-      <TopBar />
       <Masthead />
       <Navbar />
-      <BreakingTicker />
       <main>{children}</main>
       <Footer />
     </div>
