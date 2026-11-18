@@ -1,0 +1,246 @@
+// Auth tests — run with `npm test` (vitest).
+// Covers PBKDF2 hashing (WebCrypto only), the login/logout/me flow, the
+// login rate limit, CSRF-protected logout and the first-admin bootstrap.
+import { beforeAll, describe, expect, it } from "vitest";
+import { createApp } from "../src/server/index";
+import { hashPassword, verifyPassword } from "../src/server/services/auth";
+import {
+  cookieHeader,
+  createFakeEnv,
+  parseSetCookies,
+  type FakeUser,
+} from "./fake-d1";
+
+const app = createApp();
+let adminHash = "";
+
+beforeAll(async () => {
+  adminHash = await hashPassword("Test1234!");
+});
+
+function adminUser(): FakeUser {
+  return {
+    id: 1,
+    name: "Admin User",
+    email: "admin@example.com",
+    password_hash: adminHash,
+    role: "admin",
+    avatar_url: null,
+    bio: null,
+  };
+}
+
+async function login(env: ReturnType<typeof createFakeEnv>) {
+  const res = await app.request(
+    "/api/v1/auth/login",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: "admin@example.com", password: "Test1234!" }),
+    },
+    env,
+  );
+  return { res, cookies: parseSetCookies(res) };
+}
+
+describe("password hashing (PBKDF2-SHA256, WebCrypto only)", () => {
+  it("hashes and verifies a password", async () => {
+    const hash = await hashPassword("correct horse battery staple");
+    expect(hash.startsWith("pbkdf2$100000$")).toBe(true);
+    expect(await verifyPassword("correct horse battery staple", hash)).toBe(true);
+    expect(await verifyPassword("wrong password", hash)).toBe(false);
+  });
+
+  it("never verifies the seed placeholder hash", async () => {
+    expect(await verifyPassword("anything", "__SET_VIA_INIT__")).toBe(false);
+    expect(await verifyPassword("anything", "")).toBe(false);
+  });
+});
+
+describe("login / me / logout", () => {
+  it("rejects a wrong password with 401", async () => {
+    const env = createFakeEnv({ users: [adminUser()] });
+    const res = await app.request(
+      "/api/v1/auth/login",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: "admin@example.com", password: "nope" }),
+      },
+      env,
+    );
+    expect(res.status).toBe(401);
+    expect((await res.json()).error.code).toBe("UNAUTHORIZED");
+  });
+
+  it("rejects a login with a missing password (400)", async () => {
+    const env = createFakeEnv({ users: [adminUser()] });
+    const res = await app.request(
+      "/api/v1/auth/login",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: "admin@example.com" }),
+      },
+      env,
+    );
+    expect(res.status).toBe(400);
+  });
+
+  it("logs in, sets session + CSRF cookies, and /me returns the user", async () => {
+    const env = createFakeEnv({ users: [adminUser()] });
+    const { res, cookies } = await login(env);
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.success).toBe(true);
+    expect(body.data.user.email).toBe("admin@example.com");
+    expect(cookies.bd_session).toBeTruthy();
+    expect(cookies.bd_csrf).toBeTruthy();
+
+    const me = await app.request(
+      "/api/v1/auth/me",
+      { method: "GET", headers: { Cookie: cookieHeader(cookies) } },
+      env,
+    );
+    expect(me.status).toBe(200);
+    expect((await me.json()).data.user.id).toBe(1);
+
+    // The session also opens the admin dashboard.
+    const dashboard = await app.request(
+      "/api/v1/admin/dashboard",
+      { method: "GET", headers: { Cookie: cookieHeader(cookies) } },
+      env,
+    );
+    expect(dashboard.status).toBe(200);
+    expect((await dashboard.json()).data.totals).toBeDefined();
+  });
+
+  it("logout clears the session (CSRF-protected) and /me then 401s", async () => {
+    const env = createFakeEnv({ users: [adminUser()] });
+    const { cookies } = await login(env);
+    const logout = await app.request(
+      "/api/v1/auth/logout",
+      {
+        method: "POST",
+        headers: {
+          Cookie: cookieHeader(cookies),
+          "X-CSRF-Token": cookies.bd_csrf,
+        },
+      },
+      env,
+    );
+    expect(logout.status).toBe(200);
+    const me = await app.request(
+      "/api/v1/auth/me",
+      { method: "GET", headers: { Cookie: cookieHeader(cookies) } },
+      env,
+    );
+    expect(me.status).toBe(401);
+  });
+
+  it("logout without a CSRF token is rejected", async () => {
+    const env = createFakeEnv({ users: [adminUser()] });
+    const { cookies } = await login(env);
+    const logout = await app.request(
+      "/api/v1/auth/logout",
+      { method: "POST", headers: { Cookie: cookieHeader(cookies) } },
+      env,
+    );
+    expect(logout.status).toBe(403);
+  });
+});
+
+describe("login rate limiting", () => {
+  it("blocks the 6th failed login from one IP within 15 minutes", async () => {
+    const env = createFakeEnv({ users: [adminUser()] });
+    const headers = {
+      "Content-Type": "application/json",
+      "CF-Connecting-IP": "10.0.0.99",
+    };
+    for (let i = 0; i < 5; i++) {
+      const res = await app.request(
+        "/api/v1/auth/login",
+        {
+          method: "POST",
+          headers,
+          body: JSON.stringify({ email: "admin@example.com", password: "nope" }),
+        },
+        env,
+      );
+      expect(res.status).toBe(401);
+    }
+    const blocked = await app.request(
+      "/api/v1/auth/login",
+      {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ email: "admin@example.com", password: "nope" }),
+      },
+      env,
+    );
+    expect(blocked.status).toBe(429);
+    expect((await blocked.json()).error.code).toBe("RATE_LIMITED");
+  });
+});
+
+describe("first-admin bootstrap (POST /api/v1/auth/init)", () => {
+  it("rejects a wrong init token", async () => {
+    const env = createFakeEnv({ users: [] });
+    const res = await app.request(
+      "/api/v1/auth/init",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          token: "wrong-token",
+          email: "admin@thebdtoday.com",
+          name: "Admin",
+          password: "a-very-long-password",
+        }),
+      },
+      env,
+    );
+    expect(res.status).toBe(403);
+  });
+
+  it("refuses to run once users exist", async () => {
+    const env = createFakeEnv({ users: [adminUser()] });
+    const res = await app.request(
+      "/api/v1/auth/init",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          token: "test-init-token",
+          email: "admin@thebdtoday.com",
+          name: "Admin",
+          password: "a-very-long-password",
+        }),
+      },
+      env,
+    );
+    expect(res.status).toBe(409);
+  });
+
+  it("creates the first admin when the users table is empty", async () => {
+    const env = createFakeEnv({ users: [] });
+    const res = await app.request(
+      "/api/v1/auth/init",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          token: "test-init-token",
+          email: "admin@thebdtoday.com",
+          name: "Editor-in-Chief",
+          password: "a-very-long-password",
+        }),
+      },
+      env,
+    );
+    expect(res.status).toBe(201);
+    const body = await res.json();
+    expect(body.data.user.role).toBe("admin");
+    expect(body.data.user.email).toBe("admin@thebdtoday.com");
+  });
+});
