@@ -31,7 +31,7 @@ function timeOf(a: Article) {
   return formatRelative(a.published_at ?? a.created_at, true);
 }
 
-/** Two-column text-only headline list (screenshot 6), mobile only. */
+/** Two-column headline list with a small photo on each story (screenshot 6), mobile only. */
 function TwoColList({ articles }: { articles: Article[] }) {
   if (articles.length === 0) return null;
   const half = Math.ceil(articles.length / 2);
@@ -42,7 +42,17 @@ function TwoColList({ articles }: { articles: Article[] }) {
         <div key={ci} className={`divide-y divide-slate-200 ${ci === 0 ? "pr-3" : "pl-3"}`}>
           {col.map((a) => (
             <article key={a.id} className="group py-3 first:pt-0 last:pb-0">
-              <h3 className="font-serif text-[16px] font-bold leading-snug">
+              {a.featured_image_url && (
+                <Link to={`/article/${a.slug}`} className="mb-2 block overflow-hidden" aria-label={a.title}>
+                  <img
+                    src={a.featured_image_url}
+                    alt={a.image_caption || a.title}
+                    loading="lazy"
+                    className="aspect-[16/9] w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                  />
+                </Link>
+              )}
+              <h3 className="font-serif text-[18px] font-bold leading-snug">
                 <Link to={`/article/${a.slug}`} className="text-slate-900 group-hover:text-[#c1121f]">
                   {a.title}
                 </Link>
@@ -79,7 +89,7 @@ function PhotoCard({ article }: { article: Article }) {
           <Camera size={14} />
         </span>
       </Link>
-      <h3 className="mt-2 font-serif text-[15px] font-bold leading-snug">
+      <h3 className="mt-2 font-serif text-[17px] font-bold leading-snug">
         <Link to={`/article/${article.slug}`} className="text-slate-900 group-hover:text-[#c1121f]">
           {article.title}
         </Link>
@@ -111,7 +121,7 @@ function OtherCategories({ sections }: { sections: { category: Category; article
   if (sections.length === 0) return null;
   return (
     <div>
-      <h2 className="mb-4 font-serif text-[22px] font-black text-slate-900 sm:text-2xl">অন্যান্য</h2>
+      <h2 className="mb-4 font-serif text-2xl font-black text-slate-900 sm:text-[28px]">অন্যান্য</h2>
       <div
         ref={trackRef}
         onScroll={onScroll}
@@ -141,7 +151,7 @@ function OtherCategories({ sections }: { sections: { category: Category; article
                       THE BD TODAY
                     </span>
                   )}
-                  <span className="mt-2 block font-serif text-[17px] font-bold leading-snug text-slate-900 group-hover:text-[#c1121f]">
+                  <span className="mt-2 block font-serif text-[19px] font-bold leading-snug text-slate-900 group-hover:text-[#c1121f]">
                     {top.title}
                   </span>
                 </Link>
@@ -150,9 +160,19 @@ function OtherCategories({ sections }: { sections: { category: Category; article
                 <Link
                   key={a.id}
                   to={`/article/${a.slug}`}
-                  className="mt-2 block border-t border-slate-200 pt-2 font-serif text-[15px] font-bold leading-snug text-slate-900 hover:text-[#c1121f]"
+                  className="group mt-2 flex items-start gap-2.5 border-t border-slate-200 pt-2"
                 >
-                  {a.title}
+                  <span className="min-w-0 flex-1 font-serif text-[17px] font-bold leading-snug text-slate-900 group-hover:text-[#c1121f]">
+                    {a.title}
+                  </span>
+                  {a.featured_image_url && (
+                    <img
+                      src={a.featured_image_url}
+                      alt={a.image_caption || a.title}
+                      loading="lazy"
+                      className="h-14 w-20 shrink-0 object-cover"
+                    />
+                  )}
                 </Link>
               ))}
               <Link
@@ -352,7 +372,7 @@ export function HomePage() {
               <div className="mb-4">
                 <Link
                   to="/latest"
-                  className="group inline-flex items-center gap-0.5 font-serif text-[22px] font-black leading-none text-slate-900 hover:text-[#c1121f] sm:text-2xl"
+                  className="group inline-flex items-center gap-0.5 font-serif text-2xl font-black leading-none text-slate-900 hover:text-[#c1121f] sm:text-[28px]"
                 >
                   ছবিঘর
                   <ChevronRight size={22} className="text-[#c1121f] transition-transform group-hover:translate-x-0.5" />

@@ -130,11 +130,11 @@ export function ArticlePage({ slug }: { slug: string }) {
                 {article.category.name_bn ?? article.category.name_en}
               </Link>
             )}
-            <h1 className="mt-2 font-serif text-[32px] font-black leading-[1.3] text-slate-900 sm:text-[40px]">
+            <h1 className="mt-2 font-serif text-[36px] font-black leading-[1.3] text-slate-900 sm:text-5xl">
               {article.title}
             </h1>
             {(article.subtitle || article.excerpt) && (
-              <p className="mt-3 font-serif text-lg leading-relaxed text-slate-500 sm:text-xl">
+              <p className="mt-3 font-serif text-xl leading-relaxed text-slate-500 sm:text-2xl">
                 {article.subtitle || article.excerpt}
               </p>
             )}
