@@ -32,7 +32,7 @@ type FeedRow = {
 };
 
 function siteUrl(c: { env: Env }): string {
-  return (c.env.SITE_URL ?? "https://thebdtoday.com").replace(/\/+$/, "");
+  return (c.env.SITE_URL ?? "https://www.thebdtoday.online").replace(/\/+$/, "");
 }
 
 function xmlEscape(value: string): string {
@@ -91,6 +91,7 @@ seo.get("/robots.txt", (c) => {
       "Disallow: /admin",
       "Disallow: /api/",
       `Sitemap: ${origin}/sitemap.xml`,
+      `Sitemap: ${origin}/news-sitemap.xml`,
       "",
     ].join("\n"),
     {
@@ -101,6 +102,58 @@ seo.get("/robots.txt", (c) => {
     },
   );
 });
+
+/**
+ * Google News sitemap — /news-sitemap.xml (alias /sitemap-news.xml).
+ *
+ * Google only accepts articles published in the last 48 hours in a News
+ * sitemap, so the query filters published_at to the last 2 days (using an
+ * ISO-formatted cutoff so the string comparison is exact) and caps at
+ * 1000 URLs. Submit this URL in Google Publisher Center (NOT in Search
+ * Console — Search Console takes the regular sitemap.xml). When no article
+ * is fresh enough the sitemap is valid but empty, which is expected
+ * between publishing days; publish regularly to keep it populated.
+ */
+type NewsRow = { slug: string; title: string; published_at: string | null };
+
+async function newsSitemap(c: { env: Env }): Promise<Response> {
+  const origin = siteUrl(c);
+  const { results } = await c.env.DB.prepare(
+    `SELECT slug, title, published_at FROM articles
+     WHERE status = 'published'
+       AND published_at <= strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+       AND published_at >= strftime('%Y-%m-%dT%H:%M:%fZ', 'now', '-2 days')
+     ORDER BY published_at DESC LIMIT 1000`,
+  ).all<NewsRow>();
+
+  const entries = (results ?? []).map((row) => {
+    const pubDate = row.published_at ?? new Date().toISOString();
+    return [
+      "  <url>",
+      `    <loc>${origin}/article/${xmlEscape(row.slug)}</loc>`,
+      "    <news:news>",
+      "      <news:publication>",
+      "        <news:name>THE BD TODAY</news:name>",
+      "        <news:language>bn</news:language>",
+      "      </news:publication>",
+      `      <news:publication_date>${xmlEscape(pubDate)}</news:publication_date>`,
+      `      <news:title>${xmlEscape(row.title)}</news:title>`,
+      "    </news:news>",
+      "  </url>",
+    ].join("\n");
+  });
+
+  return xmlResponse(
+    `<?xml version="1.0" encoding="UTF-8"?>\n` +
+      `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">\n` +
+      entries.join("\n") +
+      (entries.length > 0 ? "\n" : "") +
+      `</urlset>`,
+  );
+}
+
+seo.get("/news-sitemap.xml", newsSitemap);
+seo.get("/sitemap-news.xml", newsSitemap);
 
 seo.get("/rss.xml", async (c) => {
   const origin = siteUrl(c);
