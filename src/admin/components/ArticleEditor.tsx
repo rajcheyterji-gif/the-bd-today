@@ -173,7 +173,7 @@ export function ArticleEditor({ article, loading, onSaved }: ArticleEditorProps)
         </Button>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_320px]">
         {/* Main column */}
         <div className="space-y-4">
           <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
