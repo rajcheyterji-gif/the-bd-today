@@ -62,7 +62,7 @@ export function Dashboard() {
           the bottom of a long scroll. */}
       <Card>
         <CardHeader title="Quick actions" subtitle="Common newsroom tasks" />
-        <div className="grid grid-cols-1 gap-2 p-4 min-[480px]:grid-cols-2 sm:flex sm:flex-wrap sm:p-5">
+        <div className="grid grid-cols-2 gap-2 p-4 sm:flex sm:flex-wrap sm:p-5">
           <Button onClick={() => navigate("/admin/articles/new")}>
             <FilePlus2 size={16} /> New article
           </Button>
