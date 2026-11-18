@@ -153,6 +153,7 @@ export function pageMetaTagsHtml(siteUrl: string, path: string): string {
  *   Seo.tsx re-upserts its own after load, so removing them here only
  *   affects the first paint / scrapers).
  * - Replaces <title> when a title is given.
+ * - Inserts a <link rel="canonical"> when a canonical URL is given.
  * - Inserts the new tags (and an optional JSON-LD script) before </head>.
  * If there is no </head>, the tags are appended at the end.
  */
@@ -161,6 +162,7 @@ export function injectSeoIntoHtml(
   headHtml: string,
   title?: string,
   jsonLd?: string,
+  canonical?: string,
 ): string {
   const STRIP_META_RE =
     /<meta[^>]+(?:property="og:[^"]+"|name="twitter:[^"]+"|name="description")[^>]*>\s*/g;
@@ -171,10 +173,14 @@ export function injectSeoIntoHtml(
       `<title>${escapeHtml(title)}</title>`,
     );
   }
+  const parts = [headHtml];
+  if (canonical !== undefined) {
+    parts.unshift(`<link rel="canonical" href="${escapeAttr(canonical)}">`);
+  }
   const insert =
     jsonLd !== undefined
-      ? `${headHtml}\n<script type="application/ld+json">${jsonLd}</script>`
-      : headHtml;
+      ? `${parts.join("\n")}\n<script type="application/ld+json">${jsonLd}</script>`
+      : parts.join("\n");
   if (out.includes("</head>")) {
     return out.replace("</head>", `${insert}\n</head>`);
   }
