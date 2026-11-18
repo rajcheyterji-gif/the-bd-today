@@ -57,6 +57,27 @@ export function Dashboard() {
         <StatCard label="Pending comments" value={formatNumber(stats.totals.pending_comments)} icon={<MessageSquare size={20} />} />
       </div>
 
+      {/* Quick actions first on mobile: the things the newsroom reaches for
+          every day (new story, drafts, pending comments) should not sit at
+          the bottom of a long scroll. */}
+      <Card>
+        <CardHeader title="Quick actions" subtitle="Common newsroom tasks" />
+        <div className="grid grid-cols-2 gap-2 p-4 sm:flex sm:flex-wrap sm:p-5">
+          <Button onClick={() => navigate("/admin/articles/new")}>
+            <FilePlus2 size={16} /> New article
+          </Button>
+          <Button variant="outline" onClick={() => navigate("/admin/drafts")}>
+            <Clock size={16} /> Review drafts
+          </Button>
+          <Button variant="outline" onClick={() => navigate("/admin/comments")}>
+            <MessageSquare size={16} /> Moderate comments
+          </Button>
+          <Button variant="outline" onClick={() => navigate("/admin/analytics")}>
+            <BarChart3 size={16} /> View analytics
+          </Button>
+        </div>
+      </Card>
+
       <div className="grid gap-4 lg:grid-cols-2">
         <Card>
           <CardHeader title="Articles by status" subtitle="Where the newsroom's stories stand" />
@@ -146,24 +167,6 @@ export function Dashboard() {
           )}
         </Card>
       </div>
-
-      <Card>
-        <CardHeader title="Quick actions" subtitle="Common newsroom tasks" />
-        <div className="flex flex-wrap gap-2 p-4 sm:p-5">
-          <Button variant="outline" onClick={() => navigate("/admin/articles/new")}>
-            <FilePlus2 size={16} /> New article
-          </Button>
-          <Button variant="outline" onClick={() => navigate("/admin/drafts")}>
-            <Clock size={16} /> Review drafts
-          </Button>
-          <Button variant="outline" onClick={() => navigate("/admin/comments")}>
-            <MessageSquare size={16} /> Moderate comments
-          </Button>
-          <Button variant="outline" onClick={() => navigate("/admin/analytics")}>
-            <BarChart3 size={16} /> View analytics
-          </Button>
-        </div>
-      </Card>
     </div>
   );
 }
