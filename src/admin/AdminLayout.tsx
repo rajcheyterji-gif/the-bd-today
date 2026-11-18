@@ -4,6 +4,7 @@ import {
   BarChart3,
   CalendarClock,
   CheckCircle2,
+  CircleUserRound,
   Clock,
   ExternalLink,
   FilePlus2,
@@ -47,6 +48,7 @@ const NAV: NavEntry[] = [
   { path: "/admin/media", label: "Media Library", icon: Image, section: "Content" },
   { path: "/admin/authors", label: "Authors", icon: User, section: "People" },
   { path: "/admin/users", label: "Users", icon: Users, section: "People" },
+  { path: "/admin/profile", label: "My Profile", icon: CircleUserRound, section: "People" },
   { path: "/admin/comments", label: "Comments", icon: MessageSquare, section: "People" },
   { path: "/admin/seo", label: "SEO Manager", icon: Globe, section: "Site" },
   { path: "/admin/settings", label: "Settings", icon: Settings, section: "Site" },
@@ -94,7 +96,7 @@ export function AdminLayout() {
         <button
           type="button"
           aria-label="Close menu"
-          className="rounded-lg p-1.5 text-slate-300 hover:bg-white/10 lg:hidden"
+          className="shrink-0 rounded-lg p-2.5 text-slate-300 hover:bg-white/10 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         >
           <X size={18} />
@@ -113,7 +115,7 @@ export function AdminLayout() {
                     <Link
                       to={n.path}
                       aria-current={active ? "page" : undefined}
-                      className={`flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-colors ${
+                      className={`flex min-h-11 w-full items-center gap-2.5 rounded-lg px-2.5 py-2.5 text-sm transition-colors ${
                         active ? "bg-[#c1121f] font-medium text-white" : "text-slate-300 hover:bg-white/10 hover:text-white"
                       }`}
                     >
@@ -130,7 +132,7 @@ export function AdminLayout() {
       <div className="border-t border-white/10 p-3">
         <Link
           to="/"
-          className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-slate-300 hover:bg-white/10 hover:text-white"
+          className="flex min-h-11 w-full items-center gap-2 rounded-lg px-2 py-2.5 text-sm text-slate-300 hover:bg-white/10 hover:text-white"
         >
           <ExternalLink size={16} /> View public site
         </Link>
@@ -152,31 +154,37 @@ export function AdminLayout() {
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 lg:block">{sidebar}</aside>
 
       <div className="lg:pl-64">
-        <header className="sticky top-0 z-20 flex items-center gap-3 border-b border-slate-200 bg-white/95 px-3 py-2.5 backdrop-blur sm:px-5">
+        <header className="sticky top-0 z-20 flex items-center gap-2 border-b border-slate-200 bg-white/95 px-3 py-2 backdrop-blur sm:gap-3 sm:px-5">
           <button
             type="button"
             aria-label="Open menu"
-            className="rounded-lg p-2 text-slate-700 hover:bg-slate-100 lg:hidden"
+            className="shrink-0 rounded-lg p-2.5 text-slate-700 hover:bg-slate-100 lg:hidden"
             onClick={() => setSidebarOpen(true)}
           >
             <Menu size={20} />
           </button>
-          <Link to="/admin" className="flex items-center gap-1.5 lg:hidden" aria-label="THE BD TODAY Admin">
-            <img src="/logo.jpg" alt="দ্য বিডি টুডে" className="h-7 w-auto" />
+          <Link to="/admin" className="flex min-w-0 shrink-0 items-center gap-1.5 lg:hidden" aria-label="THE BD TODAY Admin">
+            <img src="/logo.jpg" alt="দ্য বিডি টুডে" className="h-6 w-auto" />
             <span className="text-sm font-bold text-[#c1121f]">Admin</span>
           </Link>
-          <div className="ml-auto flex items-center gap-2 sm:gap-3">
-            <div className="text-right">
-              <p className="max-w-36 truncate text-sm font-medium text-slate-900 sm:max-w-none">{user?.name ?? "…"}</p>
-              <p className="text-xs capitalize text-slate-500">{user?.role?.replace("_", " ") ?? "…"}</p>
-            </div>
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#c1121f] text-sm font-bold text-white" aria-hidden="true">
-              {(user?.name ?? "?").charAt(0).toUpperCase()}
-            </span>
+          <div className="ml-auto flex min-w-0 items-center gap-2 sm:gap-3">
+            {/* Name + role are hidden on phones: the avatar alone identifies
+                the signed-in user and keeps the header from crowding.
+                Tapping it opens My Profile. */}
+            <Link to="/admin/profile" className="flex min-w-0 items-center gap-2 rounded-lg sm:gap-3" aria-label="My profile">
+              <div className="hidden min-w-0 text-right sm:block">
+                <p className="max-w-40 truncate text-sm font-medium text-slate-900 lg:max-w-none">{user?.name ?? "…"}</p>
+                <p className="text-xs capitalize text-slate-500">{user?.role?.replace("_", " ") ?? "…"}</p>
+              </div>
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#c1121f] text-sm font-bold text-white" aria-hidden="true">
+                {(user?.name ?? "?").charAt(0).toUpperCase()}
+              </span>
+            </Link>
             <button
               type="button"
               onClick={() => void handleLogout()}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 px-2.5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+              aria-label="Log out"
+              className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-lg border border-slate-300 px-2.5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
             >
               <LogOut size={16} />
               <span className="hidden sm:inline">Log out</span>
