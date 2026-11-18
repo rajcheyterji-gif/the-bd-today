@@ -46,10 +46,10 @@ export function ArticleCard({
 }) {
   const titleCls =
     size === "large"
-      ? "font-serif text-[26px] font-black leading-snug"
+      ? "font-serif text-[30px] font-black leading-snug"
       : size === "small"
-        ? "font-serif text-base font-bold leading-snug"
-        : "font-serif text-lg font-bold leading-snug";
+        ? "font-serif text-[17px] font-bold leading-snug"
+        : "font-serif text-xl font-bold leading-snug";
   return (
     <article className="group">
       <Link to={`/article/${article.slug}`} aria-label={article.title}>
@@ -66,7 +66,7 @@ export function ArticleCard({
           </Link>
         </h3>
         {size !== "small" && (
-          <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-slate-600">
+          <p className="mt-1.5 line-clamp-2 text-[15px] leading-relaxed text-slate-600">
             {excerptFrom(article.content, article.excerpt)}
           </p>
         )}
@@ -97,7 +97,7 @@ export function TextStory({
     <article className="group border-b border-slate-200 py-4 first:pt-0 last:border-b-0 last:pb-0">
       <div className="flex gap-3">
         <div className="min-w-0 flex-1">
-          <h3 className="font-serif text-[17px] font-bold leading-snug">
+          <h3 className="font-serif text-[19px] font-bold leading-snug">
             {kicker ? (
               <>
                 <span className="text-[#c1121f]">{kicker}</span>{" "}
@@ -109,7 +109,7 @@ export function TextStory({
             </Link>
           </h3>
           {showExcerpt && (
-            <p className="mt-1 line-clamp-3 text-[13px] leading-relaxed text-slate-600">
+            <p className="mt-1 line-clamp-3 text-sm leading-relaxed text-slate-600">
               {excerptFrom(article.content, article.excerpt, 130)}
             </p>
           )}
@@ -135,16 +135,21 @@ export function TextStory({
 /**
  * Compact horizontal row for sidebars and lists, with an optional ranked
  * Bengali numeral. `largeRank` renders the big grey numerals from the
- * পঠিত/আলোচিত/সর্বশেষ tabs in the screenshots.
+ * পঠিত/আলোচিত/সর্বশেষ tabs in the screenshots. `showThumb={false}` keeps
+ * the row text-only — the tab lists are text-only by design in the
+ * reference screenshots, the one exception to the every-story-has-a-photo
+ * rule on the homepage.
  */
 export function ArticleRow({
   article,
   rank,
   largeRank = false,
+  showThumb = true,
 }: {
   article: Article;
   rank?: number;
   largeRank?: boolean;
+  showThumb?: boolean;
 }) {
   return (
     <article className="group flex gap-3 border-b border-slate-200 py-3 last:border-b-0">
@@ -158,7 +163,7 @@ export function ArticleRow({
         </span>
       )}
       <div className="min-w-0 flex-1">
-        <h4 className="font-serif text-[15px] font-bold leading-snug">
+        <h4 className="font-serif text-[17px] font-bold leading-snug">
           <Link to={`/article/${article.slug}`} className="text-slate-900 group-hover:text-[#c1121f]">
             {article.title}
           </Link>
@@ -167,7 +172,7 @@ export function ArticleRow({
           <StoryTime article={article} />
         </p>
       </div>
-      {article.featured_image_url && (
+      {showThumb && article.featured_image_url && (
         <Link to={`/article/${article.slug}`} className="shrink-0" aria-label={article.title}>
           <img
             src={article.featured_image_url}
@@ -221,7 +226,7 @@ export function OverlayCard({
             {article.category.name_bn ?? article.category.name_en}
           </span>
         ) : null}
-        <span className="mt-1 line-clamp-2 block font-serif text-[17px] font-bold leading-snug text-white">
+        <span className="mt-1 line-clamp-2 block font-serif text-[19px] font-bold leading-snug text-white">
           {article.title}
         </span>
       </span>

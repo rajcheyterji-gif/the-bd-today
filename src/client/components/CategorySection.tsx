@@ -42,7 +42,7 @@ export function CategorySection({
       <div className="mb-4">
         <Link
           to={`/category/${category.slug}`}
-          className="group inline-flex items-center gap-1.5 font-serif text-[22px] font-black leading-none text-slate-900 hover:text-[#c1121f] sm:text-2xl"
+          className="group inline-flex items-center gap-1.5 font-serif text-2xl font-black leading-none text-slate-900 hover:text-[#c1121f] sm:text-[28px]"
         >
           {dot ? <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: dot }} aria-hidden="true" /> : null}
           {category.name_bn ?? category.name_en}
@@ -52,7 +52,7 @@ export function CategorySection({
 
       {showLocalBox && (
         <div className="mb-5 flex flex-col gap-2 rounded-md bg-[#e8f1f8] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="flex items-center gap-2 font-bengali text-[15px] font-bold text-slate-900">
+          <p className="flex items-center gap-2 font-bengali text-base font-bold text-slate-900">
             <Crosshair size={18} className="text-[#c1121f]" />
             আমার এলাকার খবর
           </p>

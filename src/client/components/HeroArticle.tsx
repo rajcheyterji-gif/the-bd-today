@@ -27,15 +27,15 @@ export function HeroArticle({ article }: { article: Article }) {
         </div>
       </Link>
       <div className="pt-4">
-        <h2 className="font-serif text-[28px] font-black leading-[1.25] text-slate-900 sm:text-4xl">
+        <h2 className="font-serif text-[32px] font-black leading-[1.25] text-slate-900 sm:text-[40px]">
           <Link to={`/article/${article.slug}`} className="group-hover:text-[#c1121f]">
             {article.title}
           </Link>
         </h2>
         {article.subtitle && (
-          <p className="mt-2 font-serif text-lg leading-relaxed text-slate-600">{article.subtitle}</p>
+          <p className="mt-2 font-serif text-xl leading-relaxed text-slate-600">{article.subtitle}</p>
         )}
-        <p className="mt-2.5 line-clamp-3 text-[15px] leading-relaxed text-slate-600">
+        <p className="mt-2.5 line-clamp-3 text-[17px] leading-relaxed text-slate-600">
           {excerptFrom(article.content, article.excerpt, 240)}
         </p>
         <p className="mt-3 text-xs text-slate-500">
