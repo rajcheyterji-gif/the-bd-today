@@ -11,8 +11,17 @@ import { HTTPException } from "hono/http-exception";
 import type { Env, AppVariables } from "./env";
 import { errorCodeForStatus, fail } from "./lib/response";
 import { HttpError } from "./lib/errors";
-import { publishScheduledArticles } from "./services/articles";
+import { publishScheduledArticles, getArticleBySlug } from "./services/articles";
 import { pruneExpiredSessions } from "./services/auth";
+import {
+  defaultMetaTagsHtml,
+  injectSeoIntoHtml,
+  newsArticleJsonLd,
+  spaArticleTagsHtml,
+  toSeoInput,
+} from "./lib/seo";
+import { articleTitle } from "../shared/seo";
+import type { Article } from "../shared/types";
 import authRoutes from "./routes/auth";
 import articleRoutes from "./routes/articles";
 import categoryRoutes from "./routes/categories";
@@ -64,6 +73,13 @@ export function createApp(): Hono<{ Bindings: Env; Variables: AppVariables }> {
   app.route("/api/v1", seoRoutes);
 
   // SPA fallback: static assets first, then index.html for client routes.
+  // Link scrapers (WhatsApp / Facebook / X) never run JavaScript, so the
+  // server injects real Open Graph / Twitter tags into index.html before
+  // serving it: per-article tags for /article/:slug (loaded from D1), and
+  // branded defaults (logo share image + page URL) everywhere else.
+  // The origin comes from the request itself — wrangler SITE_URL may lag
+  // behind the live custom domain, and the origin serving this page is
+  // always where the preview image resolves.
   app.all("*", async (c) => {
     const path = c.req.path;
     if (path.startsWith("/api/")) {
@@ -76,7 +92,40 @@ export function createApp(): Hono<{ Bindings: Env; Variables: AppVariables }> {
         new Request(new URL("/index.html", c.req.url)),
       );
       if (index.status !== 404) {
-        return new Response(index.body, {
+        const origin = new URL(c.req.url).origin;
+        const articleMatch = path.match(/^\/article\/([^/?#]+)/);
+        let title: string | undefined;
+        let headHtml: string;
+        let jsonLd: string | undefined;
+        if (articleMatch) {
+          let article: Article | null = null;
+          try {
+            article = await getArticleBySlug(
+              c.env.DB,
+              decodeURIComponent(articleMatch[1]),
+              "published",
+            );
+          } catch (err) {
+            // Never fail the page over a preview lookup: fall through to
+            // the branded defaults below.
+            console.error("SPA SEO article lookup failed", err);
+          }
+          if (article) {
+            headHtml = spaArticleTagsHtml(origin, article);
+            title = `${articleTitle(toSeoInput(article))} | THE BD TODAY`;
+            jsonLd = JSON.stringify(newsArticleJsonLd(origin, article)).replace(
+              /</g,
+              "\\u003c",
+            );
+          } else {
+            headHtml = defaultMetaTagsHtml(origin, path);
+          }
+        } else {
+          headHtml = defaultMetaTagsHtml(origin, path);
+        }
+        const html = await index.text();
+        const body = injectSeoIntoHtml(html, headHtml, title, jsonLd);
+        return new Response(body, {
           status: 200,
           headers: { "content-type": "text/html; charset=utf-8" },
         });
