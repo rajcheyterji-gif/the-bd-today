@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { OverlayCard } from "./ArticleCard";
+import { TrendingFlameIcon } from "./TrendingIcon";
 import type { Article } from "../../shared/types";
 
 /**
@@ -27,6 +28,13 @@ export function HighlightsCarousel({ articles }: { articles: Article[] }) {
 
   return (
     <div>
+      {/* Trending label for the highlights block */}
+      <div className="mb-3 flex items-center gap-1.5">
+        <TrendingFlameIcon size={19} />
+        <span className="font-bengali text-[19px] font-bold leading-none text-slate-900">
+          আলোচিত
+        </span>
+      </div>
       <div className="relative">
         <div
           ref={trackRef}

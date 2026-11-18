@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Apple, Facebook, Instagram, Play, Twitter, Youtube } from "lucide-react";
 import { useSiteData } from "../hooks/useCategories";
 import { toBengaliDigits } from "../lib/format";
+import { Logo } from "./Logo";
 
 /** Translates stored navigation hrefs (page:x, category:slug, collection:flag, /path, full URL) into real links. */
 export function resolveNavHref(raw: string): string {
@@ -19,9 +20,9 @@ export function resolveNavHref(raw: string): string {
 }
 
 /**
- * Centered newspaper footer (screenshot 2): big wordmark, centered link
- * rows, round social icons, app-store badges, legal links with dot
- * separators, editor credit and the Bengali copyright line.
+ * Centered newspaper footer (screenshot 2): logo lockup with tagline,
+ * centered link rows, round social icons, app-store badges, legal links
+ * with dot separators, editor credit and the Bengali copyright line.
  */
 export function Footer() {
   const { data } = useSiteData();
@@ -30,13 +31,16 @@ export function Footer() {
   return (
     <footer className="mt-8 border-t-[3px] border-slate-800 bg-white text-slate-600">
       <div className="mx-auto max-w-[1280px] px-4 pb-8 pt-7 text-center">
-        {/* Wordmark */}
+        {/* Logo lockup with tagline */}
         <Link to="/" className="inline-block" aria-label="THE BD TODAY — home">
-          <span className="font-serif text-[28px] font-black tracking-tight text-slate-900 sm:text-3xl">
-            THE BD <span className="text-[#c1121f]">TODAY</span>
-          </span>
+          <Logo
+            markClassName="h-10 w-auto sm:h-12"
+            wordmarkClassName="text-[28px] sm:text-3xl"
+            tagline="দ্য বিডি টুডে — সত্য, সবার আগে"
+            taglineClassName="text-sm"
+            center
+          />
         </Link>
-        <p className="mt-1 font-bengali text-sm text-slate-500">দ্য বিডি টুডে — সত্য, সবার আগে</p>
 
         {/* Link row 1: categories */}
         <nav aria-label="Footer categories" className="mt-5 border-y border-slate-200 py-3">

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ArticleRow } from "./ArticleCard";
+import { TrendingFlameIcon } from "./TrendingIcon";
 import type { Article } from "../../shared/types";
 
 type TabId = "read" | "trending" | "latest";
@@ -43,12 +44,13 @@ export function NewsTabs({
             role="tab"
             aria-selected={active === tab.id}
             onClick={() => setActive(tab.id)}
-            className={`-mb-px border-b-2 pb-2.5 font-bengali text-[22px] font-bold leading-none ${
+            className={`-mb-px inline-flex items-center gap-1.5 border-b-2 pb-2.5 font-bengali text-[22px] font-bold leading-none ${
               active === tab.id
                 ? "border-[#c1121f] text-slate-900"
                 : "border-transparent text-slate-400 hover:text-slate-700"
             }`}
           >
+            {tab.id === "trending" && <TrendingFlameIcon size={18} />}
             {tab.label}
           </button>
         ))}
