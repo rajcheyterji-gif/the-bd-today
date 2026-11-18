@@ -56,19 +56,19 @@ export function Authors() {
         <CardHeader
           title={`${filtered.length} author${filtered.length === 1 ? "" : "s"}`}
           action={
-            <div className="relative">
+            <div className="relative w-full sm:w-auto">
               <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-              <TextInput aria-label="Search authors" placeholder="Search by name…" className="pl-9 !w-56" value={q} onChange={(e) => setQ(e.target.value)} />
+              <TextInput aria-label="Search authors" placeholder="Search by name…" className="w-full pl-9 sm:!w-56" value={q} onChange={(e) => setQ(e.target.value)} />
             </div>
           }
         />
-        <div className="flex gap-2 border-b border-slate-100 px-4 py-2">
+        <div className="flex gap-2 overflow-x-auto border-b border-slate-100 px-4 py-2">
           {(["", "admin", "editor", "author"] as const).map((r) => (
             <button
               key={r || "all"}
               type="button"
               onClick={() => setRoleFilter(r)}
-              className={`rounded-full px-3 py-1 text-xs font-medium ${roleFilter === r ? "bg-[#c1121f] text-white" : "bg-slate-100 text-slate-700 hover:bg-slate-200"}`}
+              className={`shrink-0 rounded-full px-3 py-2 text-xs font-medium ${roleFilter === r ? "bg-[#c1121f] text-white" : "bg-slate-100 text-slate-700 hover:bg-slate-200"}`}
             >
               {r === "" ? "All roles" : r.charAt(0).toUpperCase() + r.slice(1)}
             </button>
@@ -91,7 +91,7 @@ export function Authors() {
                   </p>
                 </div>
                 <Badge value={a.role} />
-                <span className="shrink-0 text-xs text-slate-500">{formatNumber(a.article_count ?? 0)} published</span>
+                <span className="hidden shrink-0 text-xs text-slate-500 sm:inline">{formatNumber(a.article_count ?? 0)} published</span>
               </li>
             ))}
           </ul>
