@@ -189,7 +189,7 @@ export function ArticleEditor({ article, loading, onSaved }: ArticleEditorProps)
                   <TextInput aria-label="Slug" value={slug} onChange={(e) => { setSlugTouched(true); setSlug(slugify(e.target.value)); }} />
                 </Field>
                 <div className="flex items-end pb-0.5">
-                  <Button variant="outline" onClick={() => setSlug(slugify(title))} title="Regenerate slug from headline">
+                  <Button variant="outline" className="w-full sm:w-auto" onClick={() => setSlug(slugify(title))} title="Regenerate slug from headline">
                     <RefreshCw size={16} /> Regenerate
                   </Button>
                 </div>
