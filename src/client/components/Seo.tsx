@@ -101,7 +101,7 @@ export function Seo({
           url: "https://www.thebdtoday.online",
           logo: {
             "@type": "ImageObject",
-            url: "https://www.thebdtoday.online/logo.jpg",
+            url: "https://www.thebdtoday.online/logo.png",
           },
         },
         mainEntityOfPage: pageUrl,

@@ -4,17 +4,18 @@
  * The logo is the user's own design: a heavy black Bengali serif
  * wordmark "দ্য বিডি টুডে" with a red sun + black fountain-pen nib
  * mark on the left and a red/black swoosh underneath. It ships as a
- * JPEG (public/logo.jpg, tight-cropped to the artwork: 1747x401,
- * 4.36:1) and is rendered as an <img> so the artwork is used exactly
+ * transparent PNG (public/logo.png, 1659x414, 4.01:1 — rebuilt from the
+ * user's corrected square artwork: sun+pen icon left, wordmark right,
+ * swoosh under the wordmark) and is rendered as an <img> so the artwork is used exactly
  * as designed. The matching square favicon (public/favicon.png,
  * 512x512) is the user's own square version of the same mark with a
  * black rounded border.
  *
- * Heights: the image is one wide lockup (4.36:1), so on phones its
+ * Heights: the image is one wide lockup (4.01:1), so on phones its
  * height is fluid — `clamp(48px, 15vw, 56px)` — big and dominant like
  * Prothom Alo's ~55px wordmark, while still leaving room for the
  * search/Login icons in the same dense row (at 56px the lockup is
- * ~244px wide; the icons take ~83px; a 360px phone fits both). From
+ * ~225px wide; the icons take ~83px; a 360px phone fits both). From
  * sm it is 64px, 80px from md, 96px from lg. Callers may override
  * the image height with `markClassName` (the footer does: 48px /
  * 56px). `wordmarkClassName` is accepted for API compatibility only.
@@ -47,7 +48,7 @@ export function Logo({
   return (
     <span className={`inline-flex flex-col ${center ? "items-center" : "items-start"} ${className ?? ""}`}>
       <img
-        src="/logo.jpg"
+        src="/logo.png"
         alt="THE BD TODAY"
         className={
           markClassName ??
