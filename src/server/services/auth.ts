@@ -219,8 +219,15 @@ export async function createFirstAdmin(
   if (input.token !== env.ADMIN_INIT_TOKEN) {
     throw forbidden("Invalid init token");
   }
+  // The seed users carry the placeholder hash '__SET_VIA_INIT__' and can
+  // never sign in (verifyPassword rejects it), so they must NOT block
+  // first-admin setup: count only users with a real password hash.
+  // Before this fix the plain COUNT(*) always saw the 4 seeded users and
+  // /auth/init always answered ADMIN_EXISTS in production.
   const { count } = (await db
-    .prepare(`SELECT COUNT(*) AS count FROM users`)
+    .prepare(
+      `SELECT COUNT(*) AS count FROM users WHERE password_hash != '__SET_VIA_INIT__'`,
+    )
     .first<{ count: number }>()) ?? { count: 0 };
   if (count > 0) {
     throw conflict("ADMIN_EXISTS", "An admin account already exists");
