@@ -47,6 +47,21 @@ export function articleUrl(siteUrl: string, article: ArticleSeoInput): string {
   return absoluteUrl(siteUrl, `/article/${article.slug}`);
 }
 
+/**
+ * Resolve a featured-image URL to an absolute https URL for OG/Twitter
+ * tags and JSON-LD. Absolute URLs pass through untouched; relative paths
+ * (e.g. R2 media served as /api/v1/media-file?key=…) are joined onto the
+ * site origin — scrapers reject relative og:image URLs. The admin client
+ * normally absolutizes on save already; this is the server-side guarantee
+ * for legacy or directly-written rows.
+ */
+export function resolveImageUrl(siteUrl: string, url: string): string {
+  if (url.startsWith("data:")) return url;
+  if (/^https?:\/\//i.test(url)) return url;
+  if (url.startsWith("//")) return `https:${url}`;
+  return absoluteUrl(siteUrl, url);
+}
+
 /** Open Graph + Twitter Card tags for an article page. */
 export function articleMetaTags(siteUrl: string, article: ArticleSeoInput): MetaTag[] {
   const url = articleUrl(siteUrl, article);
@@ -68,9 +83,10 @@ export function articleMetaTags(siteUrl: string, article: ArticleSeoInput): Meta
     tags.push({ name: "twitter:site", content: SITE_DEFAULTS.twitterHandle });
   }
   if (article.featuredImageUrl) {
+    const image = resolveImageUrl(siteUrl, article.featuredImageUrl);
     tags.push(
-      { property: "og:image", content: article.featuredImageUrl },
-      { name: "twitter:image", content: article.featuredImageUrl },
+      { property: "og:image", content: image },
+      { name: "twitter:image", content: image },
     );
   }
   if (article.publishedAt) {
@@ -128,7 +144,7 @@ export function articleJsonLd(siteUrl: string, article: ArticleSeoInput): Record
   if (article.publishedAt) jsonLd.datePublished = article.publishedAt;
   if (article.updatedAt) jsonLd.dateModified = article.updatedAt;
   if (article.featuredImageUrl) {
-    jsonLd.image = [article.featuredImageUrl];
+    jsonLd.image = [resolveImageUrl(siteUrl, article.featuredImageUrl)];
   }
   const keywords = article.seoKeywords ?? article.tags;
   if (keywords && keywords.length > 0) jsonLd.keywords = keywords.join(", ");
