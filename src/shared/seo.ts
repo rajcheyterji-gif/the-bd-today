@@ -114,6 +114,12 @@ export function articleJsonLd(siteUrl: string, article: ArticleSeoInput): Record
       "@type": "NewsMediaOrganization",
       name: SITE_DEFAULTS.name,
       url: siteUrl,
+      // Google News / rich results want a publisher logo. /logo.jpg is the
+      // site's wordmark (the header logo), served from the same origin.
+      logo: {
+        "@type": "ImageObject",
+        url: absoluteUrl(siteUrl, "/logo.jpg"),
+      },
     },
   };
   if (article.authorName) {
@@ -138,6 +144,10 @@ export function siteJsonLd(siteUrl: string): Record<string, unknown> {
     url: siteUrl,
     description: SITE_DEFAULTS.tagline,
     inLanguage: "bn",
+    logo: {
+      "@type": "ImageObject",
+      url: absoluteUrl(siteUrl, "/logo.jpg"),
+    },
   };
 }
 
