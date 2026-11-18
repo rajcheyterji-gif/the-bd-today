@@ -91,7 +91,11 @@ export function Seo({
         publisher: {
           "@type": "NewsMediaOrganization",
           name: SITE_NAME,
-          url: "https://thebdtoday.com",
+          url: "https://www.thebdtoday.online",
+          logo: {
+            "@type": "ImageObject",
+            url: "https://www.thebdtoday.online/logo.jpg",
+          },
         },
         mainEntityOfPage: pageUrl,
         articleSection: section,
