@@ -7,6 +7,13 @@
  * from D1 — plus the Cache-Control header — while bots keep the separate
  * prerender (see tests/prerender.test.ts). The fake ASSETS binding serves
  * a shell modelled on the real dist/client/index.html head.
+ *
+ * The fake deliberately emulates Cloudflare's SPA `not_found_handling`
+ * (wrangler.jsonc): extension-less paths answer with the shell (200),
+ * exactly as production Static Assets does. A regression here (Nov 2026)
+ * showed why that matters: the old fake 404'd those paths, so the tests
+ * passed while production served the raw shell and the injection never
+ * ran for human browsers.
  */
 import { describe, expect, it } from "vitest";
 import { createApp } from "../src/server/index";
@@ -53,7 +60,12 @@ const SHELL_HTML = `<!doctype html>
   </body>
 </html>`;
 
-/** Fake ASSETS: the SPA shell for /index.html, 404 for everything else. */
+/**
+ * Fake ASSETS emulating production Static Assets with SPA
+ * `not_found_handling`: the shell for /index.html and for every
+ * extension-less client route (200), a real file for /logo.png,
+ * 404 for anything else with an extension.
+ */
 function envWithShell(articles?: FakeArticleRow[]) {
   const env = createFakeEnv(articles ? { articles } : undefined);
   return {
@@ -61,7 +73,18 @@ function envWithShell(articles?: FakeArticleRow[]) {
     ASSETS: {
       fetch: async (input: RequestInfo | URL) => {
         const url = new URL(typeof input === "string" ? input : input.url);
-        if (url.pathname === "/index.html") {
+        if (url.pathname === "/logo.png") {
+          return new Response("fake-png-bytes", {
+            status: 200,
+            headers: { "content-type": "image/png" },
+          });
+        }
+        // SPA fallback: extension-less paths serve the shell, like the
+        // real `not_found_handling: "single-page-application"`.
+        if (
+          url.pathname === "/index.html" ||
+          !/\/[^/]+\.[A-Za-z0-9]+$/.test(url.pathname)
+        ) {
           return new Response(SHELL_HTML, {
             status: 200,
             headers: { "content-type": "text/html; charset=utf-8" },
@@ -168,6 +191,31 @@ describe("non-bot /article/:slug injection (SPA fallback)", () => {
     expect(html).not.toContain("পরীক্ষামূলক সংবাদ");
     expect(html).not.toContain('rel="canonical"');
     expect(html).toContain('property="og:type" content="website"');
+  });
+
+  it("a real static file is served raw, never injected", async () => {
+    const res = await app.request(`${ORIGIN}/logo.png`, {
+      method: "GET",
+      headers: { "user-agent": CHROME },
+    }, envWithShell());
+    expect(res.status).toBe(200);
+    expect(res.headers.get("content-type")).toContain("image/png");
+    expect(await res.text()).toBe("fake-png-bytes");
+  });
+
+  it("the homepage goes through the injection path, not the raw shell", async () => {
+    const res = await app.request(`${ORIGIN}/`, {
+      method: "GET",
+      headers: { "user-agent": CHROME },
+    }, envWithShell());
+    expect(res.status).toBe(200);
+    // The injected Cache-Control proves the injection path ran: the raw
+    // asset branch carries no such header in this fake.
+    expect(res.headers.get("cache-control")).toBe(
+      "public, max-age=60, stale-while-revalidate=300",
+    );
+    const html = await res.text();
+    expect(html).toContain("<title>দ্য বিডি টুডে | সর্বশেষ বাংলাদেশ ও বিশ্ব সংবাদ</title>");
   });
 });
 
