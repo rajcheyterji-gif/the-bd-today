@@ -170,7 +170,58 @@ export function ArticleList({ status, title, subtitle, showStatusFilter = true, 
           />
         ) : (
           <>
-            <div className="overflow-x-auto">
+            {/* Mobile: stacked cards — a 720px table scrolled sideways on a
+                phone is hard to read and easy to mis-tap. Desktop keeps the
+                table. Both render the same actions. */}
+            <ul className="divide-y divide-slate-100 sm:hidden">
+              {articles.map((a) => (
+                <li key={a.id} className="px-4 py-3">
+                  <button
+                    type="button"
+                    className="block w-full min-w-0 text-left"
+                    onClick={() => navigate(`/admin/articles/${a.id}/edit`)}
+                  >
+                    <p className="text-sm font-medium leading-snug text-slate-900">{a.title}</p>
+                    <p className="mt-0.5 truncate text-xs text-slate-500">
+                      {a.author?.name ?? "—"} · {a.category?.name_en ?? "—"} · {formatNumber(a.views)} views · {formatDateTime(a.updated_at)}
+                    </p>
+                  </button>
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <Badge value={a.status} />
+                    <span className="flex-1" />
+                    <Button variant="ghost" className="!min-h-10 !px-2.5" aria-label={`Preview ${a.title}`} title="Preview" onClick={() => setPreview(a)}>
+                      <Eye size={16} />
+                    </Button>
+                    <Button variant="ghost" className="!min-h-10 !px-2.5" aria-label={`Edit ${a.title}`} title="Edit" onClick={() => navigate(`/admin/articles/${a.id}/edit`)}>
+                      <Pencil size={16} />
+                    </Button>
+                    {a.status !== "published" ? (
+                      <Button
+                        variant="outline"
+                        className="!min-h-10 !py-1 text-xs"
+                        disabled={busyId === Number(a.id)}
+                        onClick={() => void changeStatus(a, "published")}
+                      >
+                        Publish
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        className="!min-h-10 !py-1 text-xs"
+                        disabled={busyId === Number(a.id)}
+                        onClick={() => void changeStatus(a, "draft")}
+                      >
+                        Unpublish
+                      </Button>
+                    )}
+                    <Button variant="ghost" className="!min-h-10 !px-2.5" aria-label={`Delete ${a.title}`} title="Delete" onClick={() => setToDelete(a)}>
+                      <Trash2 size={16} className="text-red-600" />
+                    </Button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <div className="hidden overflow-x-auto sm:block">
               <table className="w-full min-w-[720px] text-left text-sm">
                 <thead>
                   <tr className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-500">
@@ -237,7 +288,7 @@ export function ArticleList({ status, title, subtitle, showStatusFilter = true, 
               </table>
             </div>
             {totalPages > 1 ? (
-              <div className="flex items-center justify-between border-t border-slate-100 px-4 py-3 text-sm">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 px-4 py-3 text-sm">
                 <span className="text-slate-500">
                   Page {page} of {totalPages}
                 </span>
