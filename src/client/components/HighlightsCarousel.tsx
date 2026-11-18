@@ -1,7 +1,6 @@
 import { useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { OverlayCard } from "./ArticleCard";
-import { TrendingFlameIcon } from "./TrendingIcon";
 import type { Article } from "../../shared/types";
 
 /**
@@ -28,13 +27,6 @@ export function HighlightsCarousel({ articles }: { articles: Article[] }) {
 
   return (
     <div>
-      {/* Trending label for the highlights block */}
-      <div className="mb-3 flex items-center gap-1.5">
-        <TrendingFlameIcon size={19} />
-        <span className="font-bengali text-[19px] font-bold leading-none text-slate-900">
-          আলোচিত
-        </span>
-      </div>
       <div className="relative">
         <div
           ref={trackRef}
@@ -64,12 +56,12 @@ export function HighlightsCarousel({ articles }: { articles: Article[] }) {
           <ChevronRight size={20} />
         </button>
       </div>
-      {/* Progress segments: the active one is orange and longer */}
-      <div className="mt-3 flex justify-center gap-1.5" aria-hidden="true">
+      {/* Progress segments: left-aligned, the active one orange and longer */}
+      <div className="mt-3 flex justify-start gap-1.5" aria-hidden="true">
         {articles.map((a, i) => (
           <span
             key={a.id}
-            className={`h-1 rounded-full ${i === active ? "w-8 bg-[#f97316]" : "w-4 bg-slate-300"}`}
+            className={`h-1 rounded-full ${i === active ? "w-[70px] bg-[#f97316]" : "w-[55px] bg-slate-300"}`}
           />
         ))}
       </div>

@@ -10,7 +10,7 @@ export function HeroArticle({ article }: { article: Article }) {
   return (
     <article className="group">
       <Link to={`/article/${article.slug}`} aria-label={article.title}>
-        <div className="overflow-hidden">
+        <div className="mx-[-1rem] w-[calc(100%+2rem)] overflow-hidden sm:mx-0 sm:w-full">
           {article.featured_image_url ? (
             <img
               src={article.featured_image_url}
@@ -27,7 +27,7 @@ export function HeroArticle({ article }: { article: Article }) {
         </div>
       </Link>
       <div className="pt-4">
-        <h2 className="font-serif text-[32px] font-black leading-[1.25] text-slate-900 sm:text-[40px]">
+        <h2 className="font-serif text-[34px] font-black leading-[1.2] text-[#111111] sm:text-[40px]">
           <Link to={`/article/${article.slug}`} className="group-hover:text-[#c1121f]">
             {article.title}
           </Link>
@@ -35,11 +35,11 @@ export function HeroArticle({ article }: { article: Article }) {
         {article.subtitle && (
           <p className="mt-2 font-serif text-xl leading-relaxed text-slate-600">{article.subtitle}</p>
         )}
-        <p className="mt-2.5 line-clamp-3 text-[17px] leading-relaxed text-slate-600">
+        <p className="mt-2.5 line-clamp-3 font-serif text-[19px] leading-[1.65] text-[#444444]">
           {excerptFrom(article.content, article.excerpt, 240)}
         </p>
-        <p className="mt-3 text-xs text-slate-500">
-          <span className="font-bengali">{formatRelative(article.published_at ?? article.created_at, true)}</span>
+        <p className="mt-3 text-[15px] text-[#757575]">
+          <span className="font-serif">{formatRelative(article.published_at ?? article.created_at, true)}</span>
         </p>
       </div>
     </article>

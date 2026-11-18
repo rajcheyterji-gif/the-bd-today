@@ -30,8 +30,8 @@ export function Navbar() {
   const active = (href: string) => pathname === href;
 
   const linkCls = (href: string) =>
-    `shrink-0 whitespace-nowrap px-2.5 py-2.5 text-[14px] font-medium sm:px-3 sm:text-[15px] ${
-      active(href) ? "font-bold text-[#c1121f]" : "text-slate-900 hover:text-[#c1121f]"
+    `shrink-0 whitespace-nowrap px-2.5 py-2.5 font-serif text-[18px] font-semibold sm:px-3 ${
+      active(href) ? "font-bold text-[#c1121f]" : "text-[#111111] hover:text-[#c1121f]"
     }`;
 
   return (
@@ -64,9 +64,9 @@ export function Navbar() {
             onClick={() => setEng((v) => !v)}
             aria-pressed={eng}
             aria-label={eng ? "Switch navigation to Bengali" : "Switch navigation to English"}
-            className="flex items-center gap-1 rounded-md bg-[#fde9e2] px-2.5 py-2 text-[13px] font-semibold text-slate-900 hover:bg-[#fbdcd2]"
+            className="flex items-center gap-1 rounded-md bg-[#fde9e2] px-2.5 py-2 text-[15px] font-semibold text-slate-900 hover:bg-[#fbdcd2]"
           >
-            <Globe size={15} strokeWidth={2.5} />
+            <Globe size={17} strokeWidth={2.5} />
             {eng ? "বাংলা" : "Eng"}
           </button>
           <button
@@ -89,7 +89,7 @@ export function Navbar() {
               <Link
                 to="/latest"
                 onClick={() => setMenuOpen(false)}
-                className="border-b border-slate-100 py-2 text-[15px] font-medium text-slate-900 hover:text-[#c1121f]"
+                className="border-b border-slate-100 py-2 font-serif text-[17px] font-semibold text-[#111111] hover:text-[#c1121f]"
               >
                 {label("সর্বশেষ", "Latest")}
               </Link>
@@ -98,7 +98,7 @@ export function Navbar() {
                   key={c.id}
                   to={`/category/${c.slug}`}
                   onClick={() => setMenuOpen(false)}
-                  className="border-b border-slate-100 py-2 text-[15px] font-medium text-slate-900 hover:text-[#c1121f]"
+                  className="border-b border-slate-100 py-2 font-serif text-[17px] font-semibold text-[#111111] hover:text-[#c1121f]"
                 >
                   {catLabel(c)}
                 </Link>
@@ -106,7 +106,7 @@ export function Navbar() {
               <Link
                 to="/breaking"
                 onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-1.5 border-b border-slate-100 py-2 text-[15px] font-medium text-slate-900 hover:text-[#c1121f]"
+                className="flex items-center gap-1.5 border-b border-slate-100 py-2 font-serif text-[17px] font-semibold text-[#111111] hover:text-[#c1121f]"
               >
                 <TrendingFlameIcon size={16} />
                 {label("ব্রেকিং", "Breaking")}

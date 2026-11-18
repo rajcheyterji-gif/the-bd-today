@@ -29,7 +29,7 @@ export function Footer() {
   const categories = data?.data?.categories ?? [];
 
   return (
-    <footer className="mt-8 border-t-[3px] border-slate-800 bg-white text-slate-600">
+    <footer className="mt-8 border-t border-slate-200 bg-white text-slate-600">
       <div className="mx-auto max-w-[1280px] px-4 pb-8 pt-7 text-center">
         {/* Logo lockup with tagline */}
         <Link to="/" className="inline-block" aria-label="THE BD TODAY — home">
@@ -44,7 +44,7 @@ export function Footer() {
 
         {/* Link row 1: categories */}
         <nav aria-label="Footer categories" className="mt-5 border-y border-slate-200 py-3">
-          <ul className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[15px] font-medium">
+          <ul className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 font-serif text-[17px] font-medium">
             {categories.map((c) => (
               <li key={c.id}>
                 <Link to={`/category/${c.slug}`} className="text-slate-800 hover:text-[#c1121f]">
@@ -57,7 +57,7 @@ export function Footer() {
 
         {/* Link row 2: site pages */}
         <nav aria-label="Footer pages" className="mt-3">
-          <ul className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm">
+          <ul className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 font-serif text-[17px]">
             <li><Link to="/latest" className="hover:text-[#c1121f]">সর্বশেষ</Link></li>
             <li><Link to="/breaking" className="hover:text-[#c1121f]">ব্রেকিং</Link></li>
             <li><Link to="/about" className="hover:text-[#c1121f]">আমাদের সম্পর্কে</Link></li>
@@ -68,67 +68,67 @@ export function Footer() {
         </nav>
 
         {/* Follow */}
-        <p className="mt-6 font-bengali text-sm font-bold text-slate-900">অনুসরণ করুন</p>
+        <p className="mt-6 font-serif text-[17px] font-bold text-slate-900">অনুসরণ করুন</p>
         <div className="mt-3 flex items-center justify-center gap-3">
           <a
             href="https://www.facebook.com"
             target="_blank"
             rel="noreferrer"
             aria-label="Facebook"
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1877f2] text-white transition-transform hover:scale-105"
+            className="flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#1877f2] text-white transition-transform hover:scale-105"
           >
-            <Facebook size={18} />
+            <Facebook size={22} />
           </a>
           <a
             href="https://www.x.com"
             target="_blank"
             rel="noreferrer"
             aria-label="X (Twitter)"
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-black text-white transition-transform hover:scale-105"
+            className="flex h-[52px] w-[52px] items-center justify-center rounded-full bg-black text-white transition-transform hover:scale-105"
           >
-            <Twitter size={18} />
+            <Twitter size={22} />
           </a>
           <a
             href="https://www.instagram.com"
             target="_blank"
             rel="noreferrer"
             aria-label="Instagram"
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-tr from-[#f58529] via-[#dd2a7b] to-[#8134af] text-white transition-transform hover:scale-105"
+            className="flex h-[52px] w-[52px] items-center justify-center rounded-full bg-gradient-to-tr from-[#f58529] via-[#dd2a7b] to-[#8134af] text-white transition-transform hover:scale-105"
           >
-            <Instagram size={18} />
+            <Instagram size={22} />
           </a>
           <a
             href="https://www.youtube.com"
             target="_blank"
             rel="noreferrer"
             aria-label="YouTube"
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-[#ff0000] text-white transition-transform hover:scale-105"
+            className="flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#ff0000] text-white transition-transform hover:scale-105"
           >
-            <Youtube size={18} />
+            <Youtube size={22} />
           </a>
           <a
             href="https://news.google.com"
             target="_blank"
             rel="noreferrer"
             aria-label="Google News"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-300 bg-white font-serif text-lg font-black text-[#4285f4] transition-transform hover:scale-105"
+            className="flex h-[52px] w-[52px] items-center justify-center rounded-full border border-slate-300 bg-white font-serif text-2xl font-black text-[#4285f4] transition-transform hover:scale-105"
           >
             G
           </a>
         </div>
 
         {/* App badges */}
-        <p className="mt-6 font-bengali text-sm font-bold text-slate-900">মোবাইল অ্যাপস ডাউনলোড করুন</p>
+        <p className="mt-6 font-serif text-[17px] font-bold text-slate-900">মোবাইল অ্যাপস ডাউনলোড করুন</p>
         <div className="mt-3 flex flex-wrap items-center justify-center gap-3">
           <a
             href="https://play.google.com/store"
             target="_blank"
             rel="noreferrer"
-            className="flex items-center gap-2 rounded-md bg-slate-900 px-3.5 py-2 text-left text-white hover:bg-slate-700"
+            className="flex items-center gap-2 rounded-md border border-slate-300 bg-white px-3.5 py-2 text-left text-slate-900 hover:bg-slate-50"
           >
-            <Play size={22} className="shrink-0" />
+            <Play size={22} className="shrink-0 text-[#4285f4]" />
             <span className="leading-tight">
-              <span className="block text-[10px] uppercase tracking-wide text-white/70">Get it on</span>
+              <span className="block text-[10px] uppercase tracking-wide text-slate-500">Get it on</span>
               <span className="block text-sm font-semibold">Google Play</span>
             </span>
           </a>
@@ -136,11 +136,11 @@ export function Footer() {
             href="https://www.apple.com/app-store/"
             target="_blank"
             rel="noreferrer"
-            className="flex items-center gap-2 rounded-md bg-slate-900 px-3.5 py-2 text-left text-white hover:bg-slate-700"
+            className="flex items-center gap-2 rounded-md border border-slate-300 bg-white px-3.5 py-2 text-left text-slate-900 hover:bg-slate-50"
           >
             <Apple size={22} className="shrink-0" />
             <span className="leading-tight">
-              <span className="block text-[10px] uppercase tracking-wide text-white/70">Download on the</span>
+              <span className="block text-[10px] uppercase tracking-wide text-slate-500">Download on the</span>
               <span className="block text-sm font-semibold">App Store</span>
             </span>
           </a>
@@ -148,7 +148,7 @@ export function Footer() {
 
         {/* Legal links with dot separators */}
         <nav aria-label="Footer legal" className="mt-7">
-          <ul className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[13px]">
+          <ul className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 font-serif text-[15px]">
             {[
               { label: "আমাদের সম্পর্কে", href: "/about" },
               { label: "বিজ্ঞাপন", href: "/contact" },

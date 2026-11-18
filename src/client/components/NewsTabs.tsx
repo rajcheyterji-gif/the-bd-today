@@ -44,9 +44,9 @@ export function NewsTabs({
             role="tab"
             aria-selected={active === tab.id}
             onClick={() => setActive(tab.id)}
-            className={`-mb-px inline-flex items-center gap-1.5 border-b-2 pb-2.5 font-bengali text-2xl font-bold leading-none ${
+            className={`-mb-px inline-flex items-center gap-1.5 border-b-2 pb-2.5 font-serif text-[28px] font-bold leading-none ${
               active === tab.id
-                ? "border-[#c1121f] text-slate-900"
+                ? "border-[#c1121f] text-[#111111]"
                 : "border-transparent text-slate-400 hover:text-slate-700"
             }`}
           >
@@ -60,7 +60,14 @@ export function NewsTabs({
           <p className="py-4 text-sm text-slate-500">এই তালিকায় এখনো কোনো খবর নেই।</p>
         )}
         {list.map((a, i) => (
-          <ArticleRow key={a.id} article={a} rank={active === "read" ? i + 1 : undefined} largeRank={active === "read"} showThumb={false} />
+          <ArticleRow
+            key={a.id}
+            article={a}
+            rank={active === "read" ? i + 1 : undefined}
+            largeRank={active === "read"}
+            showThumb={false}
+            highlightFirst={active === "read" && i === 0}
+          />
         ))}
       </div>
     </div>

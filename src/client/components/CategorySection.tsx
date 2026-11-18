@@ -38,44 +38,41 @@ export function CategorySection({
   const rows = rest.slice(4);
 
   return (
-    <section aria-label={category.name_en} className="border-t-[3px] border-slate-800 pt-3">
+    <section aria-label={category.name_en} className="border-t-[6px] border-[#bdbdbd] pt-3">
       <div className="mb-4">
         <Link
           to={`/category/${category.slug}`}
-          className="group inline-flex items-center gap-1.5 font-serif text-2xl font-black leading-none text-slate-900 hover:text-[#c1121f] sm:text-[28px]"
+          className="group inline-flex items-center gap-1.5 font-serif text-[30px] font-black leading-none text-[#111111] hover:text-[#c1121f]"
         >
-          {dot ? <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: dot }} aria-hidden="true" /> : null}
+          {dot ? <span className="h-7 w-7 rounded-full" style={{ backgroundColor: dot }} aria-hidden="true" /> : null}
           {category.name_bn ?? category.name_en}
-          <ChevronRight size={22} className="text-[#c1121f] transition-transform group-hover:translate-x-0.5" />
+          <ChevronRight size={26} className="text-[#c1121f] transition-transform group-hover:translate-x-0.5" />
         </Link>
       </div>
 
       {showLocalBox && (
-        <div className="mb-5 flex flex-col gap-2 rounded-md bg-[#e8f1f8] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="flex items-center gap-2 font-bengali text-base font-bold text-slate-900">
-            <Crosshair size={18} className="text-[#c1121f]" />
+        <div className="mb-5 flex flex-col gap-3 rounded-md bg-[#e8f1f8] px-4 py-3">
+          <p className="flex items-center gap-2 font-serif text-[19px] font-bold text-[#111111]">
+            <Crosshair size={20} className="text-[#c1121f]" />
             আমার এলাকার খবর
           </p>
-          <label className="flex items-center gap-2 text-sm text-slate-700">
-            বিভাগ
-            <select
-              aria-label="বিভাগ বেছে নিন"
-              defaultValue=""
-              onChange={(e) => {
-                if (e.target.value) navigate(`/category/${category.slug}`);
-              }}
-              className="rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-sm text-slate-900 focus:border-[#c1121f] focus:outline-none"
-            >
-              <option value="" disabled>
-                বিভাগ বেছে নিন
+          <select
+            aria-label="বিভাগ বেছে নিন"
+            defaultValue=""
+            onChange={(e) => {
+              if (e.target.value) navigate(`/category/${category.slug}`);
+            }}
+            className="w-full rounded-md border border-slate-300 bg-white px-3 py-3 text-[16px] text-slate-900 focus:border-[#c1121f] focus:outline-none"
+          >
+            <option value="" disabled>
+              বিভাগ বেছে নিন
+            </option>
+            {DIVISIONS.map((d) => (
+              <option key={d} value={d}>
+                {d}
               </option>
-              {DIVISIONS.map((d) => (
-                <option key={d} value={d}>
-                  {d}
-                </option>
-              ))}
-            </select>
-          </label>
+            ))}
+          </select>
         </div>
       )}
 
@@ -83,7 +80,7 @@ export function CategorySection({
         <OverlayCard article={lead} badge={liveLead ? "সরাসরি" : undefined} ratio="aspect-[16/9]" />
       ) : (
         lead && (
-          <div className="max-w-3xl">
+          <div className="lg:max-w-3xl">
             <ArticleCard article={lead} size="large" />
           </div>
         )
