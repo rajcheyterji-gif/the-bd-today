@@ -171,6 +171,101 @@ export async function destroyUserSessions(db: D1Database, userId: number): Promi
   await db.prepare(`DELETE FROM sessions WHERE user_id = ?`).bind(userId).run();
 }
 
+/** Delete all of a user's sessions except one (keeps the session that
+ *  performed the password change signed in, signs out other devices). */
+export async function destroyOtherUserSessions(
+  db: D1Database,
+  userId: number,
+  keepSessionId: string,
+): Promise<void> {
+  await db
+    .prepare(`DELETE FROM sessions WHERE user_id = ? AND id != ?`)
+    .bind(userId, keepSessionId)
+    .run();
+}
+
+export interface ProfileUpdateInput {
+  name?: string;
+  email?: string;
+  bio?: string | null;
+}
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+/**
+ * Update the signed-in user's own profile. Only name, email and bio can
+ * change — the role column is never touched here, so a user can never
+ * promote themselves (or anyone else) through this endpoint.
+ */
+export async function updateOwnProfile(
+  db: D1Database,
+  userId: number,
+  input: ProfileUpdateInput,
+): Promise<SessionUser> {
+  const current = await getUserById(db, userId);
+  if (!current) throw new HttpError(404, "NOT_FOUND", "User not found");
+  const name = input.name?.trim() || current.name;
+  const email = input.email?.trim().toLowerCase() || current.email;
+  const bio = input.bio === undefined ? current.bio : input.bio?.trim() || null;
+  if (!name) throw new HttpError(400, "VALIDATION_ERROR", "Name is required");
+  if (!EMAIL_RE.test(email)) {
+    throw new HttpError(400, "VALIDATION_ERROR", "A valid email is required");
+  }
+  if (email !== current.email) {
+    const clash = await getUserByEmail(db, email);
+    if (clash && clash.id !== userId) {
+      throw conflict("EMAIL_TAKEN", "That email is already used by another account");
+    }
+  }
+  await db
+    .prepare(`UPDATE users SET name = ?, email = ?, bio = ?, updated_at = ? WHERE id = ?`)
+    .bind(name, email, bio, nowIso(), userId)
+    .run();
+  const updated = await getUserById(db, userId);
+  if (!updated) throw new HttpError(404, "NOT_FOUND", "User not found");
+  return toSessionUser(updated);
+}
+
+/**
+ * Change the signed-in user's own password. The current password must
+ * verify first; the new one is hashed with the same PBKDF2-SHA256 as
+ * every other password. All other sessions for this user are revoked so
+ * a changed password actually locks other devices out.
+ */
+export async function changeOwnPassword(
+  db: D1Database,
+  userId: number,
+  currentPassword: string,
+  newPassword: string,
+  keepSessionId?: string | null,
+): Promise<void> {
+  const current = await getUserById(db, userId);
+  if (!current) throw new HttpError(404, "NOT_FOUND", "User not found");
+  if (!(await verifyPassword(currentPassword, current.password_hash))) {
+    throw new HttpError(401, "UNAUTHORIZED", "Current password is incorrect");
+  }
+  if (newPassword.length < 12) {
+    throw new HttpError(400, "VALIDATION_ERROR", "New password must be at least 12 characters");
+  }
+  if (newPassword === currentPassword) {
+    throw new HttpError(
+      400,
+      "VALIDATION_ERROR",
+      "New password must be different from the current password",
+    );
+  }
+  const hash = await hashPassword(newPassword);
+  await db
+    .prepare(`UPDATE users SET password_hash = ?, updated_at = ? WHERE id = ?`)
+    .bind(hash, nowIso(), userId)
+    .run();
+  if (keepSessionId) {
+    await destroyOtherUserSessions(db, userId, keepSessionId);
+  } else {
+    await destroyUserSessions(db, userId);
+  }
+}
+
 /** Best-effort audit log insert — never fails the request that triggered it. */
 export async function recordAuditLog(
   db: D1Database,
