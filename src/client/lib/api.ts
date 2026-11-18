@@ -190,8 +190,10 @@ export const publicApi = {
     ]);
     const latest = latestRes.data ?? [];
     const categories = categoriesRes.data ?? [];
+    // Every category with articles gets a section (the reference page has
+    // one for খেলা, বাংলাদেশ, বিশ্ব, বিনোদন, …); the homepage orders them.
     const sectionsRes = await Promise.all(
-      categories.slice(0, 4).map(async (category) => {
+      categories.map(async (category) => {
         try {
           const res = await this.listArticles({ category: category.slug, page: 1, limit: 5, sort: "latest" });
           return { category, articles: res.data ?? [] };
