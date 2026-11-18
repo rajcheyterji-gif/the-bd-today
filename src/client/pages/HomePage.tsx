@@ -52,13 +52,13 @@ function TwoColList({ articles }: { articles: Article[] }) {
                   />
                 </Link>
               )}
-              <h3 className="font-serif text-[18px] font-bold leading-snug">
-                <Link to={`/article/${a.slug}`} className="text-slate-900 group-hover:text-[#c1121f]">
+              <h3 className="font-serif text-[21px] font-bold leading-snug">
+                <Link to={`/article/${a.slug}`} className="text-[#111111] group-hover:text-[#c1121f]">
                   {a.title}
                 </Link>
               </h3>
-              <p className="mt-1 text-xs text-slate-500">
-                <span className="font-bengali">{timeOf(a)}</span>
+              <p className="mt-1 text-[14px] text-[#757575]">
+                <span className="font-serif">{timeOf(a)}</span>
               </p>
             </article>
           ))}
@@ -85,17 +85,17 @@ function PhotoCard({ article }: { article: Article }) {
             THE BD TODAY
           </span>
         )}
-        <span className="absolute left-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#c1121f] text-white">
-          <Camera size={14} />
+        <span className="absolute left-2 top-2 flex h-9 w-9 items-center justify-center rounded-full bg-[#c1121f] text-white">
+          <Camera size={18} />
         </span>
       </Link>
-      <h3 className="mt-2 font-serif text-[17px] font-bold leading-snug">
-        <Link to={`/article/${article.slug}`} className="text-slate-900 group-hover:text-[#c1121f]">
+      <h3 className="mt-2 font-serif text-[20px] font-bold leading-snug">
+        <Link to={`/article/${article.slug}`} className="text-[#111111] group-hover:text-[#c1121f]">
           {article.title}
         </Link>
       </h3>
-      <p className="mt-1 text-xs text-slate-500">
-        <span className="font-bengali">{timeOf(article)}</span>
+      <p className="mt-1 text-[14px] text-[#757575]">
+        <span className="font-serif">{timeOf(article)}</span>
       </p>
     </article>
   );
@@ -121,7 +121,7 @@ function OtherCategories({ sections }: { sections: { category: Category; article
   if (sections.length === 0) return null;
   return (
     <div>
-      <h2 className="mb-4 font-serif text-2xl font-black text-slate-900 sm:text-[28px]">অন্যান্য</h2>
+      <h2 className="mb-4 font-serif text-[30px] font-black text-[#111111]">অন্যান্য</h2>
       <div
         ref={trackRef}
         onScroll={onScroll}
@@ -132,9 +132,9 @@ function OtherCategories({ sections }: { sections: { category: Category; article
           return (
             <div
               key={s.category.id}
-              className="w-[78%] shrink-0 snap-start rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:w-[320px]"
+              className="w-[78%] shrink-0 snap-start rounded-2xl border border-slate-200 bg-white p-4 sm:w-[320px]"
             >
-              <span className="inline-block border-b-2 border-[#c1121f] pb-1 font-bengali text-[15px] font-bold text-slate-900">
+              <span className="inline-block border-b-2 border-[#c1121f] pb-1 font-serif text-[18px] font-bold text-[#111111]">
                 {s.category.name_bn ?? s.category.name_en}
               </span>
               {top && (
@@ -144,14 +144,14 @@ function OtherCategories({ sections }: { sections: { category: Category; article
                       src={top.featured_image_url}
                       alt={top.image_caption || top.title}
                       loading="lazy"
-                      className="aspect-[16/9] w-full object-cover"
+                      className="aspect-[4/3] w-full object-cover"
                     />
                   ) : (
-                    <span className="flex aspect-[16/9] items-center justify-center bg-slate-100 px-4 text-center font-serif text-xs font-black uppercase tracking-[0.25em] text-slate-400">
+                    <span className="flex aspect-[4/3] items-center justify-center bg-slate-100 px-4 text-center font-serif text-xs font-black uppercase tracking-[0.25em] text-slate-400">
                       THE BD TODAY
                     </span>
                   )}
-                  <span className="mt-2 block font-serif text-[19px] font-bold leading-snug text-slate-900 group-hover:text-[#c1121f]">
+                  <span className="mt-2 block font-serif text-[22px] font-bold leading-snug text-[#111111] group-hover:text-[#c1121f]">
                     {top.title}
                   </span>
                 </Link>
@@ -162,7 +162,7 @@ function OtherCategories({ sections }: { sections: { category: Category; article
                   to={`/article/${a.slug}`}
                   className="group mt-2 flex items-start gap-2.5 border-t border-slate-200 pt-2"
                 >
-                  <span className="min-w-0 flex-1 font-serif text-[17px] font-bold leading-snug text-slate-900 group-hover:text-[#c1121f]">
+                  <span className="min-w-0 flex-1 font-serif text-[19px] font-bold leading-snug text-[#111111] group-hover:text-[#c1121f]">
                     {a.title}
                   </span>
                   {a.featured_image_url && (
@@ -177,7 +177,7 @@ function OtherCategories({ sections }: { sections: { category: Category; article
               ))}
               <Link
                 to={`/category/${s.category.slug}`}
-                className="mt-3 inline-flex items-center gap-1 rounded-md bg-[#e8f1f8] px-3 py-1.5 text-sm font-semibold text-[#2563eb] hover:bg-[#d6e6f2]"
+                className="mt-3 inline-flex items-center gap-1 rounded-md bg-[#1976d2] px-3 py-1.5 text-sm font-semibold text-white hover:bg-[#1565c0]"
               >
                 আরও <ChevronRight size={15} />
               </Link>
@@ -189,7 +189,7 @@ function OtherCategories({ sections }: { sections: { category: Category; article
         {sections.map((s, i) => (
           <span
             key={s.category.id}
-            className={`h-1.5 rounded-full ${i === active ? "w-2.5 bg-slate-900" : "w-1.5 bg-slate-300"}`}
+            className={`h-2 rounded-full ${i === active ? "w-2.5 bg-slate-900" : "w-2 bg-slate-300"}`}
           />
         ))}
       </div>
@@ -344,11 +344,11 @@ export function HomePage() {
           {/* §7 Ranked tabs, framed by the thick grey rules from the screenshots */}
           {(mostRead.length > 0 || trending.length > 0 || latest.length > 0) && (
             <div>
-              <div className="mt-5 h-[6px] bg-slate-200" />
+              <div className="mt-5 h-[6px] bg-[#bdbdbd]" />
               <div className="py-5">
                 <NewsTabs mostRead={mostRead} trending={trending} latest={latest} />
               </div>
-              <div className="h-[6px] bg-slate-200" />
+              <div className="h-[6px] bg-[#bdbdbd]" />
             </div>
           )}
 
@@ -368,11 +368,11 @@ export function HomePage() {
 
           {/* §9 ছবিঘর: photo grid with red camera badges */}
           {photoSection.length >= 2 && (
-            <div className="mt-5 border-t-[3px] border-slate-800 pt-3">
+            <div className="mt-5 border-t-[6px] border-[#bdbdbd] pt-3">
               <div className="mb-4">
                 <Link
                   to="/latest"
-                  className="group inline-flex items-center gap-0.5 font-serif text-2xl font-black leading-none text-slate-900 hover:text-[#c1121f] sm:text-[28px]"
+                  className="group inline-flex items-center gap-0.5 font-serif text-[30px] font-black leading-none text-[#111111] hover:text-[#c1121f]"
                 >
                   ছবিঘর
                   <ChevronRight size={22} className="text-[#c1121f] transition-transform group-hover:translate-x-0.5" />
