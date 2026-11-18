@@ -146,14 +146,14 @@ export function MediaLibrary() {
                       {item.uploaded_by_name ? ` · ${item.uploaded_by_name}` : ""}
                     </p>
                     <div className="mt-1.5 flex flex-wrap gap-1">
-                      <Button variant="ghost" className="flex-1 whitespace-nowrap !px-2 text-xs" aria-label={`Preview ${item.filename}`} onClick={() => setPreview(item)}>
-                        <Eye size={14} /> View
+                      <Button variant="ghost" className="flex-1 !px-2 text-xs" aria-label={`Preview ${item.filename}`} onClick={() => setPreview(item)}>
+                        <Eye size={14} /> <span className="hidden xl:inline">View</span>
                       </Button>
-                      <Button variant="ghost" className="flex-1 whitespace-nowrap !px-2 text-xs" aria-label={`Copy URL of ${item.filename}`} onClick={() => void copyUrl(item)}>
-                        <Copy size={14} /> Copy URL
+                      <Button variant="ghost" className="flex-1 !px-2 text-xs" aria-label={`Copy URL of ${item.filename}`} onClick={() => void copyUrl(item)}>
+                        <Copy size={14} /> <span className="hidden xl:inline">Copy URL</span>
                       </Button>
-                      <Button variant="ghost" className="flex-1 whitespace-nowrap !px-2 text-xs" aria-label={`Delete ${item.filename}`} onClick={() => setToDelete(item)}>
-                        <Trash2 size={14} className="text-red-600" /> Delete
+                      <Button variant="ghost" className="flex-1 !px-2 text-xs" aria-label={`Delete ${item.filename}`} onClick={() => setToDelete(item)}>
+                        <Trash2 size={14} className="text-red-600" /> <span className="hidden xl:inline">Delete</span>
                       </Button>
                     </div>
                   </div>
