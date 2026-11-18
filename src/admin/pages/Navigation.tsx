@@ -64,7 +64,7 @@ export function Navigation() {
                 </div>
                 <div className="flex shrink-0 items-center gap-2">
                   <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">Active</span>
-                  <Button variant="outline" className="!py-1.5 text-xs" disabled title="The API has no navigation-management endpoint">
+                  <Button variant="outline" disabled title="The API has no navigation-management endpoint">
                     Edit (unavailable)
                   </Button>
                 </div>
