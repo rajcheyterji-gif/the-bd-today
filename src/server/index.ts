@@ -19,11 +19,13 @@ import {
   googleVerificationMetaTag,
   injectSeoIntoHtml,
   newsArticleJsonLd,
+  pageMetaTagsHtml,
   siteJsonLd,
   spaArticleTagsHtml,
   toSeoInput,
 } from "./lib/seo";
-import { articleTitle } from "../shared/seo";
+import { isBot, prerenderForPath } from "./lib/prerender";
+import { articleTitle, pageMeta } from "../shared/seo";
 import type { Article } from "../shared/types";
 import authRoutes from "./routes/auth";
 import articleRoutes from "./routes/articles";
@@ -97,6 +99,25 @@ export function createApp(): Hono<{ Bindings: Env; Variables: AppVariables }> {
         "content-type": "text/html; charset=utf-8",
       });
     }
+    // Search-engine bots get a fully server-rendered page (real
+    // headlines + article text in the HTML) — see lib/prerender.ts.
+    // Humans always get the SPA below; this branch never runs for them.
+    // A null result (not a bot route, or unknown article/category)
+    // falls through to the normal handling.
+    const userAgent = c.req.header("user-agent") ?? "";
+    if (isBot(userAgent)) {
+      const origin = new URL(c.req.url).origin;
+      const prerendered = await prerenderForPath(c.env.DB, origin, path, userAgent);
+      if (prerendered) {
+        return new Response(prerendered.html, {
+          status: prerendered.status,
+          headers: {
+            "content-type": "text/html; charset=utf-8",
+            "cache-control": "public, max-age=300",
+          },
+        });
+      }
+    }
     try {
       const asset = await c.env.ASSETS.fetch(c.req.raw);
       if (asset.status !== 404) {
@@ -156,7 +177,11 @@ export function createApp(): Hono<{ Bindings: Env; Variables: AppVariables }> {
             headHtml = defaultMetaTagsHtml(origin, path);
           }
         } else {
-          headHtml = defaultMetaTagsHtml(origin, path);
+          // Bengali title + description for home, categories, latest,
+          // breaking (shared pageMeta map) — same copy Google sees in
+          // the prerendered page and in the sitemap.
+          headHtml = pageMetaTagsHtml(origin, path);
+          title = pageMeta(path).title;
           // Organisation schema on every non-article page (homepage,
           // categories, search, ...) so Google knows the publisher.
           jsonLd = JSON.stringify(siteJsonLd(origin)).replace(/</g, "\\u003c");
