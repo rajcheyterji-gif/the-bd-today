@@ -28,3 +28,10 @@ ADMIN_PASSWORD=change-me-to-a-strong-password
 
 # Public site URL used for canonical links, sitemap and OG tags in local dev.
 SITE_URL=http://localhost:8787
+
+# Google Search Console verification (optional — see GOOGLE-SETUP.md).
+# Set this to ONE of the two values Search Console gives you:
+#   - the HTML verification filename, e.g. GOOGLE_SITE_VERIFICATION=googleAbC123dEf.html
+#   - the meta-tag token, e.g. GOOGLE_SITE_VERIFICATION=AbC123dEfGhIjKlMnOpQrStUvWxYz
+# In production set it with: wrangler secret put GOOGLE_SITE_VERIFICATION
+#GOOGLE_SITE_VERIFICATION=

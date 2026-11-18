@@ -42,7 +42,7 @@
     // Public, non-secret configuration. Anything secret goes in
     // `.dev.vars` locally and `wrangler secret put` in production —
     // see ENVIRONMENT.md. Never put a secret in this file.
-    "SITE_URL": "https://thebdtoday.com",
+    "SITE_URL": "https://www.thebdtoday.online",
     "SITE_NAME": "THE BD TODAY",
     "ADMIN_EMAIL": "admin@thebdtoday.com"
   },
