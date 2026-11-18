@@ -13,6 +13,10 @@ export function HighlightsCarousel({ articles }: { articles: Article[] }) {
   const trackRef = useRef<HTMLDivElement | null>(null);
   const [active, setActive] = useState(0);
 
+  // No stories, no carousel: never render empty cards, arrows, or
+  // progress segments for an empty list.
+  if (articles.length === 0) return null;
+
   const scrollBy = (dx: number) => {
     trackRef.current?.scrollBy({ left: dx, behavior: "smooth" });
   };
