@@ -99,13 +99,13 @@ describe("JSON-LD", () => {
     const publisher = ld.publisher as Record<string, unknown>;
     const logo = publisher.logo as Record<string, string>;
     expect(logo["@type"]).toBe("ImageObject");
-    expect(logo.url).toBe(`${SITE_URL}/logo.jpg`);
+    expect(logo.url).toBe(`${SITE_URL}/logo.png`);
   });
 
   it("includes the site logo in the organisation object", () => {
     const ld = siteJsonLd(SITE_URL);
     const logo = ld.logo as Record<string, string>;
-    expect(logo.url).toBe(`${SITE_URL}/logo.jpg`);
+    expect(logo.url).toBe(`${SITE_URL}/logo.png`);
   });
 });
 
