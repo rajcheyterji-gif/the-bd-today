@@ -114,7 +114,7 @@ export function SeoManager() {
                       {a.seo_description || a.excerpt || "No meta description set."} · SEO title {a.seo_title ? `${a.seo_title.length}/60` : "not set"}
                     </p>
                   </div>
-                  <Button variant="outline" className="shrink-0 !py-1.5 text-xs" onClick={() => openEdit(a)}>
+                  <Button variant="outline" className="shrink-0" onClick={() => openEdit(a)}>
                     <Pencil size={14} /> Edit SEO
                   </Button>
                 </div>
