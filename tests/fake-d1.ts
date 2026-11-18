@@ -124,6 +124,15 @@ class FakeStatement {
     if (sql.includes("FROM users WHERE email")) {
       return (users.find((u) => u.email === p[0]) ?? null) as T | null;
     }
+    if (sql.includes("FROM users WHERE password_hash")) {
+      // First-admin guard: only users with a real password hash count —
+      // seeded users carry the '__SET_VIA_INIT__' placeholder. This must
+      // come before the generic COUNT(*) branch below, whose substring
+      // also matches this query.
+      return {
+        count: users.filter((u) => u.password_hash !== "__SET_VIA_INIT__").length,
+      } as T;
+    }
     if (sql.includes("SELECT COUNT(*) AS count FROM users")) {
       return { count: users.length } as T;
     }
