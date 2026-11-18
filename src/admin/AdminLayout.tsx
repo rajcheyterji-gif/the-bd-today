@@ -91,7 +91,6 @@ export function AdminLayout() {
           <span className="inline-block rounded-md bg-white px-2 py-1">
             <img src="/logo.png" alt="দ্য বিডি টুডে" className="h-6 w-auto" />
           </span>
-          <p className="mt-1.5 text-xs text-slate-400">Admin dashboard</p>
         </Link>
         <button
           type="button"
