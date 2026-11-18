@@ -14,6 +14,7 @@ import {
   articleJsonLd,
   articleMetaTags,
   metaDescription,
+  pageMeta,
   renderMetaTags,
   siteJsonLd,
   SITE_DEFAULTS,
@@ -107,6 +108,42 @@ export function defaultMetaTags(siteUrl: string, path: string): MetaTag[] {
 /** Default tags rendered as HTML (see defaultMetaTags). */
 export function defaultMetaTagsHtml(siteUrl: string, path: string): string {
   return renderMetaTags(defaultMetaTags(siteUrl, path));
+}
+
+/**
+ * Bengali OG/Twitter tags for home, category, latest and breaking pages
+ * (from the shared pageMeta map in src/shared/seo.ts). Use these — not
+ * the English defaultMetaTags — for every non-article route, so Google
+ * and link scrapers see the same Bengali title + description as the
+ * <title> and meta description on the page.
+ */
+export function pageMetaTags(siteUrl: string, path: string): MetaTag[] {
+  const meta = pageMeta(path);
+  const url = absoluteUrl(siteUrl, path);
+  const image = absoluteUrl(siteUrl, DEFAULT_OG_IMAGE_PATH);
+  return [
+    { property: "og:type", content: "website" },
+    { property: "og:site_name", content: SITE_DEFAULTS.name },
+    { property: "og:locale", content: SITE_DEFAULTS.locale },
+    { property: "og:title", content: meta.title },
+    { property: "og:description", content: meta.description },
+    { property: "og:url", content: url },
+    { property: "og:image", content: image },
+    { property: "og:image:width", content: "1200" },
+    { property: "og:image:height", content: "630" },
+    { property: "og:image:alt", content: "THE BD TODAY" },
+    { name: "description", content: meta.description },
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:site", content: SITE_DEFAULTS.twitterHandle },
+    { name: "twitter:title", content: meta.title },
+    { name: "twitter:description", content: meta.description },
+    { name: "twitter:image", content: image },
+  ];
+}
+
+/** Bengali page tags rendered as HTML (see pageMetaTags). */
+export function pageMetaTagsHtml(siteUrl: string, path: string): string {
+  return renderMetaTags(pageMetaTags(siteUrl, path));
 }
 
 /**
