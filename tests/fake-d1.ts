@@ -116,6 +116,56 @@ class FakeStatement {
     return this;
   }
 
+  /**
+   * Apply the article-list WHERE clause the real D1 would apply, for the
+   * list/count queries: status and category filters, LIKE search needles
+   * (title/excerpt/content, case-insensitive for Latin), and the loose
+   * Roman slug ids (`a.id IN (...)`) the search service pre-computes.
+   * Only the filters actually present in the SQL are applied; without a
+   * search this returns the (status/category-filtered) articles unchanged,
+   * so non-search callers see the old behaviour.
+   */
+  private searchFilteredArticles(): FakeArticleRow[] {
+    const sql = this.sql;
+    const p = this.params;
+    let rows = this.db.articles;
+    if (sql.includes("a.status = ?")) {
+      const status = p.find((v) => v === "published" || v === "draft" || v === "scheduled");
+      if (typeof status === "string") rows = rows.filter((a) => a.status === status);
+    }
+    if (sql.includes("c.slug = ?")) {
+      const slug = p.find(
+        (v) =>
+          typeof v === "string" &&
+          !String(v).startsWith("%") &&
+          v !== "published" &&
+          v !== "draft" &&
+          v !== "scheduled",
+      );
+      if (typeof slug === "string") rows = rows.filter((a) => a.category_slug === slug);
+    }
+    const needles = p
+      .filter((v): v is string => typeof v === "string" && v.startsWith("%"))
+      .map((v) => v.slice(1, -1).replace(/\\(.)/g, "$1").toLowerCase())
+      .filter((n) => n.length > 0);
+    let slugIds: number[] = [];
+    if (sql.includes("a.id IN")) {
+      // Bind order: where params, then (on the page query only) limit,
+      // offset — the last two numbers of a LIMIT query are limit/offset,
+      // the numbers before them are the slug ids. The count query has no
+      // LIMIT, so all its numbers are slug ids.
+      const nums = p.filter((v): v is number => typeof v === "number");
+      slugIds = sql.includes("LIMIT") ? nums.slice(0, -2) : nums;
+    }
+    if (needles.length === 0 && slugIds.length === 0) return rows;
+    return rows.filter((a) => {
+      const hay = `${a.title} ${a.excerpt} ${a.content}`.toLowerCase();
+      if (needles.some((n) => hay.includes(n))) return true;
+      if (slugIds.includes(a.id)) return true;
+      return false;
+    });
+  }
+
   async first<T = Record<string, unknown>>(): Promise<T | null> {
     const sql = this.sql;
     const p = this.params;
@@ -163,7 +213,7 @@ class FakeStatement {
         : null;
     }
     if (sql.includes("COUNT(DISTINCT a.id) AS total")) {
-      return { total: articles.length } as T;
+      return { total: this.searchFilteredArticles().length } as T;
     }
     if (sql.includes("COALESCE(SUM(views), 0) AS total")) {
       return { total: 42 } as T;
@@ -246,6 +296,12 @@ class FakeStatement {
     if (sql.includes("SELECT a.id FROM articles a ORDER BY a.created_at DESC")) {
       return { results: articles.map((a) => ({ id: a.id })) as T[] };
     }
+    if (sql.includes("SELECT a.id, a.slug FROM articles")) {
+      // Roman search slug scan (listArticles): all article slugs.
+      return {
+        results: articles.map((a) => ({ id: a.id, slug: a.slug })) as T[],
+      };
+    }
     if (sql.includes("FROM articles a") && sql.includes("GROUP_CONCAT")) {
       // Related-article queries exclude ids passed as bind params.
       if (sql.includes("a.id != ?")) {
@@ -253,7 +309,7 @@ class FakeStatement {
           results: articles.filter((a) => !this.params.includes(a.id)) as T[],
         };
       }
-      return { results: articles as T[] };
+      return { results: this.searchFilteredArticles() as T[] };
     }
     if (sql.includes("substr(viewed_at, 1, 10)")) {
       return { results: [] as T[] };
