@@ -188,6 +188,9 @@ export interface ArticleListParams {
   page?: number;
   limit?: number;
   sort?: ArticleSort;
+  /** Server-computed, never sent by clients: article ids whose slug loosely
+   *  matches a Latin search query (see looseRoman in transliterate.ts). */
+  searchSlugIds?: number[];
 }
 
 export interface DashboardStats {
