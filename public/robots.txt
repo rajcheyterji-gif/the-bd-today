@@ -2,4 +2,5 @@ User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /api/
-Sitemap: https://thebdtoday.com/sitemap.xml
+Sitemap: https://www.thebdtoday.online/sitemap.xml
+Sitemap: https://www.thebdtoday.online/news-sitemap.xml
