@@ -121,30 +121,39 @@ export function createApp(): Hono<{ Bindings: Env; Variables: AppVariables }> {
       }
     }
     try {
-      const asset = await c.env.ASSETS.fetch(c.req.raw);
-      if (asset.status !== 404) {
-        // The homepage ("/") is served straight from ASSETS as index.html,
-        // so the meta-tag verification method has to be injected here too —
-        // Search Console checks the homepage for the meta tag.
-        const verificationMeta = googleVerificationMetaTag(
-          c.env.GOOGLE_SITE_VERIFICATION,
-        );
-        const contentType = asset.headers.get("content-type") ?? "";
-        if (verificationMeta && contentType.includes("text/html")) {
-          const html = await asset.text();
-          const injected = html.includes("</head>")
-            ? html.replace("</head>", `${verificationMeta}\n</head>`)
-            : `${verificationMeta}\n${html}`;
-          // Drop the stale content-length: the rewritten body is longer
-          // than the original asset, and a wrong length would truncate it.
-          const headers = new Headers(asset.headers);
-          headers.delete("content-length");
-          return new Response(injected, {
-            status: asset.status,
-            headers,
-          });
+      // Static files (images, JS/CSS, robots.txt, ...) are served straight
+      // from ASSETS. Everything else is a client route — and Cloudflare's
+      // SPA `not_found_handling` makes ASSETS answer those with the raw
+      // shell (200), which would bypass the SEO injection below entirely.
+      // So file-less paths skip the asset lookup and go straight to the
+      // injected shell; the injection path fetches /index.html itself.
+      const isFilePath = /\/[^/]+\.[A-Za-z0-9]+$/.test(path);
+      if (isFilePath) {
+        const asset = await c.env.ASSETS.fetch(c.req.raw);
+        if (asset.status !== 404) {
+          // The homepage ("/") is served straight from ASSETS as index.html,
+          // so the meta-tag verification method has to be injected here too —
+          // Search Console checks the homepage for the meta tag.
+          const verificationMeta = googleVerificationMetaTag(
+            c.env.GOOGLE_SITE_VERIFICATION,
+          );
+          const contentType = asset.headers.get("content-type") ?? "";
+          if (verificationMeta && contentType.includes("text/html")) {
+            const html = await asset.text();
+            const injected = html.includes("</head>")
+              ? html.replace("</head>", `${verificationMeta}\n</head>`)
+              : `${verificationMeta}\n${html}`;
+            // Drop the stale content-length: the rewritten body is longer
+            // than the original asset, and a wrong length would truncate it.
+            const headers = new Headers(asset.headers);
+            headers.delete("content-length");
+            return new Response(injected, {
+              status: asset.status,
+              headers,
+            });
+          }
+          return asset;
         }
-        return asset;
       }
       const index = await c.env.ASSETS.fetch(
         new Request(new URL("/index.html", c.req.url)),
