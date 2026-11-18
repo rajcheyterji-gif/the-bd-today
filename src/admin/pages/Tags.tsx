@@ -127,14 +127,14 @@ export function Tags() {
         ) : (
           <ul className="flex flex-wrap gap-2 p-4 sm:p-5">
             {items.map((t) => (
-              <li key={t.id} className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-800">
+              <li key={t.id} className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white py-1 pl-3 pr-1 text-sm text-slate-800">
                 <span className="font-medium">{t.name}</span>
                 {t.name_bn ? <span className="text-slate-500">{t.name_bn}</span> : null}
                 {t.article_count !== undefined ? <span className="text-xs text-slate-400">· {t.article_count}</span> : null}
                 <button
                   type="button"
                   aria-label={`Edit tag ${t.name}`}
-                  className="rounded-full p-1 hover:bg-slate-100"
+                  className="rounded-full p-2 hover:bg-slate-100"
                   onClick={() => {
                     setEditing(t);
                     setEditName(t.name);
@@ -143,7 +143,7 @@ export function Tags() {
                 >
                   <Pencil size={13} />
                 </button>
-                <button type="button" aria-label={`Delete tag ${t.name}`} className="rounded-full p-1 hover:bg-red-50" onClick={() => setToDelete(t)}>
+                <button type="button" aria-label={`Delete tag ${t.name}`} className="rounded-full p-2 hover:bg-red-50" onClick={() => setToDelete(t)}>
                   <Trash2 size={13} className="text-red-600" />
                 </button>
               </li>
