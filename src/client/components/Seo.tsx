@@ -2,6 +2,7 @@
 // meta tags and optional NewsArticle JSON-LD for the current page.
 
 import { useEffect } from "react";
+import { HOME_PAGE_META } from "../../shared/seo";
 
 interface SeoProps {
   title?: string;
@@ -17,8 +18,7 @@ interface SeoProps {
 }
 
 const SITE_NAME = "THE BD TODAY";
-const DEFAULT_DESC =
-  "THE BD TODAY — Bangladesh's trusted source for national, politics, economy, sports, technology and world news, in Bengali and English.";
+const DEFAULT_DESC = HOME_PAGE_META.description;
 
 function upsertMeta(attr: "name" | "property", key: string, content: string) {
   const selector = `meta[${attr}="${key}"]`;
@@ -43,7 +43,14 @@ export function Seo({
   section,
   tags,
 }: SeoProps) {
-  const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME} | Latest Bangladesh News`;
+  // A title that already carries its own " | ..." suffix (e.g. the full
+  // Bengali titles from the shared pageMeta map) is used as-is; a plain
+  // title gets the site name appended, as before.
+  const fullTitle = title
+    ? title.includes(" | ")
+      ? title
+      : `${title} | ${SITE_NAME}`
+    : HOME_PAGE_META.title;
   const pageUrl = url ?? window.location.href;
 
   useEffect(() => {
