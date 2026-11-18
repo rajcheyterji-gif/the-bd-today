@@ -1,20 +1,23 @@
 import { Link } from "react-router-dom";
 import { Zap } from "lucide-react";
-import { useArticles } from "../hooks/useArticles";
+import { useHome } from "../hooks/useArticles";
 
 /**
- * Breaking-news ticker: scrolling headlines from the API. Silent when empty.
- * The API has no breaking flag, so this shows the newest stories.
+ * Breaking-news ticker: a seamless scrolling loop of the newest headlines.
+ * The breaking list is duplicated so the track loops without a gap; it
+ * pauses on hover and renders nothing while loading or when empty.
  */
 export function BreakingTicker() {
-  const { data, isPending } = useArticles({ page: 1, limit: 8, sort: "latest" });
-  const breaking = data?.data ?? [];
+  const { data, isPending } = useHome();
+  const breaking = data?.data?.breaking ?? [];
 
   if (isPending || breaking.length === 0) return null;
 
+  const track = [...breaking, ...breaking];
+
   return (
     <div className="border-b border-slate-200 bg-white" aria-label="Breaking news">
-      <div className="mx-auto flex max-w-7xl items-stretch gap-0 px-4">
+      <div className="mx-auto flex max-w-7xl items-stretch px-4">
         <Link
           to="/breaking"
           className="flex shrink-0 items-center gap-1.5 bg-[#c1121f] px-3 py-2 text-xs font-bold uppercase tracking-wider text-white"
@@ -22,16 +25,18 @@ export function BreakingTicker() {
           <Zap size={14} />
           Breaking
         </Link>
-        <div className="ticker-viewport relative flex-1 overflow-x-auto" aria-label="Breaking headlines — scroll for more">
-          <div className="flex w-max items-center gap-8 py-2 pl-4">
-            {breaking.map((a) => (
-              <Link
-                key={a.id}
-                to={`/article/${a.slug}`}
-                className="whitespace-nowrap text-sm font-medium text-slate-800 hover:text-[#c1121f]"
-              >
-                {a.title}
-              </Link>
+        <div className="ticker-viewport relative flex-1 overflow-hidden" aria-label="Breaking headlines">
+          <div className="ticker-track flex w-max items-center gap-10 py-2 pl-5">
+            {track.map((a, i) => (
+              <span key={`${a.id}-${i}`} className="flex items-center gap-10">
+                <Link
+                  to={`/article/${a.slug}`}
+                  className="whitespace-nowrap text-sm font-medium text-slate-800 hover:text-[#c1121f]"
+                >
+                  {a.title}
+                </Link>
+                <span className="h-1.5 w-1.5 rounded-full bg-[#c1121f]" />
+              </span>
             ))}
           </div>
         </div>
