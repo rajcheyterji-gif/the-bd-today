@@ -23,22 +23,30 @@ function FilledUserIcon({ size = 21 }: { size?: number }) {
 }
 
 /**
- * Masthead (Prothom Alo mobile header, row 1): the logo lockup is
- * absolutely CENTRED in the row, while the solid search icon +
- * divider + Login sit in normal flow at the right — so the centred
- * logo can never squeeze the icons out, and the icons can never be
- * pushed off-screen or hidden on narrow phones. The logo lockup
- * shrinks a little on small screens to keep clear of the icons.
- * Tapping the magnifier opens a clean full-width pill search bar
- * (Bengali placeholder, clear + close controls, autofocus, Escape
- * to close); submitting still navigates to /search?q=… exactly as
- * before.
+ * Masthead (Prothom Alo mobile header, row 1): the logo is a very wide
+ * 7:1 lockup, so on small screens it gets a DEDICATED full-width row,
+ * centred and big (~48px tall — the most a 360px phone fits), with the
+ * Bengali date on the left and the solid search icon + divider + Login
+ * in a slim utility row underneath — the logo can never squeeze the
+ * icons out, and the icons can never hide behind the logo. From sm up
+ * the masthead is a single row again: the logo is absolutely CENTRED
+ * (64px at sm, 80px at md, 96px at lg) while the icons sit in normal
+ * flow at the right. Tapping the magnifier opens a clean full-width
+ * pill search bar (Bengali placeholder, clear + close controls,
+ * autofocus, Escape to close); submitting still navigates to
+ * /search?q=… exactly as before.
  */
 export function Masthead() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
+  const todayBn = new Intl.DateTimeFormat("bn-BD", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(new Date());
 
   useEffect(() => {
     if (searchOpen) inputRef.current?.focus();
@@ -65,10 +73,10 @@ export function Masthead() {
 
   return (
     <header className="bg-white">
-      <div className="relative mx-auto flex max-w-[1280px] items-center justify-end px-3 py-3 sm:px-4">
+      <div className="relative mx-auto max-w-[1280px] px-3 sm:flex sm:items-center sm:justify-end sm:px-4 sm:py-3">
         <Link
           to="/"
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+          className="flex justify-center py-2 sm:absolute sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:py-0"
           aria-label="THE BD TODAY — home"
         >
           <Logo
@@ -77,24 +85,29 @@ export function Masthead() {
           />
         </Link>
 
-        <div className="relative z-10 flex items-center bg-white">
-          <button
-            type="button"
-            aria-expanded={searchOpen}
-            aria-label={searchOpen ? "Close search" : "Open search"}
-            onClick={toggleSearch}
-            className="p-2 text-slate-900 hover:text-[#c1121f]"
-          >
-            {searchOpen ? <X size={22} strokeWidth={2.5} /> : <FilledSearchIcon size={22} />}
-          </button>
-          <span className="mx-1 h-6 w-px bg-slate-300" aria-hidden="true" />
-          <Link
-            to="/admin"
-            className="flex items-center gap-1.5 py-2 pl-1 pr-1 text-[15px] font-medium text-slate-900 hover:text-[#c1121f]"
-          >
-            <FilledUserIcon size={21} />
-            <span className="hidden min-[480px]:inline">Login</span>
-          </Link>
+        <div className="relative z-10 flex items-center justify-between border-t border-slate-100 sm:justify-end sm:border-t-0">
+          <span className="py-1.5 text-[13px] font-medium text-slate-500 sm:hidden">
+            {todayBn}
+          </span>
+          <div className="flex items-center bg-white">
+            <button
+              type="button"
+              aria-expanded={searchOpen}
+              aria-label={searchOpen ? "Close search" : "Open search"}
+              onClick={toggleSearch}
+              className="p-2 text-slate-900 hover:text-[#c1121f]"
+            >
+              {searchOpen ? <X size={22} strokeWidth={2.5} /> : <FilledSearchIcon size={22} />}
+            </button>
+            <span className="mx-1 h-6 w-px bg-slate-300" aria-hidden="true" />
+            <Link
+              to="/admin"
+              className="flex items-center gap-1.5 py-2 pl-1 pr-1 text-[15px] font-medium text-slate-900 hover:text-[#c1121f]"
+            >
+              <FilledUserIcon size={21} />
+              <span className="hidden min-[480px]:inline">Login</span>
+            </Link>
+          </div>
         </div>
       </div>
 
