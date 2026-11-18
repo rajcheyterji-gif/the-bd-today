@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { formatRelative, excerptFrom } from "../lib/format";
+import { thumbUrl } from "../../shared/utils";
 import type { Article } from "../../shared/types";
 
 /**
@@ -13,8 +14,10 @@ export function HeroArticle({ article }: { article: Article }) {
         <div className="mx-[-1rem] w-[calc(100%+2rem)] overflow-hidden sm:mx-0 sm:w-full">
           {article.featured_image_url ? (
             <img
-              src={article.featured_image_url}
+              src={thumbUrl(article.featured_image_url, 800)}
               alt={article.image_caption || article.title}
+              decoding="async"
+              fetchpriority="high"
               className="aspect-[16/9] w-full object-cover transition-transform duration-300 group-hover:scale-[1.01]"
             />
           ) : (
@@ -33,9 +36,9 @@ export function HeroArticle({ article }: { article: Article }) {
           </Link>
         </h2>
         {article.subtitle && (
-          <p className="mt-2 font-serif text-xl leading-relaxed text-slate-600">{article.subtitle}</p>
+          <p className="no-copy mt-2 font-serif text-xl leading-relaxed text-slate-600">{article.subtitle}</p>
         )}
-        <p className="mt-2.5 line-clamp-3 font-serif text-[19px] leading-[1.65] text-[#444444]">
+        <p className="no-copy mt-2.5 line-clamp-3 font-serif text-[19px] leading-[1.65] text-[#444444]">
           {excerptFrom(article.content, article.excerpt, 240)}
         </p>
         <p className="mt-3 text-[15px] text-[#757575]">
