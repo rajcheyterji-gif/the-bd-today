@@ -3,6 +3,7 @@ import { useArticles } from "../hooks/useArticles";
 import { useCategoryBySlug } from "../hooks/useCategories";
 import { enrichArticles } from "../lib/api";
 import { Seo } from "../components/Seo";
+import { pageMeta } from "../../shared/seo";
 import { Breadcrumbs } from "../components/Breadcrumbs";
 import { ArticleCard } from "../components/ArticleCard";
 import { Loading, ErrorState } from "../components/Loading";
@@ -17,12 +18,11 @@ export function CategoryPage({ slug }: { slug: string }) {
   const articles = enrichArticles(query.data?.data ?? [], categories);
   const totalPages = query.data?.pagination?.totalPages ?? 1;
 
+  const meta = pageMeta(`/category/${slug}`);
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
-      <Seo
-        title={category ? category.name_en : "Category"}
-        description={category?.description || `Latest ${category?.name_en ?? ""} news from THE BD TODAY.`}
-      />
+      <Seo title={meta.title} description={meta.description} />
       <Breadcrumbs items={[{ label: category?.name_en ?? slug }]} />
       <header className="mt-4 border-b-2 border-[#0f172a] pb-4">
         <h1 className="font-serif text-3xl font-black text-slate-900 sm:text-4xl">

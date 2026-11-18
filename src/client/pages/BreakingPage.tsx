@@ -4,6 +4,7 @@ import { useArticles } from "../hooks/useArticles";
 import { useSiteData } from "../hooks/useCategories";
 import { enrichArticles } from "../lib/api";
 import { Seo } from "../components/Seo";
+import { BREAKING_PAGE_META } from "../../shared/seo";
 import { Breadcrumbs } from "../components/Breadcrumbs";
 import { ArticleCard } from "../components/ArticleCard";
 import { Loading, ErrorState } from "../components/Loading";
@@ -20,7 +21,7 @@ export function BreakingPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
-      <Seo title="Breaking News" description="Breaking news from Bangladesh and around the world, as it happens — THE BD TODAY." />
+      <Seo title={BREAKING_PAGE_META.title} description={BREAKING_PAGE_META.description} />
       <Breadcrumbs items={[{ label: "Breaking News" }]} />
       <header className="mt-4 border-b-2 border-[#c1121f] pb-4">
         <h1 className="flex items-center gap-2 font-serif text-3xl font-black text-slate-900 sm:text-4xl">

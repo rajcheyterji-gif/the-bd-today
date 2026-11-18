@@ -3,6 +3,7 @@ import { useArticles } from "../hooks/useArticles";
 import { useSiteData } from "../hooks/useCategories";
 import { enrichArticles } from "../lib/api";
 import { Seo } from "../components/Seo";
+import { LATEST_PAGE_META } from "../../shared/seo";
 import { Breadcrumbs } from "../components/Breadcrumbs";
 import { ArticleCard } from "../components/ArticleCard";
 import { Loading, ErrorState } from "../components/Loading";
@@ -20,7 +21,7 @@ export function LatestPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
-      <Seo title="Latest News" description="The latest news from Bangladesh and around the world — THE BD TODAY." />
+      <Seo title={LATEST_PAGE_META.title} description={LATEST_PAGE_META.description} />
       <Breadcrumbs items={[{ label: "Latest News" }]} />
       <header className="mt-4 flex flex-wrap items-end justify-between gap-3 border-b-2 border-[#0f172a] pb-4">
         <div>
