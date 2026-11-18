@@ -1,5 +1,5 @@
-import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes } from "react";
-import { AlertTriangle, X } from "lucide-react";
+import { useState, type ButtonHTMLAttributes, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from "react";
+import { AlertTriangle, Eye, EyeOff, X } from "lucide-react";
 import { statusLabel } from "../lib/utils";
 
 // Shared admin UI primitives: white cards, navy text, news-red accent.
@@ -10,7 +10,7 @@ export function Button({
   ...props
 }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: "primary" | "danger" | "ghost" | "outline" | "dark" }) {
   const base =
-    "inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50";
+    "inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-3.5 py-2.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50";
   const styles = {
     primary: "bg-[#c1121f] text-white hover:bg-[#9e0e19]",
     danger: "bg-red-600 text-white hover:bg-red-700",
@@ -27,27 +27,25 @@ export function Card({ children, className = "" }: { children: ReactNode; classN
 
 export function CardHeader({ title, subtitle, action }: { title: string; subtitle?: string; action?: ReactNode }) {
   return (
-    <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 px-4 py-3 sm:px-5">
-      <div>
+    <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2 border-b border-slate-100 px-4 py-3 sm:px-5">
+      <div className="min-w-0 flex-1">
         <h2 className="text-base font-semibold text-slate-900">{title}</h2>
         {subtitle ? <p className="mt-0.5 text-sm text-slate-500">{subtitle}</p> : null}
       </div>
-      {action}
+      {action ? <div className="shrink-0">{action}</div> : null}
     </div>
   );
 }
 
 export function StatCard({ label, value, sub, icon }: { label: string; value: string; sub?: string; icon?: ReactNode }) {
   return (
-    <Card className="p-4 sm:p-5">
+    <Card className="flex h-full flex-col justify-between gap-1 p-3.5 sm:p-5">
       <div className="flex items-start justify-between gap-2">
-        <div>
-          <p className="text-sm font-medium text-slate-500">{label}</p>
-          <p className="mt-1 text-2xl font-bold text-slate-900 sm:text-3xl">{value}</p>
-          {sub ? <p className="mt-1 text-xs text-slate-500">{sub}</p> : null}
-        </div>
-        {icon ? <div className="rounded-lg bg-red-50 p-2 text-[#c1121f]">{icon}</div> : null}
+        <p className="text-xs font-medium leading-snug text-slate-500 sm:text-sm">{label}</p>
+        {icon ? <div className="shrink-0 rounded-lg bg-red-50 p-2 text-[#c1121f]">{icon}</div> : null}
       </div>
+      <p className="text-2xl font-bold tabular-nums leading-none text-slate-900 sm:text-3xl">{value}</p>
+      {sub ? <p className="text-xs text-slate-500">{sub}</p> : null}
     </Card>
   );
 }
@@ -61,6 +59,7 @@ const badgeColors: Record<string, string> = {
   archived: "bg-slate-200 text-slate-700",
   rejected: "bg-red-100 text-red-800",
   spam: "bg-red-100 text-red-800",
+  super_admin: "bg-slate-900 text-white",
   admin: "bg-slate-900 text-white",
   editor: "bg-blue-100 text-blue-800",
   author: "bg-slate-100 text-slate-700",
@@ -69,7 +68,7 @@ const badgeColors: Record<string, string> = {
 export function Badge({ value, className = "" }: { value: string; className?: string }) {
   const color = badgeColors[value] ?? "bg-slate-100 text-slate-700";
   return (
-    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${color} ${className}`}>
+    <span className={`inline-flex shrink-0 items-center whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-medium ${color} ${className}`}>
       {statusLabel(value)}
     </span>
   );
@@ -126,17 +125,17 @@ export function ApiGapNotice({ message }: { message: string }) {
 export function Field({ label, hint, children, required }: { label: string; hint?: string; children: ReactNode; required?: boolean }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-sm font-medium text-slate-800">
+      <span className="mb-1.5 block text-sm font-medium text-slate-800">
         {label} {required ? <span className="text-[#c1121f]">*</span> : null}
       </span>
       {children}
-      {hint ? <span className="mt-1 block text-xs text-slate-500">{hint}</span> : null}
+      {hint ? <span className="mt-1.5 block text-xs leading-relaxed text-slate-500">{hint}</span> : null}
     </label>
   );
 }
 
 const inputCls =
-  "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#c1121f] focus:outline-none focus:ring-2 focus:ring-[#c1121f]/20";
+  "w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm leading-6 text-slate-900 placeholder:text-slate-400 focus:border-[#c1121f] focus:outline-none focus:ring-2 focus:ring-[#c1121f]/20";
 
 export function TextInput(props: InputHTMLAttributes<HTMLInputElement>) {
   return <input {...props} className={`${inputCls} ${props.className ?? ""}`} />;
@@ -148,6 +147,26 @@ export function TextArea(props: TextareaHTMLAttributes<HTMLTextAreaElement>) {
 
 export function SelectInput(props: SelectHTMLAttributes<HTMLSelectElement>) {
   return <select {...props} className={`${inputCls} ${props.className ?? ""}`} />;
+}
+
+/** Password field with a show/hide toggle inside the input (44px tap
+ *  target, accessible label). Used by the sign-in form and My Profile. */
+export function PasswordInput(props: InputHTMLAttributes<HTMLInputElement>) {
+  const [show, setShow] = useState(false);
+  return (
+    <div className="relative">
+      <input {...props} type={show ? "text" : "password"} className={`${inputCls} pr-11 ${props.className ?? ""}`} />
+      <button
+        type="button"
+        aria-label={show ? "Hide password" : "Show password"}
+        aria-pressed={show}
+        onClick={() => setShow((s) => !s)}
+        className="absolute right-1 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+      >
+        {show ? <EyeOff size={18} /> : <Eye size={18} />}
+      </button>
+    </div>
+  );
 }
 
 export function Modal({
@@ -167,9 +186,9 @@ export function Modal({
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label={title}>
       <div className={`max-h-[92vh] w-full overflow-y-auto rounded-t-xl bg-white shadow-xl sm:rounded-xl ${wide ? "sm:max-w-3xl" : "sm:max-w-lg"}`}>
-        <div className="sticky top-0 flex items-center justify-between border-b border-slate-100 bg-white px-4 py-3 sm:px-5">
-          <h3 className="text-base font-semibold text-slate-900">{title}</h3>
-          <button type="button" aria-label="Close dialog" onClick={onClose} className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100">
+        <div className="sticky top-0 flex items-center justify-between gap-2 border-b border-slate-100 bg-white px-4 py-3 sm:px-5">
+          <h3 className="min-w-0 flex-1 truncate text-base font-semibold text-slate-900">{title}</h3>
+          <button type="button" aria-label="Close dialog" onClick={onClose} className="shrink-0 rounded-lg p-2.5 text-slate-500 hover:bg-slate-100">
             <X size={18} />
           </button>
         </div>
@@ -197,11 +216,11 @@ export function ConfirmModal({
   return (
     <Modal open={open} onClose={onClose} title={title}>
       <p className="text-sm text-slate-700">{message}</p>
-      <div className="mt-5 flex justify-end gap-2">
-        <Button variant="outline" onClick={onClose}>
+      <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+        <Button variant="outline" className="w-full sm:w-auto" onClick={onClose}>
           Cancel
         </Button>
-        <Button variant="danger" onClick={onConfirm}>
+        <Button variant="danger" className="w-full sm:w-auto" onClick={onConfirm}>
           {confirmLabel}
         </Button>
       </div>
