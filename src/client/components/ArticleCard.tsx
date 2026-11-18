@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
-import { Eye } from "lucide-react";
-import { formatRelative, formatViews, readingTimeLabel, excerptFrom, toBengaliDigits } from "../lib/format";
+import { formatRelative, excerptFrom, toBengaliDigits } from "../lib/format";
 import type { Article } from "../../shared/types";
 
 /** Bengali relative time, e.g. "৫ মিনিট আগে". */
@@ -34,7 +33,9 @@ function ArticleImage({ article, ratio }: { article: Article; ratio: string }) {
 
 /**
  * Flat broadsheet card — no box, border, shadow or radius; image on top,
- * serif headline below, hover turns the headline red and scales the image.
+ * serif headline below, time only under it (Prothom Alo cards show just
+ * the time, not author/views/reading-time). Hover turns the headline red
+ * and scales the image.
  */
 export function ArticleCard({
   article,
@@ -69,32 +70,40 @@ export function ArticleCard({
             {excerptFrom(article.content, article.excerpt)}
           </p>
         )}
-        <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500">
-          {article.author && <span className="font-semibold text-slate-800">{article.author.name}</span>}
+        <p className="mt-2 text-xs text-slate-500">
           <StoryTime article={article} />
-          <span className="inline-flex items-center gap-1">
-            <Eye size={12} /> {formatViews(article.views)}
-          </span>
-          <span>{readingTimeLabel(article.reading_time_minutes)}</span>
         </p>
       </div>
     </article>
   );
 }
 
-/** Text-only story for the lead rails: headline + optional excerpt + time, with an optional small thumbnail. */
+/**
+ * Text story: headline + optional excerpt + time, with an optional small
+ * thumbnail. With `kicker` it renders the মতামত-style row from the
+ * screenshots — a red kicker (category name) followed by "•" in the
+ * headline line.
+ */
 export function TextStory({
   article,
   showExcerpt = true,
+  kicker,
 }: {
   article: Article;
   showExcerpt?: boolean;
+  kicker?: string;
 }) {
   return (
-    <article className="group py-4 first:pt-0 last:pb-0">
+    <article className="group border-b border-slate-200 py-4 first:pt-0 last:border-b-0 last:pb-0">
       <div className="flex gap-3">
         <div className="min-w-0 flex-1">
           <h3 className="font-serif text-[17px] font-bold leading-snug">
+            {kicker ? (
+              <>
+                <span className="text-[#c1121f]">{kicker}</span>{" "}
+                <span className="text-slate-400">•</span>{" "}
+              </>
+            ) : null}
             <Link to={`/article/${article.slug}`} className="text-slate-900 group-hover:text-[#c1121f]">
               {article.title}
             </Link>
@@ -123,12 +132,28 @@ export function TextStory({
   );
 }
 
-/** Compact horizontal row for sidebars and lists, with an optional ranked Bengali numeral. */
-export function ArticleRow({ article, rank }: { article: Article; rank?: number }) {
+/**
+ * Compact horizontal row for sidebars and lists, with an optional ranked
+ * Bengali numeral. `largeRank` renders the big grey numerals from the
+ * পঠিত/আলোচিত/সর্বশেষ tabs in the screenshots.
+ */
+export function ArticleRow({
+  article,
+  rank,
+  largeRank = false,
+}: {
+  article: Article;
+  rank?: number;
+  largeRank?: boolean;
+}) {
   return (
     <article className="group flex gap-3 border-b border-slate-200 py-3 last:border-b-0">
       {rank != null && (
-        <span className="font-serif text-4xl font-black leading-none text-slate-300 transition-colors group-hover:text-[#c1121f]">
+        <span
+          className={`shrink-0 font-serif font-black leading-none text-slate-300 transition-colors group-hover:text-[#c1121f] ${
+            largeRank ? "text-5xl" : "text-4xl"
+          }`}
+        >
           {toBengaliDigits(rank)}
         </span>
       )}
@@ -138,11 +163,8 @@ export function ArticleRow({ article, rank }: { article: Article; rank?: number 
             {article.title}
           </Link>
         </h4>
-        <p className="mt-1 flex flex-wrap items-center gap-x-3 text-xs text-slate-500">
+        <p className="mt-1 text-xs text-slate-500">
           <StoryTime article={article} />
-          <span className="inline-flex items-center gap-1">
-            <Eye size={12} /> {formatViews(article.views)}
-          </span>
         </p>
       </div>
       {article.featured_image_url && (
@@ -159,10 +181,22 @@ export function ArticleRow({ article, rank }: { article: Article; rank?: number 
   );
 }
 
-/** Photo card for the special-coverage band: image with a dark gradient and text overlaid at the bottom. */
-export function OverlayCard({ article }: { article: Article }) {
+/**
+ * Photo card with a dark gradient and text overlaid at the bottom — the
+ * overlay carousel cards from the screenshots. With `badge` the amber
+ * label line shows the badge (e.g. "সরাসরি") instead of the category.
+ */
+export function OverlayCard({
+  article,
+  badge,
+  ratio = "aspect-[4/3]",
+}: {
+  article: Article;
+  badge?: string;
+  ratio?: string;
+}) {
   return (
-    <Link to={`/article/${article.slug}`} className="group relative block aspect-[4/3] overflow-hidden bg-slate-800">
+    <Link to={`/article/${article.slug}`} className={`group relative block overflow-hidden bg-slate-800 ${ratio}`}>
       {article.featured_image_url ? (
         <img
           src={article.featured_image_url}
@@ -177,11 +211,16 @@ export function OverlayCard({ article }: { article: Article }) {
       )}
       <span className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
       <span className="absolute inset-x-0 bottom-0 p-3.5">
-        {article.category && (
+        {badge ? (
+          <span className="flex items-center gap-1.5 font-bengali text-xs font-bold text-amber-300">
+            <span className="inline-block h-2.5 w-2.5 rounded-full border-2 border-amber-300" aria-hidden="true" />
+            {badge}
+          </span>
+        ) : article.category ? (
           <span className="font-bengali text-xs font-bold text-amber-300">
             {article.category.name_bn ?? article.category.name_en}
           </span>
-        )}
+        ) : null}
         <span className="mt-1 line-clamp-2 block font-serif text-[17px] font-bold leading-snug text-white">
           {article.title}
         </span>

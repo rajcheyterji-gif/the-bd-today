@@ -1,71 +1,85 @@
-import { Link } from "react-router-dom";
-import { useHome } from "../hooks/useArticles";
-import { enrichArticles } from "../lib/api";
-import { useSiteData } from "../hooks/useCategories";
+import { useState, type FormEvent } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Search, User } from "lucide-react";
 
 /**
- * Masthead: left-aligned wordmark + tagline, with a live top-stories strip
- * on the right (first 3 deduped stories from breaking + latest).
+ * Masthead (Prothom Alo mobile header, row 1): the wordmark on the left,
+ * search icon + divider + Login on the right. Search opens an expanding
+ * row underneath. No date strip, no top-stories rail — the screenshots
+ * show the header bare like this.
  */
 export function Masthead() {
-  const home = useHome();
-  const site = useSiteData();
-  const data = home.data?.data;
-  const categories = site.data?.data?.categories ?? [];
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const navigate = useNavigate();
 
-  const breakingIds = new Set<string | number>((data?.breaking ?? []).map((a) => a.id));
-  const seen = new Set<string | number>();
-  const topStories = [...(data?.breaking ?? []), ...(data?.latest ?? [])]
-    .filter((a) => {
-      if (seen.has(a.id)) return false;
-      seen.add(a.id);
-      return true;
-    })
-    .slice(0, 3)
-    .map((a) => enrichArticles([a], categories)[0] ?? a);
+  const submitSearch = (e: FormEvent) => {
+    e.preventDefault();
+    const q = query.trim();
+    if (q) {
+      setSearchOpen(false);
+      navigate(`/search?q=${encodeURIComponent(q)}`);
+    }
+  };
 
   return (
     <header className="bg-white">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-4">
-        <Link to="/" className="group shrink-0" aria-label="THE BD TODAY — home">
-          <h1 className="font-serif text-4xl font-black leading-none tracking-tight text-slate-900 sm:text-[42px]">
+      <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-4 px-4 py-3">
+        <Link to="/" className="min-w-0 shrink-0" aria-label="THE BD TODAY — home">
+          <span className="block font-serif text-[32px] font-black leading-none tracking-tight text-slate-900 sm:text-4xl">
             THE BD <span className="text-[#c1121f]">TODAY</span>
-          </h1>
-          <span className="mt-1 block font-bengali text-[13px] text-slate-500">
-            দ্য বিডি টুডে — সত্য, সবার আগে
           </span>
         </Link>
 
-        {topStories.length > 0 && (
-          <div className="hidden divide-x divide-slate-200 lg:flex" aria-label="Top stories">
-            {topStories.map((a) => (
-              <Link key={a.id} to={`/article/${a.slug}`} className="group flex w-60 gap-2.5 px-4">
-                {a.featured_image_url ? (
-                  <img
-                    src={a.featured_image_url}
-                    alt=""
-                    loading="lazy"
-                    className="h-12 w-16 shrink-0 object-cover"
-                  />
-                ) : (
-                  <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#c1121f]" />
-                )}
-                <span className="min-w-0">
-                  {breakingIds.has(a.id) && (
-                    <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-[#c1121f]">
-                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#c1121f]" />
-                      Live
-                    </span>
-                  )}
-                  <span className="line-clamp-2 font-serif text-[13px] font-bold leading-snug text-slate-900 group-hover:text-[#c1121f]">
-                    {a.title}
-                  </span>
-                </span>
-              </Link>
-            ))}
-          </div>
-        )}
+        <div className="flex shrink-0 items-center">
+          <button
+            type="button"
+            aria-expanded={searchOpen}
+            aria-label={searchOpen ? "Close search" : "Open search"}
+            onClick={() => setSearchOpen((v) => !v)}
+            className="p-2 text-slate-900 hover:text-[#c1121f]"
+          >
+            <Search size={22} />
+          </button>
+          <span className="mx-1 h-6 w-px bg-slate-300" aria-hidden="true" />
+          <Link
+            to="/admin"
+            className="flex items-center gap-1.5 py-2 pl-1 pr-1 text-[15px] font-medium text-slate-900 hover:text-[#c1121f]"
+          >
+            <User size={20} />
+            <span className="hidden sm:inline">Login</span>
+          </Link>
+        </div>
       </div>
+
+      {/* Expanding search row */}
+      {searchOpen && (
+        <div className="border-t border-slate-200 bg-white">
+          <form
+            role="search"
+            onSubmit={submitSearch}
+            className="mx-auto flex max-w-[1280px] gap-2 px-4 py-2.5"
+          >
+            <label htmlFor="masthead-search" className="sr-only">
+              Search news
+            </label>
+            <input
+              id="masthead-search"
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="খবর খুঁজুন — Search news, topics, people…"
+              className="min-w-0 flex-1 border border-slate-300 px-3 py-2 text-sm focus:border-[#c1121f] focus:outline-none"
+            />
+            <button
+              type="submit"
+              className="bg-[#c1121f] px-4 py-2 text-sm font-semibold text-white hover:bg-[#9e0e19]"
+            >
+              খুঁজুন
+            </button>
+          </form>
+        </div>
+      )}
     </header>
   );
 }

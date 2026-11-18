@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
-import { Facebook, Mail, MapPin, Twitter } from "lucide-react";
+import { Apple, Facebook, Instagram, Play, Twitter, Youtube } from "lucide-react";
 import { useSiteData } from "../hooks/useCategories";
+import { toBengaliDigits } from "../lib/format";
 
 /** Translates stored navigation hrefs (page:x, category:slug, collection:flag, /path, full URL) into real links. */
 export function resolveNavHref(raw: string): string {
@@ -17,46 +18,32 @@ export function resolveNavHref(raw: string): string {
   return `/${raw}`;
 }
 
-/** Light site footer: brand, Bengali sections, company links, newsroom. All links from API where available. */
+/**
+ * Centered newspaper footer (screenshot 2): big wordmark, centered link
+ * rows, round social icons, app-store badges, legal links with dot
+ * separators, editor credit and the Bengali copyright line.
+ */
 export function Footer() {
   const { data } = useSiteData();
   const categories = data?.data?.categories ?? [];
-  const navigation = data?.data?.navigation ?? [];
 
   return (
-    <footer className="mt-12 border-t-[3px] border-slate-800 bg-white text-slate-600">
-      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-10 sm:grid-cols-2 lg:grid-cols-4">
-        <div>
-          <p className="font-serif text-[26px] font-black tracking-tight text-slate-900">
+    <footer className="mt-8 border-t-[3px] border-slate-800 bg-white text-slate-600">
+      <div className="mx-auto max-w-[1280px] px-4 pb-8 pt-7 text-center">
+        {/* Wordmark */}
+        <Link to="/" className="inline-block" aria-label="THE BD TODAY — home">
+          <span className="font-serif text-[28px] font-black tracking-tight text-slate-900 sm:text-3xl">
             THE BD <span className="text-[#c1121f]">TODAY</span>
-          </p>
-          <p className="mt-1 font-bengali text-sm text-slate-500">দ্য বিডি টুডে — সত্য, সবার আগে</p>
-          <p className="mt-3 text-sm leading-relaxed text-slate-600">
-            Independent journalism from Bangladesh — national affairs, politics, economy, sports,
-            technology and the world, reported accurately and without fear or favour.
-          </p>
-          <div className="mt-4 flex gap-2">
-            <a href="https://www.facebook.com" target="_blank" rel="noreferrer" aria-label="Facebook" className="border border-slate-300 p-2 text-slate-600 hover:border-[#c1121f] hover:text-[#c1121f]">
-              <Facebook size={16} />
-            </a>
-            <a href="https://www.x.com" target="_blank" rel="noreferrer" aria-label="X (Twitter)" className="border border-slate-300 p-2 text-slate-600 hover:border-[#c1121f] hover:text-[#c1121f]">
-              <Twitter size={16} />
-            </a>
-            <a href="mailto:news@thebdtoday.com" aria-label="Email the newsroom" className="border border-slate-300 p-2 text-slate-600 hover:border-[#c1121f] hover:text-[#c1121f]">
-              <Mail size={16} />
-            </a>
-          </div>
-        </div>
+          </span>
+        </Link>
+        <p className="mt-1 font-bengali text-sm text-slate-500">দ্য বিডি টুডে — সত্য, সবার আগে</p>
 
-        <nav aria-label="Footer categories">
-          <h3 className="font-bengali text-[15px] font-bold text-slate-900">বিভাগসমূহ</h3>
-          <ul className="mt-3 space-y-2 text-sm">
-            {categories.length === 0 && (
-              <li className="text-slate-500">Sections will appear once editors create them.</li>
-            )}
+        {/* Link row 1: categories */}
+        <nav aria-label="Footer categories" className="mt-5 border-y border-slate-200 py-3">
+          <ul className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[15px] font-medium">
             {categories.map((c) => (
               <li key={c.id}>
-                <Link to={`/category/${c.slug}`} className="hover:text-[#c1121f]">
+                <Link to={`/category/${c.slug}`} className="text-slate-800 hover:text-[#c1121f]">
                   {c.name_bn ?? c.name_en}
                 </Link>
               </li>
@@ -64,59 +51,123 @@ export function Footer() {
           </ul>
         </nav>
 
-        <nav aria-label="Footer company">
-          <h3 className="text-[15px] font-bold text-slate-900">Company</h3>
-          <ul className="mt-3 space-y-2 text-sm">
-            <li><Link to="/about" className="hover:text-[#c1121f]">About Us</Link></li>
-            <li><Link to="/contact" className="hover:text-[#c1121f]">Contact</Link></li>
-            <li><Link to="/privacy" className="hover:text-[#c1121f]">Privacy Policy</Link></li>
-            <li><Link to="/terms" className="hover:text-[#c1121f]">Terms of Use</Link></li>
-            <li><Link to="/latest" className="hover:text-[#c1121f]">Latest News</Link></li>
-            <li><Link to="/breaking" className="hover:text-[#c1121f]">Breaking News</Link></li>
-            {navigation.map((n) => (
-              <li key={n.id}>
-                {resolveNavHref(n.url).startsWith("http") || resolveNavHref(n.url).startsWith("mailto:") ? (
-                  <a href={resolveNavHref(n.url)} className="hover:text-[#c1121f]">
-                    {n.label_bn ?? n.label}
-                  </a>
-                ) : (
-                  <Link to={resolveNavHref(n.url)} className="hover:text-[#c1121f]">
-                    {n.label_bn ?? n.label}
-                  </Link>
-                )}
+        {/* Link row 2: site pages */}
+        <nav aria-label="Footer pages" className="mt-3">
+          <ul className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm">
+            <li><Link to="/latest" className="hover:text-[#c1121f]">সর্বশেষ</Link></li>
+            <li><Link to="/breaking" className="hover:text-[#c1121f]">ব্রেকিং</Link></li>
+            <li><Link to="/about" className="hover:text-[#c1121f]">আমাদের সম্পর্কে</Link></li>
+            <li><Link to="/contact" className="hover:text-[#c1121f]">যোগাযোগ</Link></li>
+            <li><Link to="/privacy" className="hover:text-[#c1121f]">গোপনীয়তা নীতি</Link></li>
+            <li><Link to="/terms" className="hover:text-[#c1121f]">শর্তাবলি</Link></li>
+          </ul>
+        </nav>
+
+        {/* Follow */}
+        <p className="mt-6 font-bengali text-sm font-bold text-slate-900">অনুসরণ করুন</p>
+        <div className="mt-3 flex items-center justify-center gap-3">
+          <a
+            href="https://www.facebook.com"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Facebook"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1877f2] text-white transition-transform hover:scale-105"
+          >
+            <Facebook size={18} />
+          </a>
+          <a
+            href="https://www.x.com"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="X (Twitter)"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-black text-white transition-transform hover:scale-105"
+          >
+            <Twitter size={18} />
+          </a>
+          <a
+            href="https://www.instagram.com"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Instagram"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-tr from-[#f58529] via-[#dd2a7b] to-[#8134af] text-white transition-transform hover:scale-105"
+          >
+            <Instagram size={18} />
+          </a>
+          <a
+            href="https://www.youtube.com"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="YouTube"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-[#ff0000] text-white transition-transform hover:scale-105"
+          >
+            <Youtube size={18} />
+          </a>
+          <a
+            href="https://news.google.com"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Google News"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-300 bg-white font-serif text-lg font-black text-[#4285f4] transition-transform hover:scale-105"
+          >
+            G
+          </a>
+        </div>
+
+        {/* App badges */}
+        <p className="mt-6 font-bengali text-sm font-bold text-slate-900">মোবাইল অ্যাপস ডাউনলোড করুন</p>
+        <div className="mt-3 flex flex-wrap items-center justify-center gap-3">
+          <a
+            href="https://play.google.com/store"
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-2 rounded-md bg-slate-900 px-3.5 py-2 text-left text-white hover:bg-slate-700"
+          >
+            <Play size={22} className="shrink-0" />
+            <span className="leading-tight">
+              <span className="block text-[10px] uppercase tracking-wide text-white/70">Get it on</span>
+              <span className="block text-sm font-semibold">Google Play</span>
+            </span>
+          </a>
+          <a
+            href="https://www.apple.com/app-store/"
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-2 rounded-md bg-slate-900 px-3.5 py-2 text-left text-white hover:bg-slate-700"
+          >
+            <Apple size={22} className="shrink-0" />
+            <span className="leading-tight">
+              <span className="block text-[10px] uppercase tracking-wide text-white/70">Download on the</span>
+              <span className="block text-sm font-semibold">App Store</span>
+            </span>
+          </a>
+        </div>
+
+        {/* Legal links with dot separators */}
+        <nav aria-label="Footer legal" className="mt-7">
+          <ul className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[13px]">
+            {[
+              { label: "আমাদের সম্পর্কে", href: "/about" },
+              { label: "বিজ্ঞাপন", href: "/contact" },
+              { label: "সার্কুলেশন", href: "/about" },
+              { label: "নীতি ও শর্ত", href: "/terms" },
+              { label: "যোগাযোগ", href: "/contact" },
+              { label: "নিউজলেটার", href: "/latest" },
+            ].map((item, i, arr) => (
+              <li key={item.label} className="flex items-center gap-2">
+                <Link to={item.href} className="hover:text-[#c1121f]">
+                  {item.label}
+                </Link>
+                {i < arr.length - 1 && <span className="text-slate-300" aria-hidden="true">•</span>}
               </li>
             ))}
           </ul>
         </nav>
 
-        <div>
-          <h3 className="text-[15px] font-bold text-slate-900">Newsroom</h3>
-          <ul className="mt-3 space-y-3 text-sm">
-            <li className="flex items-start gap-2">
-              <MapPin size={16} className="mt-0.5 shrink-0" />
-              <span>Dhaka, Bangladesh</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <Mail size={16} className="mt-0.5 shrink-0" />
-              <a href="mailto:news@thebdtoday.com" className="hover:text-[#c1121f]">news@thebdtoday.com</a>
-            </li>
-          </ul>
-          <p className="mt-4 text-xs leading-relaxed text-slate-500">
-            Have a news tip? Write to the newsroom — every tip is read by an editor.
-          </p>
-        </div>
-      </div>
-      <div className="border-t border-slate-200">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 py-4 text-xs text-slate-500 sm:flex-row">
-          <p>© {new Date().getFullYear()} THE BD TODAY. All rights reserved.</p>
-          <p>
-            <Link to="/privacy" className="hover:text-[#c1121f]">Privacy</Link>
-            <span className="mx-2 text-slate-300">•</span>
-            <Link to="/terms" className="hover:text-[#c1121f]">Terms</Link>
-            <span className="mx-2 text-slate-300">•</span>
-            <Link to="/contact" className="hover:text-[#c1121f]">Contact</Link>
-          </p>
-        </div>
+        {/* Editor credit + copyright */}
+        <p className="mt-5 text-[13px] text-slate-600">সম্পাদক ও প্রকাশক: দ্য বিডি টুডে</p>
+        <p className="mt-1 text-xs text-slate-500">
+          স্বত্ব © {toBengaliDigits(new Date().getFullYear())} দ্য বিডি টুডে
+        </p>
       </div>
     </footer>
   );
