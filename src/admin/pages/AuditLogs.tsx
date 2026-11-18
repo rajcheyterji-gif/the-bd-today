@@ -73,7 +73,23 @@ export function AuditLogs() {
           <EmptyState title="No audit logs found" hint="Admin actions (logins, article saves, moderation) are recorded here." />
         ) : (
           <>
-            <div className="overflow-x-auto">
+            {/* Mobile: stacked cards. Desktop keeps the table. */}
+            <ul className="divide-y divide-slate-100 sm:hidden">
+              {items.map((l) => (
+                <li key={l.id} className="px-4 py-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <p className="min-w-0 text-sm font-medium text-slate-900">{l.action}</p>
+                    <span className="shrink-0 text-xs text-slate-500">{formatDateTime(l.created_at)}</span>
+                  </div>
+                  <p className="mt-0.5 truncate text-xs text-slate-500">
+                    {l.user_name ?? `User #${l.user_id ?? "—"}`}
+                    {l.entity_type ? ` · ${l.entity_type} ${l.entity_id ?? ""}` : ""}
+                  </p>
+                  {l.details ? <p className="mt-1 break-words text-xs text-slate-600">{l.details}</p> : null}
+                </li>
+              ))}
+            </ul>
+            <div className="hidden overflow-x-auto sm:block">
               <table className="w-full min-w-[640px] text-left text-sm">
                 <thead>
                   <tr className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-500">
@@ -102,7 +118,7 @@ export function AuditLogs() {
               </table>
             </div>
             {totalPages > 1 ? (
-              <div className="flex items-center justify-between border-t border-slate-100 px-4 py-3 text-sm">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 px-4 py-3 text-sm">
                 <span className="text-slate-500">Page {page} of {totalPages}</span>
                 <div className="flex gap-2">
                   <Button variant="outline" disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>Previous</Button>
