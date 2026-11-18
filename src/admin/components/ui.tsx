@@ -236,11 +236,11 @@ export function BarList({ rows, maxLabel }: { rows: { label: string; value: numb
     <ul className="space-y-2.5">
       {rows.map((r) => (
         <li key={r.label} className="flex items-center gap-3 text-sm">
-          <span className="w-24 shrink-0 truncate text-right text-slate-600 sm:w-32">{r.label}</span>
+          <span className="w-20 shrink-0 truncate text-right text-slate-600 sm:w-24">{r.label}</span>
           <div className="h-5 flex-1 overflow-hidden rounded bg-slate-100">
             <div className="h-full rounded bg-[#c1121f]" style={{ width: `${Math.max(2, (r.value / max) * 100)}%` }} />
           </div>
-          <span className="w-12 shrink-0 text-right font-medium tabular-nums text-slate-900">{r.value.toLocaleString()}</span>
+          <span className="w-10 shrink-0 text-right font-medium tabular-nums text-slate-900 sm:w-12">{r.value.toLocaleString()}</span>
         </li>
       ))}
       {maxLabel ? <li className="pt-1 text-right text-xs text-slate-400">{maxLabel}</li> : null}
