@@ -163,9 +163,8 @@ export function AdminLayout() {
           >
             <Menu size={20} />
           </button>
-          <Link to="/admin" className="flex min-w-0 shrink-0 items-center gap-1.5 lg:hidden" aria-label="THE BD TODAY Admin">
+          <Link to="/admin" className="flex min-w-0 shrink-0 items-center lg:hidden" aria-label="THE BD TODAY Admin">
             <img src="/logo.jpg" alt="দ্য বিডি টুডে" className="h-6 w-auto" />
-            <span className="text-sm font-bold text-[#c1121f]">Admin</span>
           </Link>
           <div className="ml-auto flex min-w-0 items-center gap-2 sm:gap-3">
             {/* Name + role are hidden on phones: the avatar alone identifies
