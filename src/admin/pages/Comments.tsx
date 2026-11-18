@@ -83,7 +83,7 @@ export function Comments() {
                 <li key={c.id} className="px-4 py-3 sm:px-5">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="text-sm font-medium text-slate-900">
+                      <p className="break-words text-sm font-medium text-slate-900">
                         {c.author_name} <span className="font-normal text-slate-500">· {c.author_email ?? "no email"}</span>
                       </p>
                       <button
@@ -94,24 +94,24 @@ export function Comments() {
                       >
                         {c.article_title ?? `Article #${c.article_id}`}
                       </button>
-                      <p className="mt-1 text-sm text-slate-700">{c.content}</p>
+                      <p className="mt-1 break-words text-sm text-slate-700">{c.content}</p>
                       <p className="mt-1 text-xs text-slate-400">{formatDateTime(c.created_at)}</p>
                     </div>
                     <Badge value={c.status} className="shrink-0" />
                   </div>
-                  <div className="mt-2 flex flex-wrap gap-2">
+                  <div className="mt-3 flex flex-wrap gap-2">
                     {c.status !== "approved" ? (
-                      <Button variant="outline" className="!py-1.5 text-xs" disabled={busyId === c.id} onClick={() => void moderate(c, "approved")}>
+                      <Button variant="outline" disabled={busyId === c.id} onClick={() => void moderate(c, "approved")}>
                         <Check size={14} /> Approve
                       </Button>
                     ) : null}
                     {c.status !== "rejected" ? (
-                      <Button variant="outline" className="!py-1.5 text-xs" disabled={busyId === c.id} onClick={() => void moderate(c, "rejected")}>
+                      <Button variant="outline" disabled={busyId === c.id} onClick={() => void moderate(c, "rejected")}>
                         <X size={14} /> Reject
                       </Button>
                     ) : null}
                     {c.status !== "spam" ? (
-                      <Button variant="outline" className="!py-1.5 text-xs" disabled={busyId === c.id} onClick={() => void moderate(c, "spam")}>
+                      <Button variant="outline" disabled={busyId === c.id} onClick={() => void moderate(c, "spam")}>
                         Mark as spam
                       </Button>
                     ) : null}
@@ -120,7 +120,7 @@ export function Comments() {
               ))}
             </ul>
             {totalPages > 1 ? (
-              <div className="flex items-center justify-between border-t border-slate-100 px-4 py-3 text-sm">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 px-4 py-3 text-sm">
                 <span className="text-slate-500">Page {page} of {totalPages}</span>
                 <div className="flex gap-2">
                   <Button variant="outline" disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>Previous</Button>
