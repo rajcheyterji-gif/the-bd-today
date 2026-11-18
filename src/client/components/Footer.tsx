@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Apple, Facebook, Instagram, Play, Twitter, Youtube } from "lucide-react";
+import { Facebook, Instagram, Twitter, Youtube } from "lucide-react";
 import { useSiteData } from "../hooks/useCategories";
 import { toBengaliDigits } from "../lib/format";
 import { Logo } from "./Logo";
@@ -21,7 +21,7 @@ export function resolveNavHref(raw: string): string {
 
 /**
  * Centered newspaper footer (screenshot 2): logo lockup with tagline,
- * centered link rows, round social icons, app-store badges, legal links
+ * centered link rows, premium round social icons, legal links
  * with dot separators, editor credit and the Bengali copyright line.
  */
 export function Footer() {
@@ -67,7 +67,7 @@ export function Footer() {
           </ul>
         </nav>
 
-        {/* Follow */}
+        {/* Follow — premium round social icons */}
         <p className="mt-6 font-serif text-[17px] font-bold text-slate-900">অনুসরণ করুন</p>
         <div className="mt-3 flex items-center justify-center gap-3">
           <a
@@ -75,7 +75,7 @@ export function Footer() {
             target="_blank"
             rel="noreferrer"
             aria-label="Facebook"
-            className="flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#1877f2] text-white transition-transform hover:scale-105"
+            className="flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#1877f2] text-white shadow-md shadow-slate-900/15 ring-1 ring-black/10 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-slate-900/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c1121f] focus-visible:ring-offset-2"
           >
             <Facebook size={22} />
           </a>
@@ -84,7 +84,7 @@ export function Footer() {
             target="_blank"
             rel="noreferrer"
             aria-label="X (Twitter)"
-            className="flex h-[52px] w-[52px] items-center justify-center rounded-full bg-black text-white transition-transform hover:scale-105"
+            className="flex h-[52px] w-[52px] items-center justify-center rounded-full bg-neutral-900 text-white shadow-md shadow-slate-900/15 ring-1 ring-black/10 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-slate-900/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c1121f] focus-visible:ring-offset-2"
           >
             <Twitter size={22} />
           </a>
@@ -93,7 +93,7 @@ export function Footer() {
             target="_blank"
             rel="noreferrer"
             aria-label="Instagram"
-            className="flex h-[52px] w-[52px] items-center justify-center rounded-full bg-gradient-to-tr from-[#f58529] via-[#dd2a7b] to-[#8134af] text-white transition-transform hover:scale-105"
+            className="flex h-[52px] w-[52px] items-center justify-center rounded-full bg-gradient-to-tr from-[#feda75] via-[#d62976] to-[#4f5bd5] text-white shadow-md shadow-slate-900/15 ring-1 ring-black/10 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-slate-900/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c1121f] focus-visible:ring-offset-2"
           >
             <Instagram size={22} />
           </a>
@@ -102,7 +102,7 @@ export function Footer() {
             target="_blank"
             rel="noreferrer"
             aria-label="YouTube"
-            className="flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#ff0000] text-white transition-transform hover:scale-105"
+            className="flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#ff0000] text-white shadow-md shadow-slate-900/15 ring-1 ring-black/10 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-slate-900/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c1121f] focus-visible:ring-offset-2"
           >
             <Youtube size={22} />
           </a>
@@ -111,38 +111,9 @@ export function Footer() {
             target="_blank"
             rel="noreferrer"
             aria-label="Google News"
-            className="flex h-[52px] w-[52px] items-center justify-center rounded-full border border-slate-300 bg-white font-serif text-2xl font-black text-[#4285f4] transition-transform hover:scale-105"
+            className="flex h-[52px] w-[52px] items-center justify-center rounded-full border border-slate-200 bg-white font-serif text-2xl font-black text-[#4285f4] shadow-md shadow-slate-900/10 ring-1 ring-black/5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-slate-900/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c1121f] focus-visible:ring-offset-2"
           >
             G
-          </a>
-        </div>
-
-        {/* App badges */}
-        <p className="mt-6 font-serif text-[17px] font-bold text-slate-900">মোবাইল অ্যাপস ডাউনলোড করুন</p>
-        <div className="mt-3 flex flex-wrap items-center justify-center gap-3">
-          <a
-            href="https://play.google.com/store"
-            target="_blank"
-            rel="noreferrer"
-            className="flex items-center gap-2 rounded-md border border-slate-300 bg-white px-3.5 py-2 text-left text-slate-900 hover:bg-slate-50"
-          >
-            <Play size={22} className="shrink-0 text-[#4285f4]" />
-            <span className="leading-tight">
-              <span className="block text-[10px] uppercase tracking-wide text-slate-500">Get it on</span>
-              <span className="block text-sm font-semibold">Google Play</span>
-            </span>
-          </a>
-          <a
-            href="https://www.apple.com/app-store/"
-            target="_blank"
-            rel="noreferrer"
-            className="flex items-center gap-2 rounded-md border border-slate-300 bg-white px-3.5 py-2 text-left text-slate-900 hover:bg-slate-50"
-          >
-            <Apple size={22} className="shrink-0" />
-            <span className="leading-tight">
-              <span className="block text-[10px] uppercase tracking-wide text-slate-500">Download on the</span>
-              <span className="block text-sm font-semibold">App Store</span>
-            </span>
           </a>
         </div>
 
