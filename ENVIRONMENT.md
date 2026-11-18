@@ -13,12 +13,13 @@ in `wrangler.jsonc` (public values only).
 | `SESSION_SECRET` | Yes | `.dev.vars` locally; `wrangler secret put SESSION_SECRET` in production | Generate once: `openssl rand -base64 48`. Signs admin session cookies. Rotating it logs every admin out — that is the intended recovery if it ever leaks. |
 | `ADMIN_INIT_TOKEN` | Yes, until first admin exists | `.dev.vars` locally; `wrangler secret put ADMIN_INIT_TOKEN` in production | Generate once: `openssl rand -hex 32`. Authorises `POST /api/v1/auth/init` (first-admin bootstrap). Delete/rotate it after the first admin is created — the endpoint refuses to run once any user exists. |
 | `ADMIN_PASSWORD` | Local dev only | `.dev.vars` only | Choose a strong password (12+ characters) for the first admin account. Used only by the init procedure; it is hashed before storage and is not a runtime secret. Do **not** set it as a production Wrangler secret. |
+| `GOOGLE_SITE_VERIFICATION` | No — only for Google Search Console | `.dev.vars` locally; `wrangler secret put GOOGLE_SITE_VERIFICATION` in production | The value Google Search Console gives you: either the HTML verification filename (e.g. `googleAbC123.html`) or the meta-tag token. See `GOOGLE-SETUP.md`. Leave unset until you start the Search Console setup. |
 
 ## Public configuration (`vars` in `wrangler.jsonc` / `.dev.vars`)
 
 | Name | Required | Where set | Notes |
 | --- | --- | --- | --- |
-| `SITE_URL` | Yes | `wrangler.jsonc` → `vars`; override in `.dev.vars` for local dev | Canonical origin, e.g. `https://thebdtoday.com` (local: `http://localhost:8787`). Used for canonical links, sitemap, RSS and OG tags. No trailing slash. |
+| `SITE_URL` | Yes | `wrangler.jsonc` → `vars`; override in `.dev.vars` for local dev | Canonical origin, e.g. `https://www.thebdtoday.online` (local: `http://localhost:8787`). Used for canonical links, sitemap, RSS and OG tags. No trailing slash. |
 | `SITE_NAME` | No (default `THE BD TODAY`) | `wrangler.jsonc` → `vars` | Brand name used in the masthead, footer and JSON-LD. |
 | `ADMIN_EMAIL` | Yes for init | `.dev.vars` / `wrangler.jsonc` → `vars` | Email of the first admin account created by `/auth/init`. |
 | `ADMIN_NAME` | No | `.dev.vars` only | Display name of the first admin account. |
