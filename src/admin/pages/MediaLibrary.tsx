@@ -145,15 +145,15 @@ export function MediaLibrary() {
                       {formatDate(item.created_at)} · {formatNumber(Math.round(item.size / 1024))} KB
                       {item.uploaded_by_name ? ` · ${item.uploaded_by_name}` : ""}
                     </p>
-                    <div className="mt-1.5 flex gap-1">
-                      <Button variant="ghost" className="!px-1.5 !py-1 text-xs" aria-label={`Preview ${item.filename}`} onClick={() => setPreview(item)}>
+                    <div className="mt-1.5 flex flex-wrap gap-1">
+                      <Button variant="ghost" className="flex-1 whitespace-nowrap !px-2 text-xs" aria-label={`Preview ${item.filename}`} onClick={() => setPreview(item)}>
                         <Eye size={14} /> View
                       </Button>
-                      <Button variant="ghost" className="!px-1.5 !py-1 text-xs" aria-label={`Copy URL of ${item.filename}`} onClick={() => void copyUrl(item)}>
+                      <Button variant="ghost" className="flex-1 whitespace-nowrap !px-2 text-xs" aria-label={`Copy URL of ${item.filename}`} onClick={() => void copyUrl(item)}>
                         <Copy size={14} /> Copy URL
                       </Button>
-                      <Button variant="ghost" className="!px-1.5 !py-1 text-xs" aria-label={`Delete ${item.filename}`} onClick={() => setToDelete(item)}>
-                        <Trash2 size={14} className="text-red-600" />
+                      <Button variant="ghost" className="flex-1 whitespace-nowrap !px-2 text-xs" aria-label={`Delete ${item.filename}`} onClick={() => setToDelete(item)}>
+                        <Trash2 size={14} className="text-red-600" /> Delete
                       </Button>
                     </div>
                   </div>
@@ -161,7 +161,7 @@ export function MediaLibrary() {
               ))}
             </div>
             {totalPages > 1 ? (
-              <div className="flex items-center justify-between border-t border-slate-100 px-4 py-3 text-sm">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 px-4 py-3 text-sm">
                 <span className="text-slate-500">Page {page} of {totalPages}</span>
                 <div className="flex gap-2">
                   <Button variant="outline" disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>Previous</Button>
