@@ -27,7 +27,7 @@
       "binding": "DB",
       "database_name": "the-bd-today-db",
       // TODO: replace with the real id from `wrangler d1 create`.
-      "database_id": "<YOUR_D1_DATABASE_ID>",
+      "database_id": "979599a1-167d-4b85-b986-3595526ea945",
       "migrations_dir": "migrations"
     }
   ],
@@ -35,7 +35,7 @@
     {
       "binding": "R2_BUCKET",
       // TODO: replace with the real bucket name you created.
-      "bucket_name": "<YOUR_R2_BUCKET_NAME>"
+      "bucket_name": "the-bd-today-media"
     }
   ],
   "vars": {
