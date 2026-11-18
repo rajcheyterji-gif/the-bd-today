@@ -7,7 +7,7 @@ import { Seo } from "../components/Seo";
 import { BREAKING_PAGE_META } from "../../shared/seo";
 import { Breadcrumbs } from "../components/Breadcrumbs";
 import { ArticleCard } from "../components/ArticleCard";
-import { Loading, ErrorState } from "../components/Loading";
+import { ListPageSkeleton, ErrorState } from "../components/Loading";
 import { EmptyState } from "../components/EmptyState";
 import { Pager } from "../components/Pager";
 
@@ -29,7 +29,7 @@ export function BreakingPage() {
         </h1>
         <p className="mt-2 text-slate-600">The stories developing right now, updated as our newsroom confirms them.</p>
       </header>
-      {query.isPending && <Loading label="Loading breaking news…" />}
+      {query.isPending && <ListPageSkeleton />}
       {query.isError && (
         <div className="mt-6">
           <ErrorState message="Could not load breaking news. Please try again." onRetry={() => query.refetch()} />

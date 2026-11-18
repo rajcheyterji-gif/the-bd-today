@@ -5,7 +5,7 @@ import { enrichArticles } from "../lib/api";
 import { Seo } from "../components/Seo";
 import { Breadcrumbs } from "../components/Breadcrumbs";
 import { ArticleCard } from "../components/ArticleCard";
-import { Loading, ErrorState } from "../components/Loading";
+import { ListPageSkeleton, ErrorState } from "../components/Loading";
 import { EmptyState } from "../components/EmptyState";
 import { Pager } from "../components/Pager";
 
@@ -29,7 +29,7 @@ export function TagPage({ slug }: { slug: string }) {
           <p className="mt-2 text-sm text-slate-500">{query.data.pagination.total} stories</p>
         )}
       </header>
-      {query.isPending && <Loading label="Loading stories…" />}
+      {query.isPending && <ListPageSkeleton />}
       {query.isError && (
         <div className="mt-6">
           <ErrorState message="Could not load this tag. Please try again." onRetry={() => query.refetch()} />

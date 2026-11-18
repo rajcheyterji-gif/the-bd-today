@@ -11,7 +11,7 @@ import { ArticleCard, ArticleRow, TextStory } from "../components/ArticleCard";
 import { HighlightsCarousel } from "../components/HighlightsCarousel";
 import { NewsTabs } from "../components/NewsTabs";
 import { CategorySection } from "../components/CategorySection";
-import { Loading, ErrorState } from "../components/Loading";
+import { HomeSkeleton, ErrorState } from "../components/Loading";
 import { EmptyState } from "../components/EmptyState";
 import type { Article, Category } from "../../shared/types";
 
@@ -206,7 +206,7 @@ export function HomePage() {
   const home = useHome();
   const site = useSiteData();
 
-  if (home.isPending) return <Loading label="Loading today's news…" />;
+  if (home.isPending) return <HomeSkeleton />;
   if (home.isError) {
     return (
       <div className="mx-auto max-w-[1280px] px-4 py-10">

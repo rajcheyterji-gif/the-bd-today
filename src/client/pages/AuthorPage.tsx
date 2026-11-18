@@ -5,7 +5,7 @@ import { enrichArticles } from "../lib/api";
 import { Seo } from "../components/Seo";
 import { Breadcrumbs } from "../components/Breadcrumbs";
 import { ArticleCard } from "../components/ArticleCard";
-import { Loading, ErrorState } from "../components/Loading";
+import { AuthorSkeleton, ErrorState } from "../components/Loading";
 import { EmptyState } from "../components/EmptyState";
 
 export function AuthorPage({ id }: { id: number }) {
@@ -14,7 +14,7 @@ export function AuthorPage({ id }: { id: number }) {
   const author = query.data?.data ?? null;
   const articles = enrichArticles(query.data?.data?.articles ?? [], site?.data?.categories ?? []);
 
-  if (query.isPending) return <Loading label="Loading author…" />;
+  if (query.isPending) return <AuthorSkeleton />;
   if (query.isError) {
     return (
       <div className="mx-auto max-w-7xl px-4 py-10">

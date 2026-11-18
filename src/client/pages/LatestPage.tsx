@@ -6,7 +6,7 @@ import { Seo } from "../components/Seo";
 import { LATEST_PAGE_META } from "../../shared/seo";
 import { Breadcrumbs } from "../components/Breadcrumbs";
 import { ArticleCard } from "../components/ArticleCard";
-import { Loading, ErrorState } from "../components/Loading";
+import { ListPageSkeleton, ErrorState } from "../components/Loading";
 import { EmptyState } from "../components/EmptyState";
 import { Pager } from "../components/Pager";
 import type { ArticleSort } from "../../shared/types";
@@ -44,7 +44,7 @@ export function LatestPage() {
           </select>
         </label>
       </header>
-      {query.isPending && <Loading label="Loading latest news…" />}
+      {query.isPending && <ListPageSkeleton />}
       {query.isError && (
         <div className="mt-6">
           <ErrorState message="Could not load the latest news. Please try again." onRetry={() => query.refetch()} />

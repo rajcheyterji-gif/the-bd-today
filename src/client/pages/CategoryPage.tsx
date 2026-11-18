@@ -6,7 +6,7 @@ import { Seo } from "../components/Seo";
 import { pageMeta } from "../../shared/seo";
 import { Breadcrumbs } from "../components/Breadcrumbs";
 import { ArticleCard } from "../components/ArticleCard";
-import { Loading, ErrorState } from "../components/Loading";
+import { ListPageSkeleton, ErrorState } from "../components/Loading";
 import { EmptyState } from "../components/EmptyState";
 import { Pager } from "../components/Pager";
 
@@ -37,7 +37,7 @@ export function CategoryPage({ slug }: { slug: string }) {
         )}
       </header>
 
-      {query.isPending && <Loading label="Loading stories…" />}
+      {query.isPending && <ListPageSkeleton />}
       {query.isError && (
         <div className="mt-6">
           <ErrorState message="Could not load this section. Please try again." onRetry={() => query.refetch()} />

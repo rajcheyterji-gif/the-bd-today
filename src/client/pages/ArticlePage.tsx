@@ -16,7 +16,7 @@ import { Seo } from "../components/Seo";
 import { Breadcrumbs } from "../components/Breadcrumbs";
 import { ArticleCard, ArticleRow } from "../components/ArticleCard";
 import { ShareButtons } from "../components/ShareButtons";
-import { Loading, ErrorState } from "../components/Loading";
+import { ArticleSkeleton, ErrorState } from "../components/Loading";
 import { EmptyState } from "../components/EmptyState";
 
 /** Client-side slugify matching the server's slug rules (for tag links). */
@@ -69,7 +69,7 @@ export function ArticlePage({ slug }: { slug: string }) {
     }
   };
 
-  if (query.isPending) return <Loading label="Loading article…" />;
+  if (query.isPending) return <ArticleSkeleton />;
   if (query.isError) {
     return (
       <div className="mx-auto max-w-7xl px-4 py-10">

@@ -6,7 +6,7 @@ import { Seo } from "../components/Seo";
 import { Breadcrumbs } from "../components/Breadcrumbs";
 import { SearchBar } from "../components/SearchBar";
 import { ArticleCard } from "../components/ArticleCard";
-import { Loading, ErrorState } from "../components/Loading";
+import { ListPageSkeleton, ErrorState } from "../components/Loading";
 import { EmptyState } from "../components/EmptyState";
 import { Pager } from "../components/Pager";
 
@@ -42,7 +42,7 @@ export function SearchPage({ initialQuery }: { initialQuery: string }) {
           <EmptyState title="What are you looking for?" message="Type a word or phrase above to search our published stories." />
         </div>
       )}
-      {q && query.isPending && <Loading label="Searching…" />}
+      {q && query.isPending && <ListPageSkeleton />}
       {q && query.isError && (
         <div className="mt-6">
           <ErrorState message="Search failed. Please try again." onRetry={() => query.refetch()} />
