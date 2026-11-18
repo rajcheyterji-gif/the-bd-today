@@ -4,7 +4,8 @@ import { Check, Clock, Eye, MessageSquare, Tag, User } from "lucide-react";
 import { useArticle, useArticles } from "../hooks/useArticles";
 import { useSiteData } from "../hooks/useCategories";
 import { enrichArticles, publicApi } from "../lib/api";
-import { sanitizeHtml } from "../../shared/utils";
+import { sanitizeHtml, thumbUrl } from "../../shared/utils";
+import { handleProtectedCopy } from "../lib/copyGuard";
 import {
   formatDateBn,
   formatRelative,
@@ -120,7 +121,7 @@ export function ArticlePage({ slug }: { slug: string }) {
       />
 
       <div className="mt-6 grid gap-10 lg:grid-cols-3">
-        <article className="min-w-0 lg:col-span-2">
+        <article className="no-copy min-w-0 lg:col-span-2" onCopy={handleProtectedCopy}>
           <header>
             {article.category && (
               <Link
@@ -172,8 +173,10 @@ export function ArticlePage({ slug }: { slug: string }) {
           {article.featured_image_url && (
             <figure className="mt-6">
               <img
-                src={article.featured_image_url}
+                src={thumbUrl(article.featured_image_url, 800)}
                 alt={article.image_caption || article.title}
+                decoding="async"
+                fetchpriority="high"
                 className="w-full object-cover"
               />
               {(article.image_caption || article.image_credit) && (
