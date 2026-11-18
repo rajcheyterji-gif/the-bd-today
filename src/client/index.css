@@ -44,8 +44,9 @@
 
 /* Article body typography (editor-authored HTML). */
 .article-body {
-  font-size: 17px;
-  line-height: 1.8;
+  font-family: "Noto Serif Bengali", Georgia, "Times New Roman", serif;
+  font-size: 18px;
+  line-height: 1.9;
   color: #1f2937;
   overflow-wrap: break-word;
 }
