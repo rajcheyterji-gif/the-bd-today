@@ -181,7 +181,11 @@ class FakeStatement {
       return { total: articles.length } as T;
     }
     if (sql.includes("WHERE a.slug = ?")) {
-      return (articles.find((a) => a.slug === p[0]) ?? null) as T | null;
+      const found = articles.find((a) => a.slug === p[0]) ?? null;
+      // getArticleBySlug binds [slug, status?] — honour the status filter
+      // so drafts/scheduled articles fall through like the real D1 does.
+      if (found && p[1] !== undefined && found.status !== p[1]) return null;
+      return found as T | null;
     }
     if (sql.includes("WHERE a.id = ?")) {
       return (articles.find((a) => a.id === p[0]) ?? null) as T | null;
