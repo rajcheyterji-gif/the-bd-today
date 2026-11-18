@@ -2,13 +2,19 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Globe, Menu, X } from "lucide-react";
 import { useSiteData } from "../hooks/useCategories";
+import { getSiteLanguage, setSiteLanguage, type SiteLanguage } from "../lib/translate";
 import { resolveNavHref } from "./Footer";
 
 /**
  * Sticky category nav (Prothom Alo mobile header, row 2): a horizontally
  * scrollable row of category links — সর্বশেষ first, then every category —
  * with the peach "Eng" toggle and the hamburger pinned at the right end.
- * Eng switches the nav labels to English (categories carry name_en).
+ * The toggle switches the WHOLE site's language via Google Translate
+ * (see lib/translate.ts): Eng translates every Bengali word on the page
+ * to English, বাংলা reloads back to plain Bengali. The nav labels also
+ * flip instantly from the data (categories carry name_en), so the row
+ * reads English at once even before Google finishes. The toggle itself
+ * is marked notranslate so Google never rewrites its own label.
  * The hamburger opens the full menu panel below the nav. The scroll row
  * fades out at its right edge (mask) so a category never looks sliced
  * mid-word where the pinned Eng/hamburger block begins, and the pinned
@@ -20,7 +26,10 @@ export function Navbar() {
   const categories = data?.data?.categories ?? [];
   const navigation = data?.data?.navigation ?? [];
   const [menuOpen, setMenuOpen] = useState(false);
-  const [eng, setEng] = useState(false);
+  // Persisted site language (cookie + localStorage); the toggle reloads
+  // the page, so this re-reads correctly after every switch.
+  const [lang] = useState<SiteLanguage>(() => getSiteLanguage());
+  const eng = lang === "en";
 
   const label = (bn: string, en: string) => (eng ? en : bn);
   const catLabel = (c: { name_bn?: string | null; name_en: string }) =>
@@ -61,10 +70,13 @@ export function Navbar() {
         <div className="flex shrink-0 items-center gap-1.5 bg-white py-1.5 pl-1 pr-2">
           <button
             type="button"
-            onClick={() => setEng((v) => !v)}
+            onClick={() => setSiteLanguage(eng ? "bn" : "en")}
             aria-pressed={eng}
-            aria-label={eng ? "Switch navigation to Bengali" : "Switch navigation to English"}
-            className="flex items-center gap-1 rounded-md bg-[#fde9e2] px-2.5 py-2 text-[16px] font-semibold text-[#111111] hover:bg-[#fbdcd2]"
+            aria-label={eng ? "Switch whole site to Bengali" : "Switch whole site to English"}
+            // The toggle is the only language control: Google must never
+            // translate its own label ("বাংলা" would become "Bengali").
+            translate="no"
+            className="notranslate flex items-center gap-1 rounded-md bg-[#fde9e2] px-2.5 py-2 text-[16px] font-semibold text-[#111111] hover:bg-[#fbdcd2]"
           >
             <Globe size={18} strokeWidth={2.5} />
             {eng ? "বাংলা" : "Eng"}
