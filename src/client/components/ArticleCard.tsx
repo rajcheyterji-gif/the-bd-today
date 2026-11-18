@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { formatRelative, excerptFrom, toBengaliDigits } from "../lib/format";
+import { thumbUrl } from "../../shared/utils";
 import type { Article } from "../../shared/types";
 
 /** Bengali relative time, e.g. "৫ মিনিট আগে". */
@@ -11,7 +12,16 @@ function StoryTime({ article, className = "" }: { article: Article; className?: 
   );
 }
 
-function ArticleImage({ article, ratio }: { article: Article; ratio: string }) {
+function ArticleImage({
+  article,
+  ratio,
+  width = 640,
+}: {
+  article: Article;
+  ratio: string;
+  /** Rendered pixel width to request from Wikimedia (default: card size). */
+  width?: number;
+}) {
   if (!article.featured_image_url) {
     return (
       <div className={`flex ${ratio} items-center justify-center bg-slate-100 px-4 text-center`}>
@@ -23,9 +33,10 @@ function ArticleImage({ article, ratio }: { article: Article; ratio: string }) {
   }
   return (
     <img
-      src={article.featured_image_url}
+      src={thumbUrl(article.featured_image_url, width)}
       alt={article.image_caption || article.title}
       loading="lazy"
+      decoding="async"
       className={`${ratio} w-full object-cover`}
     />
   );
@@ -55,7 +66,11 @@ export function ArticleCard({
       <Link to={`/article/${article.slug}`} aria-label={article.title}>
         <div className="overflow-hidden">
           <div className="transition-transform duration-300 group-hover:scale-[1.02]">
-            <ArticleImage article={article} ratio="aspect-[16/9]" />
+            <ArticleImage
+              article={article}
+              ratio="aspect-[16/9]"
+              width={size === "small" ? 320 : size === "large" ? 800 : 640}
+            />
           </div>
         </div>
       </Link>
@@ -66,7 +81,7 @@ export function ArticleCard({
           </Link>
         </h3>
         {size !== "small" && (
-          <p className="mt-1.5 line-clamp-2 font-serif text-[18px] leading-[1.6] text-[#444444]">
+          <p className="no-copy mt-1.5 line-clamp-2 font-serif text-[18px] leading-[1.6] text-[#444444]">
             {excerptFrom(article.content, article.excerpt)}
           </p>
         )}
@@ -109,7 +124,7 @@ export function TextStory({
             </Link>
           </h3>
           {showExcerpt && (
-            <p className="mt-1 line-clamp-3 font-serif text-[18px] leading-[1.6] text-[#444444]">
+            <p className="no-copy mt-1 line-clamp-3 font-serif text-[18px] leading-[1.6] text-[#444444]">
               {excerptFrom(article.content, article.excerpt, 130)}
             </p>
           )}
@@ -120,9 +135,10 @@ export function TextStory({
         {article.featured_image_url && (
           <Link to={`/article/${article.slug}`} className="shrink-0" aria-label={article.title}>
             <img
-              src={article.featured_image_url}
+              src={thumbUrl(article.featured_image_url, 320)}
               alt=""
               loading="lazy"
+              decoding="async"
               className="h-[110px] w-[120px] object-cover"
             />
           </Link>
@@ -206,9 +222,10 @@ export function ArticleRow({
       {showThumb && article.featured_image_url && (
         <Link to={`/article/${article.slug}`} className="shrink-0" aria-label={article.title}>
           <img
-            src={article.featured_image_url}
+            src={thumbUrl(article.featured_image_url, 320)}
             alt=""
             loading="lazy"
+            decoding="async"
             className="h-[110px] w-[130px] object-cover"
           />
         </Link>
@@ -235,9 +252,10 @@ export function OverlayCard({
     <Link to={`/article/${article.slug}`} className={`group relative block overflow-hidden bg-slate-800 ${ratio}`}>
       {article.featured_image_url ? (
         <img
-          src={article.featured_image_url}
+          src={thumbUrl(article.featured_image_url, 640)}
           alt={article.image_caption || article.title}
           loading="lazy"
+          decoding="async"
           className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
         />
       ) : (
