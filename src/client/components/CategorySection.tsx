@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { ChevronRight, Crosshair } from "lucide-react";
+import { ChevronDown, ChevronRight, Crosshair } from "lucide-react";
 import { ArticleCard, ArticleRow, OverlayCard } from "./ArticleCard";
 import type { Article, Category } from "../../shared/types";
 
@@ -56,23 +56,31 @@ export function CategorySection({
             <Crosshair size={20} className="text-[#c1121f]" />
             আমার এলাকার খবর
           </p>
-          <select
-            aria-label="বিভাগ বেছে নিন"
-            defaultValue=""
-            onChange={(e) => {
-              if (e.target.value) navigate(`/category/${category.slug}`);
-            }}
-            className="w-full rounded-md border border-slate-300 bg-white px-3 py-3 text-[16px] text-slate-900 focus:border-[#c1121f] focus:outline-none"
-          >
-            <option value="" disabled>
-              বিভাগ বেছে নিন
-            </option>
-            {DIVISIONS.map((d) => (
-              <option key={d} value={d}>
-                {d}
+          <div className="relative">
+            <select
+              aria-label="বিভাগ বেছে নিন"
+              defaultValue=""
+              onChange={(e) => {
+                if (e.target.value) navigate(`/category/${category.slug}`);
+              }}
+              className="w-full appearance-none rounded-md border border-[#111111]/30 bg-white px-4 py-3 pr-11 font-serif text-[17px] font-bold text-[#111111] focus:border-[#c1121f] focus:outline-none focus:ring-1 focus:ring-[#c1121f] [&>option]:font-sans [&>option]:text-base [&>option]:font-normal"
+            >
+              <option value="" disabled>
+                বিভাগ বেছে নিন
               </option>
-            ))}
-          </select>
+              {DIVISIONS.map((d) => (
+                <option key={d} value={d}>
+                  {d}
+                </option>
+              ))}
+            </select>
+            <ChevronDown
+              size={20}
+              strokeWidth={2.75}
+              className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-[#111111]"
+              aria-hidden="true"
+            />
+          </div>
         </div>
       )}
 

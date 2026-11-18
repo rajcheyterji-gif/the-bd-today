@@ -3,7 +3,6 @@ import { Link, useLocation } from "react-router-dom";
 import { Globe, Menu, X } from "lucide-react";
 import { useSiteData } from "../hooks/useCategories";
 import { resolveNavHref } from "./Footer";
-import { TrendingFlameIcon } from "./TrendingIcon";
 
 /**
  * Sticky category nav (Prothom Alo mobile header, row 2): a horizontally
@@ -30,8 +29,8 @@ export function Navbar() {
   const active = (href: string) => pathname === href;
 
   const linkCls = (href: string) =>
-    `shrink-0 whitespace-nowrap px-2.5 py-2.5 font-serif text-[18px] font-semibold sm:px-3 ${
-      active(href) ? "font-bold text-[#c1121f]" : "text-[#111111] hover:text-[#c1121f]"
+    `shrink-0 whitespace-nowrap px-2.5 py-2.5 font-serif text-[19px] font-bold sm:px-3 ${
+      active(href) ? "font-black text-[#c1121f]" : "text-[#111111] hover:text-[#c1121f]"
     }`;
 
   return (
@@ -50,9 +49,10 @@ export function Navbar() {
           ))}
           <Link
             to="/breaking"
-            className={`${linkCls("/breaking")} flex items-center gap-1`}
+            className={`${linkCls("/breaking")} flex items-center gap-1.5`}
           >
-            <TrendingFlameIcon size={15} />
+            {/* Solid red live dot — sober breaking marker, no cartoon flame */}
+            <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#c1121f]" aria-hidden="true" />
             {label("ব্রেকিং", "Breaking")}
           </Link>
         </div>
@@ -64,9 +64,9 @@ export function Navbar() {
             onClick={() => setEng((v) => !v)}
             aria-pressed={eng}
             aria-label={eng ? "Switch navigation to Bengali" : "Switch navigation to English"}
-            className="flex items-center gap-1 rounded-md bg-[#fde9e2] px-2.5 py-2 text-[15px] font-semibold text-slate-900 hover:bg-[#fbdcd2]"
+            className="flex items-center gap-1 rounded-md bg-[#fde9e2] px-2.5 py-2 text-[16px] font-semibold text-[#111111] hover:bg-[#fbdcd2]"
           >
-            <Globe size={17} strokeWidth={2.5} />
+            <Globe size={18} strokeWidth={2.5} />
             {eng ? "বাংলা" : "Eng"}
           </button>
           <button
@@ -74,9 +74,9 @@ export function Navbar() {
             onClick={() => setMenuOpen((v) => !v)}
             aria-expanded={menuOpen}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
-            className="rounded-md p-1.5 text-slate-900 hover:bg-slate-100"
+            className="rounded-md p-1.5 text-[#111111] hover:bg-slate-100"
           >
-            {menuOpen ? <X size={22} strokeWidth={2.5} /> : <Menu size={22} strokeWidth={2.5} />}
+            {menuOpen ? <X size={24} strokeWidth={2.75} /> : <Menu size={24} strokeWidth={2.75} />}
           </button>
         </div>
       </nav>
@@ -89,7 +89,7 @@ export function Navbar() {
               <Link
                 to="/latest"
                 onClick={() => setMenuOpen(false)}
-                className="border-b border-slate-100 py-2 font-serif text-[17px] font-semibold text-[#111111] hover:text-[#c1121f]"
+                className="border-b border-slate-100 py-2 font-serif text-[18px] font-bold text-[#111111] hover:text-[#c1121f]"
               >
                 {label("সর্বশেষ", "Latest")}
               </Link>
@@ -98,7 +98,7 @@ export function Navbar() {
                   key={c.id}
                   to={`/category/${c.slug}`}
                   onClick={() => setMenuOpen(false)}
-                  className="border-b border-slate-100 py-2 font-serif text-[17px] font-semibold text-[#111111] hover:text-[#c1121f]"
+                  className="border-b border-slate-100 py-2 font-serif text-[18px] font-bold text-[#111111] hover:text-[#c1121f]"
                 >
                   {catLabel(c)}
                 </Link>
@@ -106,14 +106,14 @@ export function Navbar() {
               <Link
                 to="/breaking"
                 onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-1.5 border-b border-slate-100 py-2 font-serif text-[17px] font-semibold text-[#111111] hover:text-[#c1121f]"
+                className="flex items-center gap-1.5 border-b border-slate-100 py-2 font-serif text-[18px] font-bold text-[#111111] hover:text-[#c1121f]"
               >
-                <TrendingFlameIcon size={16} />
+                <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#c1121f]" aria-hidden="true" />
                 {label("ব্রেকিং", "Breaking")}
               </Link>
             </div>
 
-            <p className="mb-2 mt-5 text-xs font-bold uppercase tracking-[0.15em] text-slate-400">
+            <p className="mb-2 mt-5 text-[13px] font-bold uppercase tracking-[0.15em] text-[#111111]">
               {label("আরও", "More")}
             </p>
             <div className="grid grid-cols-2 gap-x-4 gap-y-1 sm:grid-cols-3 lg:grid-cols-4">

@@ -4,7 +4,7 @@ import { X } from "lucide-react";
 import { Logo } from "./Logo";
 
 /** Solid (filled) magnifier — Lucide's outline search reads thin and cheap at small sizes. */
-function FilledSearchIcon({ size = 22 }: { size?: number }) {
+function FilledSearchIcon({ size = 26 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.75} strokeLinecap="round" aria-hidden="true">
       <circle cx="11" cy="11" r="7" />
@@ -14,7 +14,7 @@ function FilledSearchIcon({ size = 22 }: { size?: number }) {
 }
 
 /** Solid (filled) person — matches Prothom Alo's filled Login icon. */
-function FilledUserIcon({ size = 21 }: { size?: number }) {
+function FilledUserIcon({ size = 24 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
@@ -23,30 +23,26 @@ function FilledUserIcon({ size = 21 }: { size?: number }) {
 }
 
 /**
- * Masthead (Prothom Alo mobile header, row 1): the logo is a very wide
- * 7:1 lockup, so on small screens it gets a DEDICATED full-width row,
- * centred and big (~48px tall — the most a 360px phone fits), with the
- * Bengali date on the left and the solid search icon + divider + Login
- * in a slim utility row underneath — the logo can never squeeze the
- * icons out, and the icons can never hide behind the logo. From sm up
- * the masthead is a single row again: the logo is absolutely CENTRED
- * (64px at sm, 80px at md, 96px at lg) while the icons sit in normal
- * flow at the right. Tapping the magnifier opens a clean full-width
- * pill search bar (Bengali placeholder, clear + close controls,
- * autofocus, Escape to close); submitting still navigates to
- * /search?q=… exactly as before.
+ * Masthead (Prothom Alo header, row 1): ONE dense row on every screen —
+ * our logo LEFT, a big solid-black search magnifier, a thin vertical
+ * divider, and a solid person icon + "Login" on the RIGHT. No date row
+ * and no centred logo row: Prothom Alo shows no date in the header, and
+ * the pale date strip is what made ours look washed-out. The logo is
+ * a 4.36:1 Bengali wordmark, so on phones it renders 48–56px tall
+ * (fluid clamp, see Logo.tsx) — big and dominant like Prothom Alo's
+ * ~55px wordmark — and the "Login" text hides below sm, leaving the
+ * icons compact enough that everything fits one row without overlap;
+ * from sm the logo is 64px (80px md, 96px lg) with the "Login" text
+ * visible. Everything in the row is near-black #111111. Tapping the
+ * magnifier opens a clean full-width pill search bar (Bengali
+ * placeholder, clear + close controls, autofocus, Escape to close);
+ * submitting still navigates to /search?q=… exactly as before.
  */
 export function Masthead() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
-  const todayBn = new Intl.DateTimeFormat("bn-BD", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(new Date());
 
   useEffect(() => {
     if (searchOpen) inputRef.current?.focus();
@@ -73,41 +69,29 @@ export function Masthead() {
 
   return (
     <header className="bg-white">
-      <div className="relative mx-auto max-w-[1280px] px-3 sm:flex sm:items-center sm:justify-end sm:px-4 sm:py-3">
-        <Link
-          to="/"
-          className="flex justify-center py-2 sm:absolute sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:py-0"
-          aria-label="THE BD TODAY — home"
-        >
-          <Logo
-            markClassName="h-5 w-auto min-[380px]:h-[22px] sm:h-9"
-            wordmarkClassName="text-[18px] min-[380px]:text-[20px] min-[480px]:text-[24px] sm:text-4xl"
-          />
+      <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-1 px-2 py-2 sm:px-4 sm:py-3">
+        <Link to="/" className="min-w-0 shrink" aria-label="THE BD TODAY — home">
+          <Logo />
         </Link>
 
-        <div className="relative z-10 flex items-center justify-between border-t border-slate-100 sm:justify-end sm:border-t-0">
-          <span className="py-1.5 text-[13px] font-medium text-slate-500 sm:hidden">
-            {todayBn}
-          </span>
-          <div className="flex items-center bg-white">
-            <button
-              type="button"
-              aria-expanded={searchOpen}
-              aria-label={searchOpen ? "Close search" : "Open search"}
-              onClick={toggleSearch}
-              className="p-2 text-slate-900 hover:text-[#c1121f]"
-            >
-              {searchOpen ? <X size={22} strokeWidth={2.5} /> : <FilledSearchIcon size={22} />}
-            </button>
-            <span className="mx-1 h-6 w-px bg-slate-300" aria-hidden="true" />
-            <Link
-              to="/admin"
-              className="flex items-center gap-1.5 py-2 pl-1 pr-1 text-[15px] font-medium text-slate-900 hover:text-[#c1121f]"
-            >
-              <FilledUserIcon size={21} />
-              <span className="hidden min-[480px]:inline">Login</span>
-            </Link>
-          </div>
+        <div className="flex shrink-0 items-center">
+          <button
+            type="button"
+            aria-expanded={searchOpen}
+            aria-label={searchOpen ? "Close search" : "Open search"}
+            onClick={toggleSearch}
+            className="p-1.5 text-[#111111] hover:text-[#c1121f]"
+          >
+            {searchOpen ? <X size={26} strokeWidth={2.75} /> : <FilledSearchIcon size={26} />}
+          </button>
+          <span className="mx-1 h-7 w-px bg-[#d4d4d4]" aria-hidden="true" />
+          <Link
+            to="/admin"
+            className="flex items-center gap-1.5 p-1.5 text-[17px] font-semibold text-[#111111] hover:text-[#c1121f]"
+          >
+            <FilledUserIcon size={24} />
+            <span className="hidden sm:inline">Login</span>
+          </Link>
         </div>
       </div>
 
@@ -123,7 +107,7 @@ export function Masthead() {
               <button
                 type="submit"
                 aria-label="খুঁজুন"
-                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-[#c1121f]"
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#111111] hover:text-[#c1121f]"
               >
                 <FilledSearchIcon size={20} />
               </button>

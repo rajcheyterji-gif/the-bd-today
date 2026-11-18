@@ -34,7 +34,7 @@ export function Footer() {
         {/* Logo lockup with tagline */}
         <Link to="/" className="inline-block" aria-label="THE BD TODAY — home">
           <Logo
-            markClassName="h-10 w-auto sm:h-12"
+            markClassName="h-12 w-auto sm:h-14"
             wordmarkClassName="text-[28px] sm:text-3xl"
             tagline="দ্য বিডি টুডে — সত্য, সবার আগে"
             taglineClassName="text-sm"

@@ -1,28 +1,29 @@
 /**
  * THE BD TODAY — logo lockup (user-supplied artwork).
  *
- * The logo is the user's own design: a black/red "BD" monogram with a red
- * swoosh, divider, "The BD Today" wordmark (BD in red) and a bar-chart +
- * red trending arrow. It ships as a JPEG (public/logo.jpg, tight-cropped
- * to the artwork: 1945x276, 7.05:1) and is rendered as an <img> so the
- * artwork is used exactly as designed.
+ * The logo is the user's own design: a heavy black Bengali serif
+ * wordmark "দ্য বিডি টুডে" with a red sun + black fountain-pen nib
+ * mark on the left and a red/black swoosh underneath. It ships as a
+ * JPEG (public/logo.jpg, tight-cropped to the artwork: 1747x401,
+ * 4.36:1) and is rendered as an <img> so the artwork is used exactly
+ * as designed. The matching square favicon (public/favicon.png,
+ * 512x512) is the user's own square version of the same mark with a
+ * black rounded border.
  *
- * Heights: 48px on mobile, 64px from sm, 80px from md, 96px from lg.
- * Note the 7:1 aspect caps the mobile height: at 48px the lockup is
- * already ~338px wide, i.e. the full width of a 360px phone — it cannot
- * be taller on a phone without cropping the artwork, so the masthead
- * gives it a dedicated full-width row on small screens instead.
- *
- * The component keeps its old props/API so Masthead and Footer need no
- * changes: markClassName/wordmarkClassName are accepted but no longer
- * drive sizing (the image is one lockup now) — the image height is
- * 48px on mobile, 64px from sm, 80px from md and 96px from lg. The
- * optional Bengali tagline still renders under the image where a caller
- * passes one (the footer).
+ * Heights: the image is one wide lockup (4.36:1), so on phones its
+ * height is fluid — `clamp(48px, 15vw, 56px)` — big and dominant like
+ * Prothom Alo's ~55px wordmark, while still leaving room for the
+ * search/Login icons in the same dense row (at 56px the lockup is
+ * ~244px wide; the icons take ~83px; a 360px phone fits both). From
+ * sm it is 64px, 80px from md, 96px from lg. Callers may override
+ * the image height with `markClassName` (the footer does: 48px /
+ * 56px). `wordmarkClassName` is accepted for API compatibility only.
+ * The optional Bengali tagline still renders under the image where a
+ * caller passes one (the footer).
  */
 
 type LogoProps = {
-  /** Accepted for API compatibility; sizing is now fixed by the image. */
+  /** Image height classes; when omitted the header default applies. */
   markClassName?: string;
   /** Accepted for API compatibility; the wordmark is part of the image. */
   wordmarkClassName?: string;
@@ -37,6 +38,7 @@ type LogoProps = {
 };
 
 export function Logo({
+  markClassName,
   tagline,
   taglineClassName = "text-[11px]",
   center = false,
@@ -47,7 +49,10 @@ export function Logo({
       <img
         src="/logo.jpg"
         alt="THE BD TODAY"
-        className="h-12 w-auto sm:h-16 md:h-20 lg:h-24"
+        className={
+          markClassName ??
+          "h-[clamp(48px,15vw,56px)] w-auto max-w-full sm:h-16 md:h-20 lg:h-24"
+        }
         draggable={false}
       />
       {tagline ? (
