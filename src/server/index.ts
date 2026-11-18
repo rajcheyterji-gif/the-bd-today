@@ -25,7 +25,7 @@ import {
   toSeoInput,
 } from "./lib/seo";
 import { isBot, prerenderForPath } from "./lib/prerender";
-import { articleTitle, pageMeta } from "../shared/seo";
+import { articleTitle, articleUrl, pageMeta } from "../shared/seo";
 import type { Article } from "../shared/types";
 import authRoutes from "./routes/auth";
 import articleRoutes from "./routes/articles";
@@ -155,6 +155,7 @@ export function createApp(): Hono<{ Bindings: Env; Variables: AppVariables }> {
         let title: string | undefined;
         let headHtml: string;
         let jsonLd: string | undefined;
+        let canonical: string | undefined;
         if (articleMatch) {
           let article: Article | null = null;
           try {
@@ -175,6 +176,8 @@ export function createApp(): Hono<{ Bindings: Env; Variables: AppVariables }> {
               /</g,
               "\\u003c",
             );
+            // Canonical points at the clean article URL (no query/fragment).
+            canonical = articleUrl(origin, toSeoInput(article));
           } else {
             headHtml = defaultMetaTagsHtml(origin, path);
           }
@@ -193,10 +196,15 @@ export function createApp(): Hono<{ Bindings: Env; Variables: AppVariables }> {
         );
         if (verificationMeta) headHtml = `${verificationMeta}\n${headHtml}`;
         const html = await index.text();
-        const body = injectSeoIntoHtml(html, headHtml, title, jsonLd);
+        const body = injectSeoIntoHtml(html, headHtml, title, jsonLd, canonical);
         return new Response(body, {
           status: 200,
-          headers: { "content-type": "text/html; charset=utf-8" },
+          headers: {
+            "content-type": "text/html; charset=utf-8",
+            // Injected HTML is per-article and cheap to rebuild; keep it
+            // fresh but let CDNs serve it stale briefly while revalidating.
+            "cache-control": "public, max-age=60, stale-while-revalidate=300",
+          },
         });
       }
     } catch (err) {
