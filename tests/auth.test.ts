@@ -243,4 +243,25 @@ describe("first-admin bootstrap (POST /api/v1/auth/init)", () => {
     expect(body.data.user.role).toBe("admin");
     expect(body.data.user.email).toBe("admin@thebdtoday.com");
   });
+
+  it("creates the first admin when only placeholder-hash seed users exist", async () => {
+    const env = createFakeEnv({
+      users: [{ ...adminUser(), password_hash: "__SET_VIA_INIT__" }],
+    });
+    const res = await app.request(
+      "/api/v1/auth/init",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          token: "test-init-token",
+          email: "admin@thebdtoday.com",
+          name: "Editor-in-Chief",
+          password: "a-very-long-password",
+        }),
+      },
+      env,
+    );
+    expect(res.status).toBe(201);
+  });
 });
