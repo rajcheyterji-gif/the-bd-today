@@ -155,3 +155,23 @@
   padding-top: 0.05em;
   color: #c1121f;
 }
+
+/* Copy protection: news writing cannot be selected or copied. Apply the
+   `no-copy` class to article text (ArticlePage, ArticleCard excerpts,
+   HeroArticle). Links stay copyable — long-press a link still offers
+   "copy link address" — as do form fields, so readers can still copy a
+   link, write a comment, or use the share buttons. */
+.no-copy {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+.no-copy a,
+.no-copy input,
+.no-copy textarea,
+.no-copy select,
+.no-copy [contenteditable="true"] {
+  -webkit-user-select: text;
+  user-select: text;
+  -webkit-touch-callout: default;
+}
