@@ -18,17 +18,21 @@ import {
   isLoginRateLimited,
   recordFailedLogin,
   requireAuth,
+  sha256Hex,
+  verifySignedCookie,
 } from "../middleware/auth";
 import {
+  changeOwnPassword,
   createFirstAdmin,
   createSession,
   destroySession,
   getUserByEmail,
   recordAuditLog,
   toSessionUser,
+  updateOwnProfile,
   verifyPassword,
 } from "../services/auth";
-import { initAdminSchema, loginSchema } from "../validators/auth";
+import { changePasswordSchema, initAdminSchema, loginSchema, updateProfileSchema } from "../validators/auth";
 
 type AuthEnv = { Bindings: Env; Variables: { user: SessionUser } };
 
@@ -114,6 +118,43 @@ auth.post("/logout", csrfProtection, async (c) => {
 
 auth.get("/me", requireAuth, (c) => {
   return ok(c, { user: c.var.user });
+});
+
+/**
+ * Own profile (PATCH /api/v1/auth/me). Any signed-in staff member may
+ * update their own name, email and bio. The role is never accepted —
+ * updateOwnProfile never touches the role column — so nobody can
+ * promote themselves. CSRF-protected like every other mutation.
+ */
+auth.patch("/me", requireAuth, csrfProtection, async (c) => {
+  const body = await validateBody(c, updateProfileSchema);
+  const updated = await updateOwnProfile(c.env.DB, c.var.user.id, body);
+  await recordAuditLog(c.env.DB, {
+    userId: c.var.user.id,
+    action: "auth.profile_update",
+    details: { fields: Object.keys(body) },
+    ip: getClientIp(c),
+  });
+  return ok(c, { user: updated });
+});
+
+/**
+ * Own password (POST /api/v1/auth/me/password). Requires the current
+ * password; the new one must be at least 12 characters. Other sessions
+ * for this user are revoked; the session making the request stays valid.
+ */
+auth.post("/me/password", requireAuth, csrfProtection, async (c) => {
+  const body = await validateBody(c, changePasswordSchema);
+  const raw = getCookie(c, SESSION_COOKIE);
+  const token = await verifySignedCookie(c.env, raw);
+  const keepSessionId = token ? await sha256Hex(token) : null;
+  await changeOwnPassword(c.env.DB, c.var.user.id, body.current_password, body.new_password, keepSessionId);
+  await recordAuditLog(c.env.DB, {
+    userId: c.var.user.id,
+    action: "auth.password_change",
+    ip: getClientIp(c),
+  });
+  return ok(c, { changed: true });
 });
 
 auth.post("/init", async (c) => {
