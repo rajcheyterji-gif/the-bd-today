@@ -110,15 +110,20 @@ function OtherCategories({ sections }: { sections: { category: Category; article
   const trackRef = useRef<HTMLDivElement | null>(null);
   const [active, setActive] = useState(0);
 
+  // Only sections that actually have stories get a card. A section with no
+  // articles must not render a blank white card shell (or a dot) — the
+  // whole section hides instead.
+  const filled = sections.filter((s) => s.articles.length > 0);
+
   const onScroll = () => {
     const el = trackRef.current;
     if (!el) return;
     const card = el.querySelector<HTMLElement>(":scope > *");
     const step = card ? card.offsetWidth + 12 : 1;
-    setActive(Math.min(sections.length - 1, Math.round(el.scrollLeft / step)));
+    setActive(Math.min(filled.length - 1, Math.round(el.scrollLeft / step)));
   };
 
-  if (sections.length === 0) return null;
+  if (filled.length === 0) return null;
   return (
     <div>
       <h2 className="mb-4 font-serif text-[30px] font-black text-[#111111]">অন্যান্য</h2>
@@ -127,7 +132,7 @@ function OtherCategories({ sections }: { sections: { category: Category; article
         onScroll={onScroll}
         className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
-        {sections.map((s) => {
+        {filled.map((s) => {
           const [top, ...more] = s.articles;
           return (
             <div
@@ -186,7 +191,7 @@ function OtherCategories({ sections }: { sections: { category: Category; article
         })}
       </div>
       <div className="mt-3 flex justify-center gap-1.5" aria-hidden="true">
-        {sections.map((s, i) => (
+        {filled.map((s, i) => (
           <span
             key={s.category.id}
             className={`h-2 rounded-full ${i === active ? "w-2.5 bg-slate-900" : "w-2 bg-slate-300"}`}
@@ -236,6 +241,9 @@ export function HomePage() {
   const sportsSection = orderedSections.find((s) => s.category.slug === "sports");
   const sportsLeadId = sportsSection?.articles[0]?.id;
   const sportsLive = sportsLeadId != null && breakingIds.has(sportsLeadId);
+  // §10 অন্যান্য only gets sections with stories; an empty carousel must
+  // hide its whole bordered box, not render a blank strip above the footer.
+  const otherSections = orderedSections.filter((s) => s.articles.length > 0);
 
   // Dedup only inside the lead block; other sections may reuse stories,
   // exactly like the reference paper (a story appears in its category too).
@@ -387,9 +395,9 @@ export function HomePage() {
           )}
 
           {/* §10 অন্যান্য: horizontal swipeable category cards */}
-          {orderedSections.length > 0 && (
+          {otherSections.length > 0 && (
             <div className="border-t border-slate-200 py-5">
-              <OtherCategories sections={orderedSections} />
+              <OtherCategories sections={otherSections} />
             </div>
           )}
         </div>
