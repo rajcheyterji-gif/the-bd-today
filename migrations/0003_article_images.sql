@@ -1,1 +1,119 @@
-LS0gVEhFIEJEIFRPREFZIOKAlCAwMDAzOiByZWFsIHBob3RvcyBmb3Igc2VlZGVkIGFydGljbGVzCi0tCi0tIFRoZSAxMiBwdWJsaXNoZWQgc2VlZCBhcnRpY2xlcyAoMDAwMikgc2hpcHBlZCB3aXRoIGZlYXR1cmVkX2ltYWdlX3VybAotLSBOVUxMLCBzbyBldmVyeSBpbWFnZSBzbG90IG9uIHRoZSBob21lcGFnZSByZW5kZXJlZCB0aGUgZ3JleQotLSAiVEhFIEJEIFRPREFZIiBwbGFjZWhvbGRlciBib3guIFRoaXMgbWlncmF0aW9uIGdpdmVzIGVhY2ggYXJ0aWNsZSBhCi0tIHJlYWwsIHRvcGljLW1hdGNoZWQgcGhvdG8gKFdpa2ltZWRpYSBDb21tb25zLCBmcmVlbHkgbGljZW5zZWQsCi0tIGhvdGxpbmstZnJpZW5kbHkgdGh1bWIgVVJMcyBhdCAxMjgwcHggd2lkZSwgYWxsIHZlcmlmaWVkIEhUVFAgMjAwICsKLS0gaW1hZ2UvanBlZykuIENhcHRpb25zIGFyZSBpbiBCZW5nYWxpOyBjcmVkaXQgaXMgdGhlIHBob3RvIHNvdXJjZS4KLS0KLS0gVGhlIHR3byBub3QteWV0LXB1Ymxpc2hlZCBhcnRpY2xlcyAoMTMgc2NoZWR1bGVkLCAxNCBkcmFmdCkgZ2V0IHBob3RvcwotLSB0b28sIHNvIHRoZXkgcmVuZGVyIGNvcnJlY3RseSB0aGUgbW9tZW50IHRoZXkgYXJlIHB1Ymxpc2hlZC4KLS0KLS0gTk9URSBvbiB0aGUgSGlnaGxpZ2h0cyBjYXJvdXNlbCAvIHNwZWNpYWwtY292ZXJhZ2UgYmFuZDogdGhlcmUgaXMgbm8KLS0gZmVhdHVyZWQvaGlnaGxpZ2h0IGZsYWcgY29sdW1uIGluIHRoZSBzY2hlbWEsIGFuZCB0aG9zZSBzZWN0aW9ucyBhcmUKLS0gTk9UIGZsYWctZHJpdmVuIOKAlCBIb21lUGFnZSBmaWxscyB0aGVtIGZyb20gZGVkdXBlZCBhcnRpY2xlIHBvb2xzCi0tICh0cmVuZGluZy9sYXRlc3QpIGFmdGVyIHRoZSBsZWFkIGJsb2NrIGFuZCBpbWFnZSByb3cgaGF2ZSB0YWtlbiB0aGVpcgotLSBzaGFyZS4gV2l0aCBvbmx5IDEyIHB1Ymxpc2hlZCBhcnRpY2xlcyB0aGUgcG9vbHMgYXJlIGV4aGF1c3RlZCBiZWZvcmUKLS0gdGhlIGNhcm91c2VsIChuZWVkcyAzKSBhbmQgdGhlIGJhbmQgKG5lZWRzIDMpIGdldCBhbnl0aGluZywgc28gbm8KLS0gZGF0YS1vbmx5IG1pZ3JhdGlvbiBjYW4gbWFrZSB0aGVtIGFwcGVhci4gVGhleSB3aWxsIHN0YXJ0IGFwcGVhcmluZwotLSBvbmNlIH4xNysgYXJ0aWNsZXMgYXJlIHB1Ymxpc2hlZCAoY2Fyb3VzZWwpIC8gfjIzKyAoYm90aCksIG9yIGlmIHRoZQotLSBob21lcGFnZSBpcyBjaGFuZ2VkIHRvIHJldXNlIGFydGljbGVzIGluIHRob3NlIHNlY3Rpb25zLgoKLS0gMS4gUGFkbWEgQnJpZGdlIC8gZWNvbm9teSAocHVibGlzaGVkKQpVUERBVEUgYXJ0aWNsZXMKU0VUIGZlYXR1cmVkX2ltYWdlX3VybCA9ICdodHRwczovL3RodW1iLndpa2ltZWRpYS5vcmcvd2lraXBlZGlhL2NvbW1vbnMvdGh1bWIvZi9mZi9QYWRtYV9CcmlkZ2VfRGF5X0JlZm9yZV9JbmF1Z3VyYXRpb25fY2VyZW1vbnkuanBnLzEyODBweC1QYWRtYV9CcmlkZ2VfRGF5X0JlZm9yZV9JbmF1Z3VyYXRpb25fY2VyZW1vbnkuanBnJywKICAgIGltYWdlX2NhcHRpb24gPSAn4Kaq4Kam4KeN4Kau4Ka+IOCmuOCnh+CmpOCngSwg4Kaq4Kam4KeN4Kau4Ka+IOCmqOCmpuCngOCmsCDgppPgpqrgprAnLAogICAgaW1hZ2VfY3JlZGl0ID0gJ+CmieCmh+CmleCmv+CmruCmv+CmoeCmv+Cmr+CmvOCmviDgppXgpq7gpqjgp43gprgnCldIRVJFIHNsdWcgPSAncGFkbWEtc2V0dS1kb2traGluYW5jaG9sLW9ydGhvbml0aSc7CgotLSAyLiBOYXRpb25hbCBlbGVjdGlvbiAvIHZvdGVyIGxpc3QgKHB1Ymxpc2hlZCkKVVBEQVRFIGFydGljbGVzClNFVCBmZWF0dXJlZF9pbWFnZV91cmwgPSAnaHR0cHM6Ly90aHVtYi53aWtpbWVkaWEub3JnL3dpa2lwZWRpYS9jb21tb25zL3RodW1iLzcvNzEvV29tZW4lMjdzX2xpbmVfdG9fdm90ZV9pbl90aGVfZ2VuZXJhbF9lbGVjdGlvbl9vZl8yMDI2X2luX0JhbmdsYWRlc2hfYXRfQ2hoYWdhbG5haXlhJTJDX0ZlbmlfMjAyNi0wMi0xMl9pbl90aGVfbW9ybmluZy5qcGcvMTI4MHB4LVdvbWVuJTI3c19saW5lX3RvX3ZvdGVfaW5fdGhlX2dlbmVyYWxfZWxlY3Rpb25fb2ZfMjAyNl9pbl9CYW5nbGFkZXNoX2F0X0NoaGFnYWxuYWl5YSUyQ19GZW5pXzIwMjYtMDItMTJfaW5fdGhlX21vcm5pbmcuanBnJywKICAgIGltYWdlX2NhcHRpb24gPSAn4Kar4KeH4Kao4KeA4KawIOCmm+CmvuCml+CmsuCmqOCmvuCmh+Cmr+CmvOCmvuCmr+CmvCDgpq3gp4vgpp/gp4fgprAg4Kay4Ka+4KaH4Kao4KeHIOCmqOCmvuCmsOCngCDgpq3gp4vgpp/gpr7gprDgprDgpr4nLAogICAgaW1hZ2VfY3JlZGl0ID0gJ+CmieCmh+CmleCmv+CmruCmv+CmoeCmv+Cmr+CmvOCmviDgppXgpq7gpqjgp43gprgnCldIRVJFIHNsdWcgPSAnamF0aXlhLW5pcmJhY2hvbi1wcm9zdHV0aSc7CgotLSAzLiBCYW5nbGFkZXNoIFQyMCBjcmlja2V0IHNlcmllcyB3aW4gKHB1Ymxpc2hlZCkKVVBEQVRFIGFydGljbGVzClNFVCBmZWF0dXJlZF9pbWFnZV91cmwgPSAnaHR0cHM6Ly90aHVtYi53aWtpbWVkaWEub3JnL3dpa2lwZWRpYS9jb21tb25zL3RodW1iL2EvYTYvU3BlY3RhdG9yc19vZl9CYW5nbGFkZXNoX3ZzX1Bha2lzdGFuX2NyaWNrZXRfbWF0Y2glMkNfMjJfSnVsXzIwMjUuanBnLzEyODBweC1TcGVjdGF0b3JzX29mX0JhbmdsYWRlc2hfdnNfUGFraXN0YW5fY3JpY2tldF9tYXRjaCUyQ18yMl9KdWxfMjAyNS5qcGcnLAogICAgaW1hZ2VfY2FwdGlvbiA9ICfgpq7gpr/gprDgpqrgp4HgprDgp4cg4Kas4Ka+4KaC4Kay4Ka+4Kam4KeH4Ka2LeCmquCmvuCmleCmv+CmuOCnjeCmpOCmvuCmqCDgpq7gp43gpq/gpr7gpprgp4cg4Kam4Kaw4KeN4Ka24KaV4Kaw4Ka+JywKICAgIGltYWdlX2NyZWRpdCA9ICfgpongpofgppXgpr/gpq7gpr/gpqHgpr/gpq/gprzgpr4g4KaV4Kau4Kao4KeN4Ka4JwpXSEVSRSBzbHVnID0gJ2JhbmdsYWRlc2gtY3JpY2tldC10MjAtc2VyaWVzLWpveSc7CgotLSA0LiBSZW1pdHRhbmNlIHJlY29yZCAocHVibGlzaGVkKQpVUERBVEUgYXJ0aWNsZXMKU0VUIGZlYXR1cmVkX2ltYWdlX3VybCA9ICdodHRwczovL3RodW1iLndpa2ltZWRpYS5vcmcvd2lraXBlZGlhL2NvbW1vbnMvdGh1bWIvOC84NC9EaGFrYV9IYXpyYXRfU2hhaGphbGFsX0ludGVybmF0aW9uYWxfQWlycG9ydF9NaWdyYW50X0xvdW5nZV9JbmF1Z3VyYXRpb25fMjAyNC0xMS0xMV8lMjhQSUQtMDAwNTMzMiUyOS5qcGcvMTI4MHB4LURoYWthX0hhenJhdF9TaGFoamFsYWxfSW50ZXJuYXRpb25hbF9BaXJwb3J0X01pZ3JhbnRfTG91bmdlX0luYXVndXJhdGlvbl8yMDI0LTExLTExXyUyOFBJRC0wMDA1MzMyJTI5LmpwZycsCiAgICBpbWFnZV9jYXB0aW9uID0gJ+CmouCmvuCmleCmviDgpqzgpr/gpq7gpr7gpqjgpqzgpqjgp43gpqbgprDgp4cg4Kaq4KeN4Kaw4Kas4Ka+4Ka44KeAIOCmsuCmvuCmieCmnuCnjeCmnOCnh+CmsCDgpongpqbgp43gpqzgp4vgpqfgpqgnLAogICAgaW1hZ2VfY3JlZGl0ID0gJ+CmieCmh+CmleCmv+CmruCmv+CmoeCmv+Cmr+CmvOCmviDgppXgpq7gpqjgp43gprgnCldIRVJFIHNsdWcgPSAncmVtaXR0YW5jZS1yZWNvcmQtcHJvYmFzaGktYXknOwoKLS0gNS4gRGhha2EgbWV0cm8gcmFpbCBuZXcgbGluZSAocHVibGlzaGVkKQpVUERBVEUgYXJ0aWNsZXMKU0VUIGZlYXR1cmVkX2ltYWdlX3VybCA9ICdodHRwczovL3RodW1iLndpa2ltZWRpYS5vcmcvd2lraXBlZGlhL2NvbW1vbnMvdGh1bWIvYi9iMS9NZXRyb19SYWlsX1N0YXRpb25fYXRfVXR0YXJhX0NlbnRlcl9pbl9EaGFrYSUyQ19CYW5nbGFkZXNoLmpwZy8xMjgwcHgtTWV0cm9fUmFpbF9TdGF0aW9uX2F0X1V0dGFyYV9DZW50ZXJfaW5fRGhha2ElMkNfQmFuZ2xhZGVzaC5qcGcnLAogICAgaW1hZ2VfY2FwdGlvbiA9ICfgpongpqTgp43gpqTgprDgpr4g4Ka44KeH4Kao4KeN4Kaf4Ka+4KawIOCmruCnh+Cmn+CnjeCmsOCni+CmsOCnh+CmsiDgprjgp43gpp/gp4fgprbgpqgsIOCmouCmvuCmleCmvicsCiAgICBpbWFnZV9jcmVkaXQgPSAn4KaJ4KaH4KaV4Ka/4Kau4Ka/4Kah4Ka/4Kav4Ka84Ka+IOCmleCmruCmqOCnjeCmuCcKV0hFUkUgc2x1ZyA9ICdkaGFrYS1tZXRyby1yYWlsLW5vdHVuLWxpbmUnOwoKLS0gNi4gQ2xpbWF0ZSBzdW1taXQgLyBCYW5nbGFkZXNoIGRlbWFuZCAocHVibGlzaGVkKQpVUERBVEUgYXJ0aWNsZXMKU0VUIGZlYXR1cmVkX2ltYWdlX3VybCA9ICdodHRwczovL3RodW1iLndpa2ltZWRpYS5vcmcvd2lraXBlZGlhL2NvbW1vbnMvdGh1bWIvMS8xNy9TYXJpYWthbmRpX0NoYXJfTGFuZF9GbG9vZF9BZmZlY3RlZF9CYW5nbGFkZXNoLmpwZy8xMjgwcHgtU2FyaWFrYW5kaV9DaGFyX0xhbmRfRmxvb2RfQWZmZWN0ZWRfQmFuZ2xhZGVzaC5qcGcnLAogICAgaW1hZ2VfY2FwdGlvbiA9ICfgpqzgpqjgp43gpq/gpr7gpq/gprwg4Kaq4KeN4Kay4Ka+4Kas4Ka/4KakIOCmuOCmvuCmsOCmv+Cmr+CmvOCmvuCmleCmvuCmqOCnjeCmpuCmv+CmsCDgpprgprDgpr7gpp7gp43gpprgprInLAogICAgaW1hZ2VfY3JlZGl0ID0gJ+CmieCmh+CmleCmv+CmruCmv+CmoeCmv+Cmr+CmvOCmviDgppXgpq7gpqjgp43gprgnCldIRVJFIHNsdWcgPSAnamFsYmF5dS1zb21tZWxvbi1iYW5nbGFkZXNoLWRhYmknOwoKLS0gNy4gTmV3IGN1cnJpY3VsdW0gLyBhc3Nlc3NtZW50IChwdWJsaXNoZWQpClVQREFURSBhcnRpY2xlcwpTRVQgZmVhdHVyZWRfaW1hZ2VfdXJsID0gJ2h0dHBzOi8vdGh1bWIud2lraW1lZGlhLm9yZy93aWtpcGVkaWEvY29tbW9ucy90aHVtYi9mL2ZkL0tpZHNfcGxheWluZ19hdF9zY2hvb2wlMkNfRGhha2ElMkNfQmFuZ2xhZGVzaF81LkpQRy8xMjgwcHgtS2lkc19wbGF5aW5nX2F0X3NjaG9vbCUyQ19EaGFrYSUyQ19CYW5nbGFkZXNoXzUuSlBHJywKICAgIGltYWdlX2NhcHRpb24gPSAn4Kai4Ka+4KaV4Ka+4KawIOCmj+CmleCmn+CmvyDgprjgp43gppXgp4HgprLgp4cg4Ka24Ka/4KaV4KeN4Ka34Ka+4Kaw4KeN4Kal4KeA4Kaw4Ka+JywKICAgIGltYWdlX2NyZWRpdCA9ICfgpongpofgppXgpr/gpq7gpr/gpqHgpr/gpq/gprzgpr4g4KaV4Kau4Kao4KeN4Ka4JwpXSEVSRSBzbHVnID0gJ25vdHVuLXNoaWtraGFrcm9tLW11bHlheWFuLXBvZGRvdGknOwoKLS0gOC4gTG9jYWwgc3RhcnR1cHMgLyBpbnZlc3RtZW50IChwdWJsaXNoZWQpClVQREFURSBhcnRpY2xlcwpTRVQgZmVhdHVyZWRfaW1hZ2VfdXJsID0gJ2h0dHBzOi8vdGh1bWIud2lraW1lZGlhLm9yZy93aWtpcGVkaWEvY29tbW9ucy90aHVtYi9hL2E1L0N1YmVTcGFjZS5qcGcvMTI4MHB4LUN1YmVTcGFjZS5qcGcnLAogICAgaW1hZ2VfY2FwdGlvbiA9ICfgppXgp4st4KaT4Kav4Ka84Ka+4Kaw4KeN4KaV4Ka/4KaCIOCmheCmq+Cmv+CmuOCnhyDgppXgpr7gppzgp4fgprAg4Kaq4Kaw4Ka/4Kas4KeH4Ka2JywKICAgIGltYWdlX2NyZWRpdCA9ICfgpongpofgppXgpr/gpq7gpr/gpqHgpr/gpq/gprzgpr4g4KaV4Kau4Kao4KeN4Ka4JwpXSEVSRSBzbHVnID0gJ2Rlc2hpby1zdGFydHVwLWJpbml5b2ctam9hcic7CgotLSA5LiBXb3JsZCBDdXAgZm9vdGJhbGwgZmluYWwgKHB1Ymxpc2hlZCkKVVBEQVRFIGFydGljbGVzClNFVCBmZWF0dXJlZF9pbWFnZV91cmwgPSAnaHR0cHM6Ly90aHVtYi53aWtpbWVkaWEub3JnL3dpa2lwZWRpYS9jb21tb25zL3RodW1iLzYvNmEvRmFuc19hdF9UaGVfMjAxNF9GSUZBX1dvcmxkX0N1cF9GaW5hbF8tXzE0MDcxMy04NjI2LWppa2F0dV8lMjgxNDY2MjcyNTc0MSUyOS5qcGcvMTI4MHB4LUZhbnNfYXRfVGhlXzIwMTRfRklGQV9Xb3JsZF9DdXBfRmluYWxfLV8xNDA3MTMtODYyNi1qaWthdHVfJTI4MTQ2NjI3MjU3NDElMjkuanBnJywKICAgIGltYWdlX2NhcHRpb24gPSAn4Keo4Kem4Ken4KeqIOCmrOCmv+CmtuCnjeCmrOCmleCmvuCmqiDgpqvgpr7gpofgpqjgpr7gprLgp4cg4Ka44KeN4Kaf4KeH4Kah4Ka/4Kav4Ka84Ka+4Kau4KeHIOCmreCmleCnjeCmpOCmsOCmvicsCiAgICBpbWFnZV9jcmVkaXQgPSAn4KaJ4KaH4KaV4Ka/4Kau4Ka/4Kah4Ka/4Kav4Ka84Ka+IOCmleCmruCmqOCnjeCmuCcKV0hFUkUgc2x1ZyA9ICdiaXNod29rYXAtZm9vdGJhbGwtZmluYWwtdXR0ZWphbmEnOwoKLS0gMTAuIERlbmd1ZSBhd2FyZW5lc3MgKHB1Ymxpc2hlZCkKVVBEQVRFIGFydGljbGVzClNFVCBmZWF0dXJlZF9pbWFnZV91cmwgPSAnaHR0cHM6Ly90aHVtYi53aWtpbWVkaWEub3JnL3dpa2lwZWRpYS9jb21tb25zL3RodW1iLzgvODcvQ2hpbGRyZW5fdW5kZXJfbW9zcXVpdG9fbmV0XyUyODI2NDgzNDYyNDgyJTI5LmpwZy8xMjgwcHgtQ2hpbGRyZW5fdW5kZXJfbW9zcXVpdG9fbmV0XyUyODI2NDgzNDYyNDgyJTI5LmpwZycsCiAgICBpbWFnZV9jYXB0aW9uID0gJ+CmruCmtuCmvuCmsOCmv+CmsCDgpqjgpr/gpprgp4cg4Ka24Ka/4Ka24KeB4Kaw4Ka+JywKICAgIGltYWdlX2NyZWRpdCA9ICfgpongpofgppXgpr/gpq7gpr/gpqHgpr/gpq/gprzgpr4g4KaV4Kau4Kao4KeN4Ka4JwpXSEVSRSBzbHVnID0gJ2Rlbmd1ZS1tb2thYmlsYS1zb2NoZXRvbm90YSc7CgotLSAxMS4gRGhha2EgZmlsbSBmZXN0aXZhbCAocHVibGlzaGVkKQpVUERBVEUgYXJ0aWNsZXMKU0VUIGZlYXR1cmVkX2ltYWdlX3VybCA9ICdodHRwczovL3RodW1iLndpa2ltZWRpYS5vcmcvd2lraXBlZGlhL2NvbW1vbnMvdGh1bWIvNy83OC9DYW1icmlkZ2VfRmlsbV9GZXN0aXZhbF9BdWRpZW5jZV8yMDIzLmpwZy8xMjgwcHgtQ2FtYnJpZGdlX0ZpbG1fRmVzdGl2YWxfQXVkaWVuY2VfMjAyMy5qcGcnLAogICAgaW1hZ2VfY2FwdGlvbiA9ICfgpprgprLgpprgp43gpprgpr/gpqTgp43gprAg4KaJ4KeO4Ka44Kas4KeHIOCmpuCmsOCnjeCmtuCmleCmsOCmvicsCiAgICBpbWFnZV9jcmVkaXQgPSAn4KaJ4KaH4KaV4Ka/4Kau4Ka/4Kah4Ka/4Kav4Ka84Ka+IOCmleCmruCmqOCnjeCmuCcKV0hFUkUgc2x1ZyA9ICdkaGFrYS1jaG9sb2NoY2hpdHJvLXV0c2FiJzsKCi0tIDEyLiBBbWFuIHBhZGR5IGJ1bXBlciBoYXJ2ZXN0IChwdWJsaXNoZWQpClVQREFURSBhcnRpY2xlcwpTRVQgZmVhdHVyZWRfaW1hZ2VfdXJsID0gJ2h0dHBzOi8vdGh1bWIud2lraW1lZGlhLm9yZy93aWtpcGVkaWEvY29tbW9ucy90aHVtYi83Lzc1L1JpY2VfaGFydmVzdGluZ19ieV9mYXJtZXJzX2luX2Ffd2V0bGFuZF9maWVsZCUyQ19CYW5nbGFkZXNoXzIwMjZfMDkuanBnLzEyODBweC1SaWNlX2hhcnZlc3RpbmdfYnlfZmFybWVyc19pbl9hX3dldGxhbmRfZmllbGQlMkNfQmFuZ2xhZGVzaF8yMDI2XzA5LmpwZycsCiAgICBpbWFnZV9jYXB0aW9uID0gJ+CmrOCmvuCmguCmsuCmvuCmpuCnh+CmtuCnh+CmsCDgppzgprLgpr7gpq3gp4Lgpq7gpr/gpqTgp4cg4Kan4Ka+4KaoIOCmleCmvuCmn+Cmm+Cnh+CmqCDgppXgp4PgprfgppXgprDgpr4nLAogICAgaW1hZ2VfY3JlZGl0ID0gJ+CmieCmh+CmleCmv+CmruCmv+CmoeCmv+Cmr+CmvOCmviDgppXgpq7gpqjgp43gprgnCldIRVJFIHNsdWcgPSAnYW1vbi1kaGFuLWJ1bXBlci1mb2xvbic7CgotLSAxMy4gRGhha2HigJNDaGF0dG9ncmFtIGhpZ2h3YXkgZm91ciBsYW5lcyAoc2NoZWR1bGVkIOKAlCBwaG90byByZWFkeSBmb3IgcHVibGlzaCkKVVBEQVRFIGFydGljbGVzClNFVCBmZWF0dXJlZF9pbWFnZV91cmwgPSAnaHR0cHM6Ly90aHVtYi53aWtpbWVkaWEub3JnL3dpa2lwZWRpYS9jb21tb25zL3RodW1iL2IvYjUvTjcwNF9hbmRfTjcxM19CYW5nbGFkZXNoX05hdGlvbmFsX0hpZ2h3YXkuanBnLzEyODBweC1ONzA0X2FuZF9ONzEzX0JhbmdsYWRlc2hfTmF0aW9uYWxfSGlnaHdheS5qcGcnLAogICAgaW1hZ2VfY2FwdGlvbiA9ICfgpqzgpr7gpoLgprLgpr7gpqbgp4fgprbgp4fgprAg4Kac4Ka+4Kak4KeA4Kav4Ka8IOCmruCmueCmvuCmuOCmoeCmvOCmlScsCiAgICBpbWFnZV9jcmVkaXQgPSAn4KaJ4KaH4KaV4Ka/4Kau4Ka/4Kah4Ka/4Kav4Ka84Ka+IOCmleCmruCmqOCnjeCmuCcKV0hFUkUgc2x1ZyA9ICdkaGFrYS1jaGF0dG9ncmFtLW1haGFzYXJhay1jaGFyLWxlbic7CgotLSAxNC4gRGlnaXRhbCBhdHRlbmRhbmNlIGluIHNjaG9vbHMgKGRyYWZ0IOKAlCBwaG90byByZWFkeSBmb3IgcHVibGlzaCkKVVBEQVRFIGFydGljbGVzClNFVCBmZWF0dXJlZF9pbWFnZV91cmwgPSAnaHR0cHM6Ly90aHVtYi53aWtpbWVkaWEub3JnL3dpa2lwZWRpYS9jb21tb25zL3RodW1iLzEvMTIvVGFibGV0dW50ZXJyaWNodF8wNy5qcGcvMTI4MHB4LVRhYmxldHVudGVycmljaHRfMDcuanBnJywKICAgIGltYWdlX2NhcHRpb24gPSAn4Kaf4KeN4Kav4Ka+4Kas4Kay4KeH4Kaf4KeHIOCmquCmoeCmvOCmvuCmtuCni+CmqOCmviDgppXgprDgppvgp4cg4Ka24Ka/4KaV4KeN4Ka34Ka+4Kaw4KeN4Kal4KeA4Kaw4Ka+JywKICAgIGltYWdlX2NyZWRpdCA9ICfgpongpofgppXgpr/gpq7gpr/gpqHgpr/gpq/gprzgpr4g4KaV4Kau4Kao4KeN4Ka4JwpXSEVSRSBzbHVnID0gJ3NoaWtraGEtcHJvdGlzdGhhbmUtZGlnaXRhbC1oYWppcmEnOwo=
+-- THE BD TODAY — 0003: real photos for seeded articles
+--
+-- The 12 published seed articles (0002) shipped with featured_image_url
+-- NULL, so every image slot on the homepage rendered the grey
+-- "THE BD TODAY" placeholder box. This migration gives each article a
+-- real, topic-matched photo (Wikimedia Commons, freely licensed,
+-- hotlink-friendly thumb URLs at 1280px wide, all verified HTTP 200 +
+-- image/jpeg). Captions are in Bengali; credit is the photo source.
+--
+-- The two not-yet-published articles (13 scheduled, 14 draft) get photos
+-- too, so they render correctly the moment they are published.
+--
+-- NOTE on the Highlights carousel / special-coverage band: there is no
+-- featured/highlight flag column in the schema, and those sections are
+-- NOT flag-driven — HomePage fills them from deduped article pools
+-- (trending/latest) after the lead block and image row have taken their
+-- share. With only 12 published articles the pools are exhausted before
+-- the carousel (needs 3) and the band (needs 3) get anything, so no
+-- data-only migration can make them appear. They will start appearing
+-- once ~17+ articles are published (carousel) / ~23+ (both), or if the
+-- homepage is changed to reuse articles in those sections.
+
+-- 1. Padma Bridge / economy (published)
+UPDATE articles
+SET featured_image_url = 'https://thumb.wikimedia.org/wikipedia/commons/thumb/f/ff/Padma_Bridge_Day_Before_Inauguration_ceremony.jpg/1280px-Padma_Bridge_Day_Before_Inauguration_ceremony.jpg',
+    image_caption = 'পদ্মা সেতু, পদ্মা নদীর ওপর',
+    image_credit = 'উইকিমিডিয়া কমন্স'
+WHERE slug = 'padma-setu-dokkhinanchol-orthoniti';
+
+-- 2. National election / voter list (published)
+UPDATE articles
+SET featured_image_url = 'https://thumb.wikimedia.org/wikipedia/commons/thumb/7/71/Women%27s_line_to_vote_in_the_general_election_of_2026_in_Bangladesh_at_Chhagalnaiya%2C_Feni_2026-02-12_in_the_morning.jpg/1280px-Women%27s_line_to_vote_in_the_general_election_of_2026_in_Bangladesh_at_Chhagalnaiya%2C_Feni_2026-02-12_in_the_morning.jpg',
+    image_caption = 'ফেনীর ছাগলনাইয়ায় ভোটের লাইনে নারী ভোটাররা',
+    image_credit = 'উইকিমিডিয়া কমন্স'
+WHERE slug = 'jatiya-nirbachon-prostuti';
+
+-- 3. Bangladesh T20 cricket series win (published)
+UPDATE articles
+SET featured_image_url = 'https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a6/Spectators_of_Bangladesh_vs_Pakistan_cricket_match%2C_22_Jul_2025.jpg/1280px-Spectators_of_Bangladesh_vs_Pakistan_cricket_match%2C_22_Jul_2025.jpg',
+    image_caption = 'মিরপুরে বাংলাদেশ-পাকিস্তান ম্যাচে দর্শকরা',
+    image_credit = 'উইকিমিডিয়া কমন্স'
+WHERE slug = 'bangladesh-cricket-t20-series-joy';
+
+-- 4. Remittance record (published)
+UPDATE articles
+SET featured_image_url = 'https://thumb.wikimedia.org/wikipedia/commons/thumb/8/84/Dhaka_Hazrat_Shahjalal_International_Airport_Migrant_Lounge_Inauguration_2024-11-11_%28PID-0005332%29.jpg/1280px-Dhaka_Hazrat_Shahjalal_International_Airport_Migrant_Lounge_Inauguration_2024-11-11_%28PID-0005332%29.jpg',
+    image_caption = 'ঢাকা বিমানবন্দরে প্রবাসী লাউঞ্জের উদ্বোধন',
+    image_credit = 'উইকিমিডিয়া কমন্স'
+WHERE slug = 'remittance-record-probashi-ay';
+
+-- 5. Dhaka metro rail new line (published)
+UPDATE articles
+SET featured_image_url = 'https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b1/Metro_Rail_Station_at_Uttara_Center_in_Dhaka%2C_Bangladesh.jpg/1280px-Metro_Rail_Station_at_Uttara_Center_in_Dhaka%2C_Bangladesh.jpg',
+    image_caption = 'উত্তরা সেন্টার মেট্রোরেল স্টেশন, ঢাকা',
+    image_credit = 'উইকিমিডিয়া কমন্স'
+WHERE slug = 'dhaka-metro-rail-notun-line';
+
+-- 6. Climate summit / Bangladesh demand (published)
+UPDATE articles
+SET featured_image_url = 'https://thumb.wikimedia.org/wikipedia/commons/thumb/1/17/Sariakandi_Char_Land_Flood_Affected_Bangladesh.jpg/1280px-Sariakandi_Char_Land_Flood_Affected_Bangladesh.jpg',
+    image_caption = 'বন্যায় প্লাবিত সারিয়াকান্দির চরাঞ্চল',
+    image_credit = 'উইকিমিডিয়া কমন্স'
+WHERE slug = 'jalbayu-sommelon-bangladesh-dabi';
+
+-- 7. New curriculum / assessment (published)
+UPDATE articles
+SET featured_image_url = 'https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fd/Kids_playing_at_school%2C_Dhaka%2C_Bangladesh_5.JPG/1280px-Kids_playing_at_school%2C_Dhaka%2C_Bangladesh_5.JPG',
+    image_caption = 'ঢাকার একটি স্কুলে শিক্ষার্থীরা',
+    image_credit = 'উইকিমিডিয়া কমন্স'
+WHERE slug = 'notun-shikkhakrom-mulyayan-poddoti';
+
+-- 8. Local startups / investment (published)
+UPDATE articles
+SET featured_image_url = 'https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a5/CubeSpace.jpg/1280px-CubeSpace.jpg',
+    image_caption = 'কো-ওয়ার্কিং অফিসে কাজের পরিবেশ',
+    image_credit = 'উইকিমিডিয়া কমন্স'
+WHERE slug = 'deshio-startup-biniyog-joar';
+
+-- 9. World Cup football final (published)
+UPDATE articles
+SET featured_image_url = 'https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6a/Fans_at_The_2014_FIFA_World_Cup_Final_-_140713-8626-jikatu_%2814662725741%29.jpg/1280px-Fans_at_The_2014_FIFA_World_Cup_Final_-_140713-8626-jikatu_%2814662725741%29.jpg',
+    image_caption = '২০১৪ বিশ্বকাপ ফাইনালে স্টেডিয়ামে ভক্তরা',
+    image_credit = 'উইকিমিডিয়া কমন্স'
+WHERE slug = 'bishwokap-football-final-uttejana';
+
+-- 10. Dengue awareness (published)
+UPDATE articles
+SET featured_image_url = 'https://thumb.wikimedia.org/wikipedia/commons/thumb/8/87/Children_under_mosquito_net_%2826483462482%29.jpg/1280px-Children_under_mosquito_net_%2826483462482%29.jpg',
+    image_caption = 'মশারির নিচে শিশুরা',
+    image_credit = 'উইকিমিডিয়া কমন্স'
+WHERE slug = 'dengue-mokabila-sochetonota';
+
+-- 11. Dhaka film festival (published)
+UPDATE articles
+SET featured_image_url = 'https://thumb.wikimedia.org/wikipedia/commons/thumb/7/78/Cambridge_Film_Festival_Audience_2023.jpg/1280px-Cambridge_Film_Festival_Audience_2023.jpg',
+    image_caption = 'চলচ্চিত্র উৎসবে দর্শকরা',
+    image_credit = 'উইকিমিডিয়া কমন্স'
+WHERE slug = 'dhaka-cholochchitro-utsab';
+
+-- 12. Aman paddy bumper harvest (published)
+UPDATE articles
+SET featured_image_url = 'https://thumb.wikimedia.org/wikipedia/commons/thumb/7/75/Rice_harvesting_by_farmers_in_a_wetland_field%2C_Bangladesh_2026_09.jpg/1280px-Rice_harvesting_by_farmers_in_a_wetland_field%2C_Bangladesh_2026_09.jpg',
+    image_caption = 'বাংলাদেশের জলাভূমিতে ধান কাটছেন কৃষকরা',
+    image_credit = 'উইকিমিডিয়া কমন্স'
+WHERE slug = 'amon-dhan-bumper-folon';
+
+-- 13. Dhaka–Chattogram highway four lanes (scheduled — photo ready for publish)
+UPDATE articles
+SET featured_image_url = 'https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b5/N704_and_N713_Bangladesh_National_Highway.jpg/1280px-N704_and_N713_Bangladesh_National_Highway.jpg',
+    image_caption = 'বাংলাদেশের জাতীয় মহাসড়ক',
+    image_credit = 'উইকিমিডিয়া কমন্স'
+WHERE slug = 'dhaka-chattogram-mahasarak-char-len';
+
+-- 14. Digital attendance in schools (draft — photo ready for publish)
+UPDATE articles
+SET featured_image_url = 'https://thumb.wikimedia.org/wikipedia/commons/thumb/1/12/Tabletunterricht_07.jpg/1280px-Tabletunterricht_07.jpg',
+    image_caption = 'ট্যাবলেটে পড়াশোনা করছে শিক্ষার্থীরা',
+    image_credit = 'উইকিমিডিয়া কমন্স'
+WHERE slug = 'shikkha-protisthane-digital-hajira';
