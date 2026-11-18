@@ -21,8 +21,13 @@ export interface Env {
   ADMIN_EMAIL?: string;
   ADMIN_NAME?: string;
   ADMIN_PASSWORD?: string;
-  /** Canonical origin, e.g. https://thebdtoday.com (no trailing slash). */
+  /** Canonical origin, e.g. https://www.thebdtoday.online (no trailing slash). */
   SITE_URL?: string;
+  /** Google Search Console verification value (see GOOGLE-SETUP.md):
+   * either the HTML verification filename (e.g. googleAbC123.html) or the
+   * meta-tag token. Set with `wrangler secret put GOOGLE_SITE_VERIFICATION`.
+   * Optional — leave unset until Search Console gives you a value. */
+  GOOGLE_SITE_VERIFICATION?: string;
   SITE_NAME?: string;
   ENVIRONMENT?: string;
 }
@@ -34,7 +39,7 @@ export interface AppVariables {
 
 /** Canonical site origin for sitemaps, RSS, OG tags and media URLs. */
 export function getSiteUrl(env: Env): string {
-  return (env.SITE_URL ?? "https://thebdtoday.com").replace(/\/+$/, "");
+  return (env.SITE_URL ?? "https://www.thebdtoday.online").replace(/\/+$/, "");
 }
 
 /** Site name for JSON-LD / RSS (defaults to the brand). */

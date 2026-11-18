@@ -15,8 +15,11 @@ import { publishScheduledArticles, getArticleBySlug } from "./services/articles"
 import { pruneExpiredSessions } from "./services/auth";
 import {
   defaultMetaTagsHtml,
+  googleVerificationFile,
+  googleVerificationMetaTag,
   injectSeoIntoHtml,
   newsArticleJsonLd,
+  siteJsonLd,
   spaArticleTagsHtml,
   toSeoInput,
 } from "./lib/seo";
@@ -85,9 +88,41 @@ export function createApp(): Hono<{ Bindings: Env; Variables: AppVariables }> {
     if (path.startsWith("/api/")) {
       return fail(c, 404, "NOT_FOUND", "Route not found");
     }
+    // Google Search Console HTML-file verification: /googleAbC123.html is
+    // served from the GOOGLE_SITE_VERIFICATION secret (see GOOGLE-SETUP.md).
+    // The file body is exactly what Google expects to find there.
+    const verificationFile = googleVerificationFile(c.env.GOOGLE_SITE_VERIFICATION);
+    if (verificationFile && path === `/${verificationFile}`) {
+      return c.text(`google-site-verification: ${verificationFile}`, 200, {
+        "content-type": "text/html; charset=utf-8",
+      });
+    }
     try {
       const asset = await c.env.ASSETS.fetch(c.req.raw);
-      if (asset.status !== 404) return asset;
+      if (asset.status !== 404) {
+        // The homepage ("/") is served straight from ASSETS as index.html,
+        // so the meta-tag verification method has to be injected here too —
+        // Search Console checks the homepage for the meta tag.
+        const verificationMeta = googleVerificationMetaTag(
+          c.env.GOOGLE_SITE_VERIFICATION,
+        );
+        const contentType = asset.headers.get("content-type") ?? "";
+        if (verificationMeta && contentType.includes("text/html")) {
+          const html = await asset.text();
+          const injected = html.includes("</head>")
+            ? html.replace("</head>", `${verificationMeta}\n</head>`)
+            : `${verificationMeta}\n${html}`;
+          // Drop the stale content-length: the rewritten body is longer
+          // than the original asset, and a wrong length would truncate it.
+          const headers = new Headers(asset.headers);
+          headers.delete("content-length");
+          return new Response(injected, {
+            status: asset.status,
+            headers,
+          });
+        }
+        return asset;
+      }
       const index = await c.env.ASSETS.fetch(
         new Request(new URL("/index.html", c.req.url)),
       );
@@ -122,7 +157,14 @@ export function createApp(): Hono<{ Bindings: Env; Variables: AppVariables }> {
           }
         } else {
           headHtml = defaultMetaTagsHtml(origin, path);
+          // Organisation schema on every non-article page (homepage,
+          // categories, search, ...) so Google knows the publisher.
+          jsonLd = JSON.stringify(siteJsonLd(origin)).replace(/</g, "\\u003c");
         }
+        const verificationMeta = googleVerificationMetaTag(
+          c.env.GOOGLE_SITE_VERIFICATION,
+        );
+        if (verificationMeta) headHtml = `${verificationMeta}\n${headHtml}`;
         const html = await index.text();
         const body = injectSeoIntoHtml(html, headHtml, title, jsonLd);
         return new Response(body, {
