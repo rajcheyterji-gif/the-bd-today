@@ -14,10 +14,10 @@ export function HeroArticle({ article }: { article: Article }) {
         <div className="mx-[-1rem] w-[calc(100%+2rem)] overflow-hidden sm:mx-0 sm:w-full">
           {article.featured_image_url ? (
             <img
-              src={thumbUrl(article.featured_image_url, 800)}
+              src={thumbUrl(article.featured_image_url, 960)}
               alt={article.image_caption || article.title}
               decoding="async"
-              fetchpriority="high"
+              fetchPriority="high"
               className="aspect-[16/9] w-full object-cover transition-transform duration-300 group-hover:scale-[1.01]"
             />
           ) : (

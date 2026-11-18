@@ -69,7 +69,7 @@ export function ArticleCard({
             <ArticleImage
               article={article}
               ratio="aspect-[16/9]"
-              width={size === "small" ? 320 : size === "large" ? 800 : 640}
+              width={size === "small" ? 250 : size === "large" ? 960 : 500}
             />
           </div>
         </div>
@@ -135,7 +135,7 @@ export function TextStory({
         {article.featured_image_url && (
           <Link to={`/article/${article.slug}`} className="shrink-0" aria-label={article.title}>
             <img
-              src={thumbUrl(article.featured_image_url, 320)}
+              src={thumbUrl(article.featured_image_url, 250)}
               alt=""
               loading="lazy"
               decoding="async"
@@ -222,7 +222,7 @@ export function ArticleRow({
       {showThumb && article.featured_image_url && (
         <Link to={`/article/${article.slug}`} className="shrink-0" aria-label={article.title}>
           <img
-            src={thumbUrl(article.featured_image_url, 320)}
+            src={thumbUrl(article.featured_image_url, 250)}
             alt=""
             loading="lazy"
             decoding="async"
@@ -252,7 +252,7 @@ export function OverlayCard({
     <Link to={`/article/${article.slug}`} className={`group relative block overflow-hidden bg-slate-800 ${ratio}`}>
       {article.featured_image_url ? (
         <img
-          src={thumbUrl(article.featured_image_url, 640)}
+          src={thumbUrl(article.featured_image_url, 500)}
           alt={article.image_caption || article.title}
           loading="lazy"
           decoding="async"
