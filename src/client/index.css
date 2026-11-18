@@ -42,6 +42,29 @@
   }
 }
 
+/* Slim red top progress bar on route changes (RouteProgress in App.tsx):
+   sweeps across and fades out — purely a visual cue, never blocks data. */
+.route-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+  height: 2px;
+  background: #c1121f;
+  pointer-events: none;
+  animation: route-progress 0.9s ease-out forwards;
+}
+@keyframes route-progress {
+  0% { width: 0; opacity: 1; }
+  70% { width: 72%; opacity: 1; }
+  100% { width: 92%; opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .route-progress {
+    animation: none;
+  }
+}
+
 /* Article body typography (editor-authored HTML). */
 .article-body {
   font-family: "Noto Serif Bengali", Georgia, "Times New Roman", serif;

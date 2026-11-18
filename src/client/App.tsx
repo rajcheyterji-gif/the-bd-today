@@ -9,11 +9,12 @@
 // The admin CMS (src/admin/*) mounts chrome-free under /admin/* via a lazy
 // import; that file is owned by a sibling agent.
 
-import { lazy, Suspense, useEffect, type ReactNode } from "react";
+import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from "react";
 import { Route, Routes, useLocation, useParams, useSearchParams } from "react-router-dom";
 import { Masthead } from "./components/Masthead";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
+import { ExchangeRates } from "./components/ExchangeRates";
 import { Loading } from "./components/Loading";
 import { HomePage } from "./pages/HomePage";
 import { CategoryPage } from "./pages/CategoryPage";
@@ -41,6 +42,27 @@ function ScrollToTop() {
     window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
   }, [pathname, search]);
   return null;
+}
+
+/**
+ * Slim red top progress bar on route changes: a brief indeterminate
+ * indicator that the next page is loading. Skips the first mount, and
+ * never delays data — it is purely a visual cue, driven by a CSS
+ * animation that restarts on every navigation (key change).
+ */
+function RouteProgress() {
+  const { pathname, search } = useLocation();
+  const [run, setRun] = useState(0);
+  const first = useRef(true);
+  useEffect(() => {
+    if (first.current) {
+      first.current = false;
+      return;
+    }
+    setRun((n) => n + 1);
+  }, [pathname, search]);
+  if (run === 0) return null;
+  return <div key={run} className="route-progress" aria-hidden="true" />;
 }
 
 function CategoryRoute() {
@@ -75,6 +97,9 @@ function PublicLayout({ children }: { children: ReactNode }) {
       <Masthead />
       <Navbar />
       <main>{children}</main>
+      {/* Exchange-rates strip: its own section above the footer, with
+          breathing room (see ExchangeRates: my-10) — not flush against it. */}
+      <ExchangeRates />
       <Footer />
     </div>
   );
@@ -84,6 +109,7 @@ export function App() {
   return (
     <>
       <ScrollToTop />
+      <RouteProgress />
       <Routes>
         <Route
           path="/admin/*"
