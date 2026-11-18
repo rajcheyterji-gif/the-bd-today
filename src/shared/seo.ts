@@ -151,6 +151,99 @@ export function siteJsonLd(siteUrl: string): Record<string, unknown> {
   };
 }
 
+// ---------------------------------------------------------------------------
+// Bengali page titles + meta descriptions (home, categories, latest,
+// breaking). One source of truth, shared by:
+//   - the Worker (server meta injection + bot prerendering), and
+//   - the React client (Seo.tsx document titles).
+// Titles are full <title> values; descriptions are ~150 chars for Google.
+
+export type PageMeta = { title: string; description: string; nameBn?: string };
+
+export const HOME_PAGE_META: PageMeta = {
+  title: "দ্য বিডি টুডে | সর্বশেষ বাংলাদেশ ও বিশ্ব সংবাদ",
+  description:
+    "বাংলাদেশ ও বিশ্বের সর্বশেষ খবর — রাজনীতি, অর্থনীতি, খেলাধুলা, প্রযুক্তি, বিনোদন ও শিক্ষার সব খবর সবার আগে, বাংলায়।",
+};
+
+export const CATEGORY_PAGE_META: Record<string, PageMeta> = {
+  bangladesh: {
+    title: "বাংলাদেশের খবর | দ্য বিডি টুডে",
+    description:
+      "ঢাকা থেকে প্রত্যন্ত গ্রাম পর্যন্ত দেশের সব খবর — রাজনীতি, সমাজ, অর্থনীতি ও জনজীবনের সর্বশেষ সংবাদ।",
+    nameBn: "বাংলাদেশ",
+  },
+  international: {
+    title: "বিশ্ব সংবাদ | দ্য বিডি টুডে",
+    description:
+      "বিশ্বজুড়ে ঘটে যাওয়া গুরুত্বপূর্ণ সংবাদ, আন্তর্জাতিক রাজনীতি ও অর্থনীতির সর্বশেষ খবর।",
+    nameBn: "আন্তর্জাতিক",
+  },
+  politics: {
+    title: "রাজনীতির খবর | দ্য বিডি টুডে",
+    description: "জাতীয় রাজনীতি, নির্বাচন, দল ও নীতিনির্ধারণী খবরের সর্বশেষ আপডেট।",
+    nameBn: "রাজনীতি",
+  },
+  economy: {
+    title: "অর্থনীতির খবর | দ্য বিডি টুডে",
+    description: "অর্থনীতি, বাণিজ্য, ব্যাংক, শেয়ারবাজার ও রেমিট্যান্সের সর্বশেষ খবর।",
+    nameBn: "অর্থনীতি",
+  },
+  sports: {
+    title: "খেলাধুলার খবর | দ্য বিডি টুডে",
+    description: "ক্রিকেট, ফুটবলসহ সব খেলার সর্বশেষ খবর, ফলাফল ও বিশ্লেষণ।",
+    nameBn: "খেলাধুলা",
+  },
+  technology: {
+    title: "প্রযুক্তির খবর | দ্য বিডি টুডে",
+    description: "প্রযুক্তি, স্টার্টআপ, মোবাইল ও ডিজিটাল বাংলাদেশের সর্বশেষ খবর।",
+    nameBn: "প্রযুক্তি",
+  },
+  entertainment: {
+    title: "বিনোদনের খবর | দ্য বিডি টুডে",
+    description: "চলচ্চিত্র, সংগীত, নাটক ও সংস্কৃতি অঙ্গনের সর্বশেষ খবর।",
+    nameBn: "বিনোদন",
+  },
+  education: {
+    title: "শিক্ষার খবর | দ্য বিডি টুডে",
+    description: "শিক্ষা, পরীক্ষা, ফলাফল ও শিক্ষাপ্রতিষ্ঠানের সর্বশেষ খবর।",
+    nameBn: "শিক্ষা",
+  },
+  lifestyle: {
+    title: "জীবনযাপনের খবর | দ্য বিডি টুডে",
+    description: "স্বাস্থ্য, খাবার, ভ্রমণ ও জীবনযাত্রার খবর — সুস্থ ও সুন্দর জীবনের টিপস।",
+    nameBn: "জীবনযাপন",
+  },
+};
+
+export const LATEST_PAGE_META: PageMeta = {
+  title: "সর্বশেষ খবর | দ্য বিডি টুডে",
+  description: "এই মুহূর্তের সর্বশেষ খবর — দেশ-বিদেশের সব গুরুত্বপূর্ণ সংবাদ এক জায়গায়।",
+};
+
+export const BREAKING_PAGE_META: PageMeta = {
+  title: "ব্রেকিং নিউজ | দ্য বিডি টুডে",
+  description: "এই মুহূর্তের ব্রেকিং নিউজ — ঘটনার সঙ্গে সঙ্গেই সর্বশেষ আপডেট।",
+};
+
+/** Bengali title + description for a public path (/, /category/:slug, /latest, /breaking). */
+export function pageMeta(path: string): PageMeta {
+  const clean = path.split(/[?#]/)[0].replace(/\/+$/, "") || "/";
+  if (clean === "/") return HOME_PAGE_META;
+  if (clean === "/latest") return LATEST_PAGE_META;
+  if (clean === "/breaking") return BREAKING_PAGE_META;
+  const cat = clean.match(/^\/category\/([^/]+)$/);
+  if (cat) {
+    const meta = CATEGORY_PAGE_META[decodeURIComponent(cat[1])];
+    if (meta) return meta;
+    return {
+      title: "বিভাগের খবর | দ্য বিডি টুডে",
+      description: "দ্য বিডি টুডে-র এই বিভাগের সর্বশেষ খবর।",
+    };
+  }
+  return HOME_PAGE_META;
+}
+
 function escapeAttr(value: string): string {
   return value
     .replace(/&/g, "&amp;")
