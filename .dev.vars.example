@@ -1,0 +1,30 @@
+# THE BD TODAY — local development secrets
+#
+# Copy to `.dev.vars` (which is git-ignored) and replace every placeholder:
+#   cp .dev.vars.example .dev.vars
+#
+# NEVER commit `.dev.vars` and NEVER put real values in this file.
+# In production these same names are set with `wrangler secret put <NAME>`
+# — see ENVIRONMENT.md for how to generate each value.
+
+# Signing key for admin session cookies (JWT-ish HMAC). Generate with:
+#   openssl rand -base64 48
+SESSION_SECRET=replace-me-with-a-random-48-byte-base64-secret
+
+# One-time token that authorises POST /api/v1/auth/init, which creates the
+# first admin account. Only usable while the users table is empty.
+# Generate with: openssl rand -hex 32
+ADMIN_INIT_TOKEN=replace-me-with-a-random-hex-token
+
+# Email address of the first admin account created by /auth/init.
+ADMIN_EMAIL=admin@thebdtoday.com
+
+# Display name of the first admin account.
+ADMIN_NAME=Editor-in-Chief
+
+# Password for the first admin account. Choose a strong one; it is hashed
+# (SHA-256 + per-user salt) before storage and never stored in plain text.
+ADMIN_PASSWORD=change-me-to-a-strong-password
+
+# Public site URL used for canonical links, sitemap and OG tags in local dev.
+SITE_URL=http://localhost:8787

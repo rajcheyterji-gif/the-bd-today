@@ -1,0 +1,58 @@
+// THE BD TODAY — Cloudflare Workers configuration.
+//
+// HOW TO FILL IN THE PLACEHOLDERS (no real IDs are committed here):
+//   1. D1 database id: run `npx wrangler d1 create the-bd-today-db` and copy
+//      the `database_id` it prints, or find it at
+//      https://dash.cloudflare.com → Workers & Pages → D1 → the-bd-today-db.
+//   2. R2 bucket name: run `npx wrangler r2 bucket create the-bd-today-media`
+//      (the name you choose IS the bucket_name) or create it in the
+//      dashboard under R2 Object Storage.
+//   3. Account id: `npx wrangler whoami` prints it, or copy it from the
+//      right-hand sidebar of any Cloudflare dashboard page. It is only
+//      needed for CI secrets (see .github/workflows/deploy.yml), not here.
+{
+  "$schema": "https://developers.cloudflare.com/schemas/wrangler.jsonc",
+  "name": "the-bd-today",
+  "main": "src/server/index.ts",
+  "compatibility_date": "2025-01-01",
+  // No "nodejs_compat" flag: the Worker uses only Web-standard APIs
+  // (fetch, Request/Response, crypto.subtle) so it runs on the plain
+  // Workers runtime. Add the flag only if a dependency needs Node APIs.
+  "assets": {
+    "directory": "./dist/client",
+    "binding": "ASSETS"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "the-bd-today-db",
+      // TODO: replace with the real id from `wrangler d1 create`.
+      "database_id": "<YOUR_D1_DATABASE_ID>",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "R2_BUCKET",
+      // TODO: replace with the real bucket name you created.
+      "bucket_name": "<YOUR_R2_BUCKET_NAME>"
+    }
+  ],
+  "vars": {
+    // Public, non-secret configuration. Anything secret goes in
+    // `.dev.vars` locally and `wrangler secret put` in production —
+    // see ENVIRONMENT.md. Never put a secret in this file.
+    "SITE_URL": "https://thebdtoday.com",
+    "SITE_NAME": "THE BD TODAY",
+    "ADMIN_EMAIL": "admin@thebdtoday.com"
+  },
+  "triggers": {
+    // Every midnight UTC the Worker runs its scheduled() handler to
+    // publish articles whose scheduled_at has arrived. See
+    // src/server/index.ts.
+    "crons": ["0 0 * * *"]
+  },
+  "observability": {
+    "enabled": true
+  }
+}
