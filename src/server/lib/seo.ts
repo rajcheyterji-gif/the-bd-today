@@ -193,6 +193,40 @@ export function defaultRobotsTxt(siteUrl: string): string {
     "Disallow: /admin",
     "Disallow: /api/",
     `Sitemap: ${siteUrl}/sitemap.xml`,
+    `Sitemap: ${siteUrl}/news-sitemap.xml`,
     "",
   ].join("\n");
+}
+
+// ---------------------------------------------------------------------------
+// Google Search Console verification (see GOOGLE-SETUP.md).
+//
+// GOOGLE_SITE_VERIFICATION holds whatever Search Console gives you:
+//   - an HTML verification filename, e.g. "googleAbC123dEf.html" — the
+//     Worker serves it at /googleAbC123dEf.html with the exact body Google
+//     expects (handled in src/server/index.ts), or
+//   - a meta-tag token (a long string, no ".html") — rendered as
+//     <meta name="google-site-verification"> on every page the Worker
+//     serves (also handled in src/server/index.ts).
+// Unset (or empty) means "not verified yet": both helpers return nothing.
+/** The verification filename to serve, or null when the value is not a file. */
+export function googleVerificationFile(value?: string): string | null {
+  const v = (value ?? "").trim().replace(/^\/+/, "");
+  if (!v) return null;
+  return /\.html$/i.test(v) ? v : null;
+}
+
+/** The <meta name="google-site-verification"> tag, or "" when not applicable. */
+export function googleVerificationMetaTag(value?: string): string {
+  const v = (value ?? "").trim();
+  if (!v || /\.html$/i.test(v)) return "";
+  return `<meta name="google-site-verification" content="${escapeAttr(v)}">`;
+}
+
+function escapeAttr(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
 }
