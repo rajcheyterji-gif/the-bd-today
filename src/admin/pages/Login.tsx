@@ -82,10 +82,10 @@ export function Login() {
     <div className="flex min-h-screen flex-col items-center justify-center bg-white px-4 py-10">
       <div className="w-full max-w-md">
         {/* Newspaper brand — the same Bengali wordmark as the public
-            header (/logo.jpg), not the old English text logo */}
+            header (/logo.png), not the old English text logo */}
         <div className="mb-5 text-center">
           <Link to="/" className="inline-block" aria-label="দ্য বিডি টুডে — সাইটে ফিরে যান">
-            <img src="/logo.jpg" alt="দ্য বিডি টুডে" className="mx-auto h-14 w-auto" />
+            <img src="/logo.png" alt="দ্য বিডি টুডে" className="mx-auto h-14 w-auto" />
           </Link>
           <p className="mt-1.5 font-bengali text-sm text-slate-500">দ্য বিডি টুডে — সত্য, সবার আগে</p>
           <div className="mx-auto mt-4 max-w-xs border-t-[3px] border-slate-900" aria-hidden="true" />
