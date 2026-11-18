@@ -124,6 +124,10 @@ class FakeStatement {
     if (sql.includes("FROM users WHERE email")) {
       return (users.find((u) => u.email === p[0]) ?? null) as T | null;
     }
+    if (sql.includes("FROM users WHERE id")) {
+      // getUserById (profile update / password change).
+      return (users.find((u) => u.id === p[0]) ?? null) as T | null;
+    }
     if (sql.includes("FROM users WHERE password_hash")) {
       // First-admin guard: only users with a real password hash count —
       // seeded users carry the '__SET_VIA_INIT__' placeholder. This must
@@ -298,6 +302,31 @@ class FakeStatement {
     }
     if (sql.includes("DELETE FROM sessions WHERE expires_at")) {
       return { success: true, meta: { changes: 0 } };
+    }
+    if (sql.includes("DELETE FROM sessions WHERE user_id")) {
+      // Password change: revoke a user's other sessions (keep id != ?).
+      for (const [id, s] of [...sessions]) {
+        if (s.user_id === Number(p[0]) && (p[1] === undefined || id !== String(p[1]))) {
+          sessions.delete(id);
+        }
+      }
+      return { success: true, meta: { changes: 1 } };
+    }
+    if (sql.includes("UPDATE users SET")) {
+      const user = users.find((u) => u.id === Number(p[p.length - 1]));
+      if (user) {
+        if (sql.includes("password_hash")) {
+          // Password change: (hash, updated_at, id).
+          user.password_hash = String(p[0]);
+        } else if (sql.includes("SET name")) {
+          // Profile update: (name, email, bio, updated_at, id).
+          user.name = String(p[0]);
+          user.email = String(p[1]);
+          user.bio = p[2] === null ? null : String(p[2]);
+        }
+        // The login flow's `SET last_login_at` update needs no fake state.
+      }
+      return { success: true, meta: { changes: user ? 1 : 0 } };
     }
     if (sql.includes("INSERT INTO users")) {
       const id = users.length + 1;
