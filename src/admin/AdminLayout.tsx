@@ -85,8 +85,11 @@ export function AdminLayout() {
     <div className="flex h-full flex-col bg-slate-900 text-slate-200">
       <div className="flex items-center justify-between px-4 pb-3 pt-4">
         <Link to="/admin" className="text-left">
-          <p className="text-sm font-bold uppercase tracking-[0.18em] text-white">The BD Today</p>
-          <p className="text-xs text-slate-400">Admin dashboard</p>
+          {/* Bengali wordmark on a white pill so it reads on the dark sidebar */}
+          <span className="inline-block rounded-md bg-white px-2 py-1">
+            <img src="/logo.jpg" alt="দ্য বিডি টুডে" className="h-6 w-auto" />
+          </span>
+          <p className="mt-1.5 text-xs text-slate-400">Admin dashboard</p>
         </Link>
         <button
           type="button"
@@ -158,8 +161,9 @@ export function AdminLayout() {
           >
             <Menu size={20} />
           </button>
-          <Link to="/admin" className="text-sm font-bold uppercase tracking-wide text-slate-900 lg:hidden">
-            The BD Today <span className="text-[#c1121f]">Admin</span>
+          <Link to="/admin" className="flex items-center gap-1.5 lg:hidden" aria-label="THE BD TODAY Admin">
+            <img src="/logo.jpg" alt="দ্য বিডি টুডে" className="h-7 w-auto" />
+            <span className="text-sm font-bold text-[#c1121f]">Admin</span>
           </Link>
           <div className="ml-auto flex items-center gap-2 sm:gap-3">
             <div className="text-right">
