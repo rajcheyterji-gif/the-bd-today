@@ -1,0 +1,28 @@
+name: CI
+
+# Typecheck, build and test every pull request (and every push to main).
+# No Cloudflare credentials are needed: the build and tests run offline
+# against local code only. D1/R2 are not touched here.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npm run build
+      - run: npm test
