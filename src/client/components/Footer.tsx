@@ -29,10 +29,11 @@ export function Footer() {
   const categories = data?.data?.categories ?? [];
 
   return (
-    <footer className="mt-8 border-t border-slate-200 bg-white text-slate-600">
+    <footer className="mt-8 border-t border-[#0f172a] bg-[#0f172a] text-slate-300">
       <div className="mx-auto max-w-[1280px] px-4 pb-8 pt-7 text-center">
-        {/* Logo lockup with tagline */}
-        <Link to="/" className="inline-block" aria-label="THE BD TODAY — home">
+        {/* Logo lockup with tagline — the JPEG wordmark sits on a white
+            pill so it reads cleanly on the navy band */}
+        <Link to="/" className="inline-block rounded-lg bg-white px-4 py-2" aria-label="THE BD TODAY — home">
           <Logo
             markClassName="h-12 w-auto sm:h-14"
             wordmarkClassName="text-[28px] sm:text-3xl"
@@ -43,11 +44,11 @@ export function Footer() {
         </Link>
 
         {/* Link row 1: categories */}
-        <nav aria-label="Footer categories" className="mt-5 border-y border-slate-200 py-3">
+        <nav aria-label="Footer categories" className="mt-5 border-y border-white/15 py-3">
           <ul className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 font-serif text-[17px] font-medium">
             {categories.map((c) => (
               <li key={c.id}>
-                <Link to={`/category/${c.slug}`} className="text-slate-800 hover:text-[#c1121f]">
+                <Link to={`/category/${c.slug}`} className="text-white hover:text-[#c1121f]">
                   {c.name_bn ?? c.name_en}
                 </Link>
               </li>
@@ -68,7 +69,7 @@ export function Footer() {
         </nav>
 
         {/* Follow — premium round social icons */}
-        <p className="mt-6 font-serif text-[17px] font-bold text-slate-900">অনুসরণ করুন</p>
+        <p className="mt-6 font-serif text-[17px] font-bold text-white">অনুসরণ করুন</p>
         <div className="mt-3 flex items-center justify-center gap-3">
           <a
             href="https://www.facebook.com"
@@ -132,15 +133,15 @@ export function Footer() {
                 <Link to={item.href} className="hover:text-[#c1121f]">
                   {item.label}
                 </Link>
-                {i < arr.length - 1 && <span className="text-slate-300" aria-hidden="true">•</span>}
+                {i < arr.length - 1 && <span className="text-slate-500" aria-hidden="true">•</span>}
               </li>
             ))}
           </ul>
         </nav>
 
         {/* Editor credit + copyright */}
-        <p className="mt-5 text-[13px] text-slate-600">সম্পাদক ও প্রকাশক: দ্য বিডি টুডে</p>
-        <p className="mt-1 text-xs text-slate-500">
+        <p className="mt-5 text-[13px] text-slate-400">সম্পাদক ও প্রকাশক: দ্য বিডি টুডে</p>
+        <p className="mt-1 text-xs text-slate-400">
           স্বত্ব © {toBengaliDigits(new Date().getFullYear())} দ্য বিডি টুডে
         </p>
       </div>

@@ -69,6 +69,8 @@ export function Masthead() {
 
   return (
     <header className="bg-white">
+      {/* 4px solid red rule above the masthead — BBC-style brand strip */}
+      <div className="h-1 bg-[#c1121f]" aria-hidden="true" />
       <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-1 px-2 py-2 sm:px-4 sm:py-3">
         <Link to="/" className="min-w-0 shrink" aria-label="THE BD TODAY — home">
           <Logo />

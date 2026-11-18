@@ -43,7 +43,7 @@ export function Newsletter({ compact = false }: { compact?: boolean }) {
 
   if (compact) {
     return (
-      <section aria-label="Newsletter" className="border border-slate-200 bg-[#faf7f1] p-5">
+      <section aria-label="Newsletter" className="border border-slate-200 bg-[#f6f6f6] p-5">
         <h3 className="flex items-center gap-2 font-serif text-lg font-black text-slate-900">
           <Mail size={18} className="text-[#c1121f]" /> Newsletter
         </h3>
@@ -75,7 +75,7 @@ export function Newsletter({ compact = false }: { compact?: boolean }) {
   }
 
   return (
-    <section aria-label="Newsletter" className="border-y border-[#f0dcc4] bg-[#fdf0e3] px-6 py-10 text-center">
+    <section aria-label="Newsletter" className="border-y border-slate-200 bg-[#f6f6f6] px-6 py-10 text-center">
       <h2 className="font-serif text-2xl font-black text-slate-900 sm:text-3xl">Never miss a story</h2>
       <p className="mt-1 font-bengali text-slate-600">প্রতিদিনের গুরুত্বপূর্ণ খবর আপনার ইনবক্সে</p>
       <p className="mx-auto mt-2 max-w-lg text-sm text-slate-600">
