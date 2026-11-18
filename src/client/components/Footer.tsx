@@ -145,7 +145,7 @@ export function Footer() {
           স্বত্ব © {toBengaliDigits(new Date().getFullYear())} দ্য বিডি টুডে
         </p>
         {/* Site credit — the very last line of the footer, always. */}
-        <p className="mt-4 text-xs text-slate-400">Developed by Azim R.</p>
+        <p className="mt-5 text-sm font-medium text-slate-800">Developed by Azim R.</p>
       </div>
     </footer>
   );
