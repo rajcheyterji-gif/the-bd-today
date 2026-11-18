@@ -152,7 +152,10 @@ export function AdminLayout() {
       {/* Desktop sidebar */}
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 lg:block">{sidebar}</aside>
 
-      <div className="lg:pl-64">
+      {/* overflow-x-clip (not hidden) so a stray wide element can never make
+          the admin scroll sideways on a phone — clip, unlike hidden, does
+          not create a scroll container, so the sticky header keeps working. */}
+      <div className="overflow-x-clip lg:pl-64">
         <header className="sticky top-0 z-20 flex items-center gap-2 border-b border-slate-200 bg-white/95 px-3 py-2 backdrop-blur sm:gap-3 sm:px-5">
           <button
             type="button"
