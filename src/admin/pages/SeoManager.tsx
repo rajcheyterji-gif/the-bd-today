@@ -124,7 +124,7 @@ export function SeoManager() {
         )}
       </Card>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card>
           <CardHeader title="sitemap.xml" subtitle={`Preview generated from live data — ${articles.length} published articles, ${categories.length} categories (no sitemap endpoint in the API)`} action={<Globe className="text-slate-400" size={18} />} />
           <pre className="max-h-80 overflow-auto whitespace-pre-wrap break-all p-4 font-mono text-xs text-slate-700">{sitemapText}</pre>
