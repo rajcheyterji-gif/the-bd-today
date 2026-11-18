@@ -219,5 +219,5 @@ Suites in `tests/`: `smoke.test.ts` (slugify, reading time, Zod
 validation, API envelope), `seo.test.ts` (OG/Twitter/JSON-LD),
 `validation.test.ts` (schema boundaries). All run offline with Vitest —
 no Cloudflare credentials needed.
-
 Deployed to Cloudflare Workers — see the Actions tab for the latest deploy run.
+Deploy fixed: Cloudflare API token now has D1 Edit permission.
