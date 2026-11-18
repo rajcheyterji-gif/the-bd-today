@@ -61,7 +61,10 @@ export function timeAgo(value: string | null | undefined): string {
 }
 
 export function statusLabel(status: string): string {
-  return status.charAt(0).toUpperCase() + status.slice(1);
+  return status
+    .split("_")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
 }
 
 export function excerptOf(text: string, len = 140): string {
