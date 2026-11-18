@@ -34,7 +34,7 @@ function ToolbarButton({
         e.preventDefault();
         onClick();
       }}
-      className={`rounded-md p-2 transition-colors ${active ? "bg-[#c1121f] text-white" : "text-slate-700 hover:bg-slate-100"}`}
+      className={`flex min-h-11 min-w-11 items-center justify-center rounded-md p-2 transition-colors ${active ? "bg-[#c1121f] text-white" : "text-slate-700 hover:bg-slate-100"}`}
     >
       {children}
     </button>
