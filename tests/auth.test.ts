@@ -1,6 +1,7 @@
 // Auth tests — run with `npm test` (vitest).
 // Covers PBKDF2 hashing (WebCrypto only), the login/logout/me flow, the
-// login rate limit, CSRF-protected logout and the first-admin bootstrap.
+// login rate limit, CSRF-protected logout, the first-admin bootstrap,
+// and own-profile updates + password changes (PATCH /me, POST /me/password).
 import { beforeAll, describe, expect, it } from "vitest";
 import { createApp } from "../src/server/index";
 import { hashPassword, verifyPassword } from "../src/server/services/auth";
@@ -263,5 +264,211 @@ describe("first-admin bootstrap (POST /api/v1/auth/init)", () => {
       env,
     );
     expect(res.status).toBe(201);
+  });
+});
+
+describe("own profile (PATCH /api/v1/auth/me, POST /api/v1/auth/me/password)", () => {
+  function secondUser(): FakeUser {
+    return {
+      id: 2,
+      name: "Editor User",
+      email: "editor@example.com",
+      password_hash: adminHash,
+      role: "editor",
+      avatar_url: null,
+      bio: null,
+    };
+  }
+
+  function authHeaders(cookies: Record<string, string>) {
+    return {
+      "Content-Type": "application/json",
+      Cookie: cookieHeader(cookies),
+      "X-CSRF-Token": cookies.bd_csrf,
+    };
+  }
+
+  it("rejects a profile update without a session (401)", async () => {
+    const env = createFakeEnv({ users: [adminUser()] });
+    const res = await app.request(
+      "/api/v1/auth/me",
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: "Nobody" }),
+      },
+      env,
+    );
+    expect(res.status).toBe(401);
+  });
+
+  it("updates the signed-in user's name and bio", async () => {
+    const env = createFakeEnv({ users: [adminUser()] });
+    const { cookies } = await login(env);
+    const res = await app.request(
+      "/api/v1/auth/me",
+      {
+        method: "PATCH",
+        headers: authHeaders(cookies),
+        body: JSON.stringify({ name: "Azim Mia", bio: "Editor-in-Chief" }),
+      },
+      env,
+    );
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.data.user.name).toBe("Azim Mia");
+    expect(body.data.user.bio).toBe("Editor-in-Chief");
+    expect(body.data.user.email).toBe("admin@example.com");
+    expect(body.data.user.role).toBe("admin");
+  });
+
+  it("ignores a role in the body — the role never changes", async () => {
+    const env = createFakeEnv({ users: [adminUser()] });
+    const { cookies } = await login(env);
+    const res = await app.request(
+      "/api/v1/auth/me",
+      {
+        method: "PATCH",
+        headers: authHeaders(cookies),
+        body: JSON.stringify({ name: "Azim Mia", role: "author" }),
+      },
+      env,
+    );
+    expect(res.status).toBe(200);
+    expect((await res.json()).data.user.role).toBe("admin");
+  });
+
+  it("rejects an email already used by another account (409)", async () => {
+    const env = createFakeEnv({ users: [adminUser(), secondUser()] });
+    const { cookies } = await login(env);
+    const res = await app.request(
+      "/api/v1/auth/me",
+      {
+        method: "PATCH",
+        headers: authHeaders(cookies),
+        body: JSON.stringify({ email: "editor@example.com" }),
+      },
+      env,
+    );
+    expect(res.status).toBe(409);
+  });
+
+  it("rejects an invalid email (400)", async () => {
+    const env = createFakeEnv({ users: [adminUser()] });
+    const { cookies } = await login(env);
+    const res = await app.request(
+      "/api/v1/auth/me",
+      {
+        method: "PATCH",
+        headers: authHeaders(cookies),
+        body: JSON.stringify({ email: "not-an-email" }),
+      },
+      env,
+    );
+    expect(res.status).toBe(400);
+  });
+
+  it("rejects a password change with the wrong current password (401)", async () => {
+    const env = createFakeEnv({ users: [adminUser()] });
+    const { cookies } = await login(env);
+    const res = await app.request(
+      "/api/v1/auth/me/password",
+      {
+        method: "POST",
+        headers: authHeaders(cookies),
+        body: JSON.stringify({ current_password: "wrong-password", new_password: "a-very-long-new-password" }),
+      },
+      env,
+    );
+    expect(res.status).toBe(401);
+  });
+
+  it("rejects a new password shorter than 12 characters (400)", async () => {
+    const env = createFakeEnv({ users: [adminUser()] });
+    const { cookies } = await login(env);
+    const res = await app.request(
+      "/api/v1/auth/me/password",
+      {
+        method: "POST",
+        headers: authHeaders(cookies),
+        body: JSON.stringify({ current_password: "Test1234!", new_password: "short" }),
+      },
+      env,
+    );
+    expect(res.status).toBe(400);
+  });
+
+  it("changes the password: old password stops working, new one works, current session stays valid", async () => {
+    const env = createFakeEnv({ users: [adminUser()] });
+    const { cookies } = await login(env);
+    const changed = await app.request(
+      "/api/v1/auth/me/password",
+      {
+        method: "POST",
+        headers: authHeaders(cookies),
+        body: JSON.stringify({ current_password: "Test1234!", new_password: "a-very-long-new-password" }),
+      },
+      env,
+    );
+    expect(changed.status).toBe(200);
+
+    // The session that changed the password is still signed in.
+    const me = await app.request(
+      "/api/v1/auth/me",
+      { method: "GET", headers: { Cookie: cookieHeader(cookies) } },
+      env,
+    );
+    expect(me.status).toBe(200);
+
+    // Old password no longer works; the new one does.
+    const oldLogin = await app.request(
+      "/api/v1/auth/login",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: "admin@example.com", password: "Test1234!" }),
+      },
+      env,
+    );
+    expect(oldLogin.status).toBe(401);
+    const newLogin = await app.request(
+      "/api/v1/auth/login",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: "admin@example.com", password: "a-very-long-new-password" }),
+      },
+      env,
+    );
+    expect(newLogin.status).toBe(200);
+  });
+
+  it("revokes the user's other sessions on password change", async () => {
+    const env = createFakeEnv({ users: [adminUser()] });
+    const first = await login(env);
+    const second = await login(env);
+    const changed = await app.request(
+      "/api/v1/auth/me/password",
+      {
+        method: "POST",
+        headers: authHeaders(first.cookies),
+        body: JSON.stringify({ current_password: "Test1234!", new_password: "a-very-long-new-password" }),
+      },
+      env,
+    );
+    expect(changed.status).toBe(200);
+
+    const other = await app.request(
+      "/api/v1/auth/me",
+      { method: "GET", headers: { Cookie: cookieHeader(second.cookies) } },
+      env,
+    );
+    expect(other.status).toBe(401);
+    const kept = await app.request(
+      "/api/v1/auth/me",
+      { method: "GET", headers: { Cookie: cookieHeader(first.cookies) } },
+      env,
+    );
+    expect(kept.status).toBe(200);
   });
 });
