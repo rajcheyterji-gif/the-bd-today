@@ -23,12 +23,16 @@ function FilledUserIcon({ size = 21 }: { size?: number }) {
 }
 
 /**
- * Masthead (Prothom Alo mobile header, row 1): the logo lockup CENTRED
- * in the row, with the solid search icon + divider + Login pinned at the
- * right — exactly like the reference screenshot. Tapping the magnifier
- * opens a clean full-width pill search bar (Bengali placeholder, clear
- * + close controls, autofocus, Escape to close); submitting still
- * navigates to /search?q=… exactly as before.
+ * Masthead (Prothom Alo mobile header, row 1): the logo lockup is
+ * absolutely CENTRED in the row, while the solid search icon +
+ * divider + Login sit in normal flow at the right — so the centred
+ * logo can never squeeze the icons out, and the icons can never be
+ * pushed off-screen or hidden on narrow phones. The logo lockup
+ * shrinks a little on small screens to keep clear of the icons.
+ * Tapping the magnifier opens a clean full-width pill search bar
+ * (Bengali placeholder, clear + close controls, autofocus, Escape
+ * to close); submitting still navigates to /search?q=… exactly as
+ * before.
  */
 export function Masthead() {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -61,14 +65,19 @@ export function Masthead() {
 
   return (
     <header className="bg-white">
-      <div className="mx-auto grid max-w-[1280px] grid-cols-[1fr_auto_1fr] items-center px-3 py-3 sm:px-4">
-        <span aria-hidden="true" />
-
-        <Link to="/" className="min-w-0" aria-label="THE BD TODAY — home">
-          <Logo markClassName="h-[26px] w-auto sm:h-9" wordmarkClassName="text-[24px] sm:text-4xl" />
+      <div className="relative mx-auto flex max-w-[1280px] items-center justify-end px-3 py-3 sm:px-4">
+        <Link
+          to="/"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+          aria-label="THE BD TODAY — home"
+        >
+          <Logo
+            markClassName="h-5 w-auto min-[380px]:h-[22px] sm:h-9"
+            wordmarkClassName="text-[18px] min-[380px]:text-[20px] min-[480px]:text-[24px] sm:text-4xl"
+          />
         </Link>
 
-        <div className="flex items-center justify-end">
+        <div className="relative z-10 flex items-center bg-white">
           <button
             type="button"
             aria-expanded={searchOpen}
@@ -84,7 +93,7 @@ export function Masthead() {
             className="flex items-center gap-1.5 py-2 pl-1 pr-1 text-[15px] font-medium text-slate-900 hover:text-[#c1121f]"
           >
             <FilledUserIcon size={21} />
-            <span className="hidden min-[400px]:inline">Login</span>
+            <span className="hidden min-[480px]:inline">Login</span>
           </Link>
         </div>
       </div>
