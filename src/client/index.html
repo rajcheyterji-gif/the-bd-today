@@ -30,6 +30,10 @@
     <meta name="twitter:image" content="https://www.thebdtoday.online/og-image.jpg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Article photos come from thumb.wikimedia.org — warm that connection
+         up while the page loads so the first image does not pay a DNS +
+         TLS round trip. No crossorigin: <img> fetches are non-CORS. -->
+    <link rel="preconnect" href="https://thumb.wikimedia.org" />
     <link
       href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Noto+Serif+Bengali:wght@400;500;600;700;800;900&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap"
       rel="stylesheet"
@@ -87,7 +91,7 @@
   <body>
     <div id="root">
       <div class="boot-splash" role="status" aria-label="দ্য বিডি টুডে লোড হচ্ছে">
-        <img src="/logo.jpg" alt="দ্য বিডি টুডে" />
+        <img src="/logo.png" alt="দ্য বিডি টুডে" />
         <div class="boot-bar"><span></span></div>
       </div>
     </div>

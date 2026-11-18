@@ -17,18 +17,47 @@ import { Footer } from "./components/Footer";
 import { ExchangeRates } from "./components/ExchangeRates";
 import { Loading } from "./components/Loading";
 import { HomePage } from "./pages/HomePage";
-import { CategoryPage } from "./pages/CategoryPage";
-import { ArticlePage } from "./pages/ArticlePage";
-import { SearchPage } from "./pages/SearchPage";
-import { AuthorPage } from "./pages/AuthorPage";
-import { AboutPage } from "./pages/AboutPage";
-import { ContactPage } from "./pages/ContactPage";
-import { PrivacyPage } from "./pages/PrivacyPage";
-import { TermsPage } from "./pages/TermsPage";
-import { NotFoundPage } from "./pages/NotFoundPage";
-import { BreakingPage } from "./pages/BreakingPage";
-import { LatestPage } from "./pages/LatestPage";
-import { TagPage } from "./pages/TagPage";
+
+// HomePage stays eager — it is the first paint. Every other public page
+// is a separate chunk, fetched only when its route is visited, so the
+// first load does not download the code for all 12 pages. (The admin app
+// was already lazy-loaded this way.)
+const CategoryPage = lazy(() =>
+  import("./pages/CategoryPage").then((m) => ({ default: m.CategoryPage })),
+);
+const ArticlePage = lazy(() =>
+  import("./pages/ArticlePage").then((m) => ({ default: m.ArticlePage })),
+);
+const SearchPage = lazy(() =>
+  import("./pages/SearchPage").then((m) => ({ default: m.SearchPage })),
+);
+const AuthorPage = lazy(() =>
+  import("./pages/AuthorPage").then((m) => ({ default: m.AuthorPage })),
+);
+const AboutPage = lazy(() =>
+  import("./pages/AboutPage").then((m) => ({ default: m.AboutPage })),
+);
+const ContactPage = lazy(() =>
+  import("./pages/ContactPage").then((m) => ({ default: m.ContactPage })),
+);
+const PrivacyPage = lazy(() =>
+  import("./pages/PrivacyPage").then((m) => ({ default: m.PrivacyPage })),
+);
+const TermsPage = lazy(() =>
+  import("./pages/TermsPage").then((m) => ({ default: m.TermsPage })),
+);
+const NotFoundPage = lazy(() =>
+  import("./pages/NotFoundPage").then((m) => ({ default: m.NotFoundPage })),
+);
+const BreakingPage = lazy(() =>
+  import("./pages/BreakingPage").then((m) => ({ default: m.BreakingPage })),
+);
+const LatestPage = lazy(() =>
+  import("./pages/LatestPage").then((m) => ({ default: m.LatestPage })),
+);
+const TagPage = lazy(() =>
+  import("./pages/TagPage").then((m) => ({ default: m.TagPage })),
+);
 
 const AdminApp = lazy(() =>
   // NOTE: from src/client, "../admin" is src/admin; "../../admin" would
@@ -125,21 +154,23 @@ export function App() {
           path="/*"
           element={
             <PublicLayout>
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/category/:slug" element={<CategoryRoute />} />
-                <Route path="/article/:slug" element={<ArticleRoute />} />
-                <Route path="/search" element={<SearchRoute />} />
-                <Route path="/author/:id" element={<AuthorRoute />} />
-                <Route path="/tag/:slug" element={<TagRoute />} />
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/contact" element={<ContactPage />} />
-                <Route path="/privacy" element={<PrivacyPage />} />
-                <Route path="/terms" element={<TermsPage />} />
-                <Route path="/breaking" element={<BreakingPage />} />
-                <Route path="/latest" element={<LatestPage />} />
-                <Route path="*" element={<NotFoundPage />} />
-              </Routes>
+              <Suspense fallback={<Loading />}>
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/category/:slug" element={<CategoryRoute />} />
+                  <Route path="/article/:slug" element={<ArticleRoute />} />
+                  <Route path="/search" element={<SearchRoute />} />
+                  <Route path="/author/:id" element={<AuthorRoute />} />
+                  <Route path="/tag/:slug" element={<TagRoute />} />
+                  <Route path="/about" element={<AboutPage />} />
+                  <Route path="/contact" element={<ContactPage />} />
+                  <Route path="/privacy" element={<PrivacyPage />} />
+                  <Route path="/terms" element={<TermsPage />} />
+                  <Route path="/breaking" element={<BreakingPage />} />
+                  <Route path="/latest" element={<LatestPage />} />
+                  <Route path="*" element={<NotFoundPage />} />
+                </Routes>
+              </Suspense>
             </PublicLayout>
           }
         />
