@@ -33,6 +33,7 @@ import categoryRoutes from "./routes/categories";
 import adminRoutes from "./routes/admin";
 import mediaRoutes from "./routes/media";
 import publicRoutes from "./routes/public";
+import exchangeRatesRoutes from "./routes/exchange-rates";
 import seoRoutes from "./routes/seo";
 
 export function createApp(): Hono<{ Bindings: Env; Variables: AppVariables }> {
@@ -71,6 +72,7 @@ export function createApp(): Hono<{ Bindings: Env; Variables: AppVariables }> {
   app.route("/api/v1/admin", adminRoutes);
   app.route("/api/v1/admin/media", mediaRoutes);
   app.route("/api/v1", publicRoutes);
+  app.route("/api/v1", exchangeRatesRoutes);
 
   // SEO routes at the root (/sitemap.xml, /robots.txt, /rss.xml) and under
   // the API prefix (/api/v1/sitemap.xml per the shared contract).
