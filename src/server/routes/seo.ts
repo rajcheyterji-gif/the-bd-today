@@ -66,6 +66,8 @@ seo.get("/sitemap.xml", async (c) => {
 
   const urls: string[] = [
     `  <url><loc>${origin}/</loc><changefreq>hourly</changefreq><priority>1.0</priority></url>`,
+    `  <url><loc>${origin}/latest</loc><changefreq>hourly</changefreq><priority>0.9</priority></url>`,
+    `  <url><loc>${origin}/breaking</loc><changefreq>hourly</changefreq><priority>0.9</priority></url>`,
   ];
   for (const row of categories.results ?? []) {
     urls.push(
