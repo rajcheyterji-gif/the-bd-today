@@ -22,10 +22,11 @@ permissions:
 
 jobs:
   deploy:
-    # Skip (don't fail) while Cloudflare is not configured yet. Without
-    # these secrets wrangler fails on every push with exit code 1, which
-    # is what was failing the Deploy check on main.
-    if: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
+    # Cloudflare secrets (CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID) are
+        # now configured as repository secrets, so the deploy job always runs.
+            # NOTE: do not gate this job with a job-level `if: ${{ secrets... }}`
+                # — GitHub rejects the whole workflow file, because the `secrets`
+                    # context is not available in a job-level `if:`.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
