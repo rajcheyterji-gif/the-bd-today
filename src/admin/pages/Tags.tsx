@@ -134,7 +134,7 @@ export function Tags() {
                 <button
                   type="button"
                   aria-label={`Edit tag ${t.name}`}
-                  className="rounded-full p-2 hover:bg-slate-100"
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full hover:bg-slate-100"
                   onClick={() => {
                     setEditing(t);
                     setEditName(t.name);
@@ -143,7 +143,7 @@ export function Tags() {
                 >
                   <Pencil size={13} />
                 </button>
-                <button type="button" aria-label={`Delete tag ${t.name}`} className="rounded-full p-2 hover:bg-red-50" onClick={() => setToDelete(t)}>
+                <button type="button" aria-label={`Delete tag ${t.name}`} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full hover:bg-red-50" onClick={() => setToDelete(t)}>
                   <Trash2 size={13} className="text-red-600" />
                 </button>
               </li>
