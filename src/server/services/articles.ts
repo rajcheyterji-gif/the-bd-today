@@ -8,7 +8,8 @@
 import type { Article, ArticleListParams, ArticleSort, ArticleStatus, UserRole } from "../../shared/types";
 import { excerpt as makeExcerpt, readingTimeMinutes, sanitizeHtml, slugify } from "../../shared/utils";
 import { HttpError, badRequest, notFound } from "../lib/errors";
-import { isNumericId, likePattern, nowIso } from "../lib/db";
+import { isNumericId, likePattern, nowIso, placeholders } from "../lib/db";
+import { hasLatin, looseRoman, romanToBengali } from "../../shared/transliterate";
 
 export interface ArticleRow {
   id: number;
@@ -226,9 +227,28 @@ function buildWhere(params: ArticleListParams): WhereClause {
     }
   }
   if (params.search) {
+    const parts: string[] = [];
     const pattern = likePattern(params.search);
-    clauses.push("(a.title LIKE ? ESCAPE '\\' OR a.excerpt LIKE ? ESCAPE '\\' OR a.content LIKE ? ESCAPE '\\')");
+    parts.push("(a.title LIKE ? ESCAPE '\\' OR a.excerpt LIKE ? ESCAPE '\\' OR a.content LIKE ? ESCAPE '\\')");
     values.push(pattern, pattern, pattern);
+    // Roman-letter queries ("Bisshokap", "Padma Setu") never match Bengali
+    // text, so also try the Bengali transliteration of the query.
+    if (hasLatin(params.search)) {
+      const bn = romanToBengali(params.search);
+      if (bn && bn !== params.search) {
+        const bnPattern = likePattern(bn);
+        parts.push("(a.title LIKE ? ESCAPE '\\' OR a.excerpt LIKE ? ESCAPE '\\' OR a.content LIKE ? ESCAPE '\\')");
+        values.push(bnPattern, bnPattern, bnPattern);
+      }
+    }
+    // …and the loose Roman form against the (Roman) slug, which catches
+    // loose spellings the transliterator cannot ("Bisshokap" -> "bishwokap").
+    // The ids are computed by listArticles before this runs.
+    if (params.searchSlugIds?.length) {
+      parts.push(`a.id IN (${placeholders(params.searchSlugIds.length)})`);
+      values.push(...params.searchSlugIds);
+    }
+    clauses.push(`(${parts.join(" OR ")})`);
   }
   if (params.tag) {
     clauses.push(
@@ -262,7 +282,23 @@ export async function listArticles(
   const page = params.page ?? 1;
   const limit = params.limit ?? 12;
   const sort = params.sort ?? "latest";
-  const where = buildWhere(params);
+
+  // Latin search: pre-compute the articles whose slug loosely matches the
+  // query (one cheap scan; the table is small). The ids feed buildWhere's
+  // `a.id IN (...)` branch; the outer status/category filters still apply.
+  let searchSlugIds: number[] | undefined;
+  if (params.search && hasLatin(params.search)) {
+    const needle = looseRoman(params.search);
+    if (needle) {
+      const { results: slugRows } = await db
+        .prepare("SELECT a.id, a.slug FROM articles a")
+        .all<{ id: number; slug: string }>();
+      searchSlugIds = (slugRows ?? [])
+        .filter((r) => looseRoman(r.slug).includes(needle))
+        .map((r) => r.id);
+    }
+  }
+  const where = buildWhere({ ...params, searchSlugIds });
   const columns = opts?.slim ? ARTICLE_LIST_COLUMNS : ARTICLE_COLUMNS;
 
   // The count and the page are independent — run them together instead
