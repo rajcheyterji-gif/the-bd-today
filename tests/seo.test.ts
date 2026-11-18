@@ -10,6 +10,10 @@ import {
   renderMetaTags,
   siteJsonLd,
 } from "../src/shared/seo";
+import {
+  googleVerificationFile,
+  googleVerificationMetaTag,
+} from "../src/server/lib/seo";
 
 const SITE_URL = "https://thebdtoday.com";
 
@@ -88,5 +92,45 @@ describe("JSON-LD", () => {
     const ld = siteJsonLd(SITE_URL);
     expect(ld["@type"]).toBe("NewsMediaOrganization");
     expect(ld.url).toBe(SITE_URL);
+  });
+
+  it("includes the site logo in the NewsArticle publisher", () => {
+    const ld = articleJsonLd(SITE_URL, article);
+    const publisher = ld.publisher as Record<string, unknown>;
+    const logo = publisher.logo as Record<string, string>;
+    expect(logo["@type"]).toBe("ImageObject");
+    expect(logo.url).toBe(`${SITE_URL}/logo.jpg`);
+  });
+
+  it("includes the site logo in the organisation object", () => {
+    const ld = siteJsonLd(SITE_URL);
+    const logo = ld.logo as Record<string, string>;
+    expect(logo.url).toBe(`${SITE_URL}/logo.jpg`);
+  });
+});
+
+describe("Google Search Console verification helpers", () => {
+  it("recognises an HTML verification filename", () => {
+    expect(googleVerificationFile("googleAbC123.html")).toBe("googleAbC123.html");
+    expect(googleVerificationFile("  googleAbC123.html  ")).toBe("googleAbC123.html");
+    expect(googleVerificationFile("/googleAbC123.html")).toBe("googleAbC123.html");
+  });
+
+  it("returns null for a meta token or an empty value", () => {
+    expect(googleVerificationFile("AbC123token")).toBeNull();
+    expect(googleVerificationFile("")).toBeNull();
+    expect(googleVerificationFile()).toBeNull();
+  });
+
+  it("renders the meta tag for a token and nothing for a filename", () => {
+    expect(googleVerificationMetaTag("AbC123token")).toBe(
+      '<meta name="google-site-verification" content="AbC123token">',
+    );
+    expect(googleVerificationMetaTag("googleAbC123.html")).toBe("");
+    expect(googleVerificationMetaTag()).toBe("");
+  });
+
+  it("escapes quotes in the token", () => {
+    expect(googleVerificationMetaTag('a"b')).toContain("a&quot;b");
   });
 });

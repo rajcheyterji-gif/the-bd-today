@@ -258,6 +258,16 @@ class FakeStatement {
         ] as T[],
       };
     }
+    if (sql.includes("SELECT slug, title, published_at FROM articles")) {
+      // Google News sitemap query (last-48h articles).
+      return {
+        results: articles.map((a) => ({
+          slug: a.slug,
+          title: a.title,
+          published_at: a.published_at,
+        })) as T[],
+      };
+    }
     if (sql.includes("FROM tags t ORDER BY")) {
       return { results: [] as T[] };
     }
@@ -360,6 +370,7 @@ export function createFakeEnv(opts?: {
   users?: FakeUser[];
   articles?: FakeArticleRow[];
   initToken?: string;
+  googleVerification?: string;
 }): Env {
   return {
     DB: new FakeD1(opts) as unknown as D1Database,
@@ -373,6 +384,7 @@ export function createFakeEnv(opts?: {
     ADMIN_NAME: "Editor-in-Chief",
     SITE_URL: "https://test.example.com",
     SITE_NAME: "THE BD TODAY",
+    GOOGLE_SITE_VERIFICATION: opts?.googleVerification,
   };
 }
 

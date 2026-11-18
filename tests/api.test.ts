@@ -224,6 +224,37 @@ describe("admin auth gating + SEO", () => {
     expect(res.headers.get("content-type")).toContain("text/plain");
     expect(await res.text()).toContain("Sitemap:");
   });
+
+  it("GET /news-sitemap.xml lists recent articles in Google News format", async () => {
+    const res = await get("/news-sitemap.xml");
+    expect(res.status).toBe(200);
+    expect(res.headers.get("content-type")).toContain("application/xml");
+    const text = await res.text();
+    expect(text).toContain("http://www.google.com/schemas/sitemap-news/0.9");
+    expect(text).toContain("<news:name>THE BD TODAY</news:name>");
+    expect(text).toContain("<news:language>bn</news:language>");
+    expect(text).toContain("test-article");
+    expect(text).toContain("<news:publication_date>");
+    expect(text).toContain("<news:title>");
+  });
+
+  it("GET /sitemap-news.xml is an alias for the news sitemap", async () => {
+    const res = await get("/sitemap-news.xml");
+    expect(res.status).toBe(200);
+    expect(await res.text()).toContain("<news:name>THE BD TODAY</news:name>");
+  });
+
+  it("serves the Google verification file from the secret", async () => {
+    const env = createFakeEnv({ googleVerification: "googleAbC123.html" });
+    const res = await app.request("/googleAbC123.html", { method: "GET" }, env);
+    expect(res.status).toBe(200);
+    expect(await res.text()).toBe("google-site-verification: googleAbC123.html");
+  });
+
+  it("does not serve a verification file when the secret is unset", async () => {
+    const res = await get("/googleAbC123.html");
+    expect(res.status).toBe(404);
+  });
 });
 
 describe("scheduled publishing service", () => {
