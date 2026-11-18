@@ -58,6 +58,26 @@ const ARTICLE_JOINS = `
   LEFT JOIN article_tags at ON at.article_id = a.id
   LEFT JOIN tags t ON t.id = at.tag_id`;
 
+/**
+ * Slim columns for LIST responses (public lists, search, related).
+ * List pages render title / excerpt / image / category / author / date
+ * only — never the full HTML body, image captions, SEO fields or the
+ * author bio. Dropping them cuts ~10% of the JSON and, more importantly,
+ * the D1 rows the Worker has to read and serialise. The shape is
+ * unchanged: `content` is still present, as "" (see mapListRow).
+ * The admin list keeps the full columns — its preview modal renders
+ * the article body from the list row.
+ */
+const ARTICLE_LIST_COLUMNS = `
+  a.id, a.slug, a.title, a.subtitle, a.excerpt, a.category_id,
+  c.slug AS category_slug, c.name_bn AS category_name_bn, c.name_en AS category_name_en,
+  a.author_id, u.name AS author_name, u.role AS author_role,
+  u.avatar_url AS author_avatar_url,
+  GROUP_CONCAT(t.name, '|||') AS tags,
+  a.featured_image_url, a.status,
+  a.published_at, a.scheduled_at, a.created_at, a.updated_at, a.views,
+  a.reading_time_minutes`;
+
 function mapRow(row: ArticleRow): Article {
   return {
     id: row.id,
@@ -96,6 +116,75 @@ function mapRow(row: ArticleRow): Article {
     reading_time_minutes: row.reading_time_minutes,
     seo_title: row.seo_title ?? undefined,
     seo_description: row.seo_description ?? undefined,
+  };
+}
+
+/** Row shape returned by ARTICLE_LIST_COLUMNS (no body / captions / SEO). */
+export interface ArticleListRow {
+  id: number;
+  slug: string;
+  title: string;
+  subtitle: string | null;
+  excerpt: string;
+  category_id: number;
+  category_slug: string | null;
+  category_name_bn: string | null;
+  category_name_en: string | null;
+  author_id: number;
+  author_name: string;
+  author_role: string;
+  author_avatar_url: string | null;
+  tags: string | null;
+  featured_image_url: string | null;
+  status: string;
+  published_at: string | null;
+  scheduled_at: string | null;
+  created_at: string;
+  updated_at: string;
+  views: number;
+  reading_time_minutes: number;
+}
+
+/**
+ * Map a slim list row to an Article. `content` is "" — list pages show
+ * the excerpt, which createArticle always generates (seed rows all carry
+ * one), and `excerptFrom` only reads `content` when the excerpt is empty.
+ * Nothing in the public list UI reads captions, SEO fields or author bio.
+ */
+function mapListRow(row: ArticleListRow): Article {
+  return {
+    id: row.id,
+    slug: row.slug,
+    title: row.title,
+    subtitle: row.subtitle ?? undefined,
+    excerpt: row.excerpt,
+    content: "",
+    category_id: row.category_id,
+    category: row.category_slug
+      ? {
+          id: row.category_id,
+          slug: row.category_slug,
+          name_bn: row.category_name_bn ?? "",
+          name_en: row.category_name_en ?? "",
+        }
+      : undefined,
+    author_id: row.author_id,
+    author: {
+      id: row.author_id,
+      name: row.author_name,
+      role: row.author_role as UserRole,
+      avatar_url: row.author_avatar_url,
+      bio: null,
+    },
+    tags: row.tags ? row.tags.split("|||").filter(Boolean) : [],
+    featured_image_url: row.featured_image_url ?? undefined,
+    status: row.status as ArticleStatus,
+    published_at: row.published_at ?? undefined,
+    scheduled_at: row.scheduled_at ?? undefined,
+    created_at: row.created_at,
+    updated_at: row.updated_at,
+    views: row.views,
+    reading_time_minutes: row.reading_time_minutes,
   };
 }
 
@@ -168,28 +257,37 @@ export interface ArticleListResult {
 export async function listArticles(
   db: D1Database,
   params: ArticleListParams,
+  opts?: { slim?: boolean },
 ): Promise<ArticleListResult> {
   const page = params.page ?? 1;
   const limit = params.limit ?? 12;
   const sort = params.sort ?? "latest";
   const where = buildWhere(params);
+  const columns = opts?.slim ? ARTICLE_LIST_COLUMNS : ARTICLE_COLUMNS;
 
-  const countRow = await db
-    .prepare(
-      `SELECT COUNT(DISTINCT a.id) AS total ${ARTICLE_JOINS} ${where.sql}`,
-    )
-    .bind(...where.params)
-    .first<{ total: number }>();
+  // The count and the page are independent — run them together instead
+  // of two sequential D1 round trips back to back.
+  const [countRow, { results }] = await Promise.all([
+    db
+      .prepare(
+        `SELECT COUNT(DISTINCT a.id) AS total ${ARTICLE_JOINS} ${where.sql}`,
+      )
+      .bind(...where.params)
+      .first<{ total: number }>(),
+    db
+      .prepare(
+        `SELECT ${columns} ${ARTICLE_JOINS} ${where.sql}
+         GROUP BY a.id ORDER BY ${sortClause(sort)} LIMIT ? OFFSET ?`,
+      )
+      .bind(...where.params, limit, (page - 1) * limit)
+      .all<ArticleRow>(),
+  ]);
 
-  const { results } = await db
-    .prepare(
-      `SELECT ${ARTICLE_COLUMNS} ${ARTICLE_JOINS} ${where.sql}
-       GROUP BY a.id ORDER BY ${sortClause(sort)} LIMIT ? OFFSET ?`,
-    )
-    .bind(...where.params, limit, (page - 1) * limit)
-    .all<ArticleRow>();
-
-  return { articles: (results ?? []).map(mapRow), total: countRow?.total ?? 0 };
+  const rows = results ?? [];
+  const articles = opts?.slim
+    ? rows.map((row) => mapListRow(row as unknown as ArticleListRow))
+    : rows.map(mapRow);
+  return { articles, total: countRow?.total ?? 0 };
 }
 
 export async function getArticleBySlug(
@@ -246,15 +344,17 @@ export async function getRelatedArticles(
   article: Article,
   limit = 4,
 ): Promise<Article[]> {
+  // Related stories render as cards (excerpt only), so the slim columns
+  // are enough — same shape, no body.
   const { results } = await db
     .prepare(
-      `SELECT ${ARTICLE_COLUMNS} ${ARTICLE_JOINS}
+      `SELECT ${ARTICLE_LIST_COLUMNS} ${ARTICLE_JOINS}
        WHERE a.category_id = ? AND a.id != ? AND a.status = 'published'
        GROUP BY a.id ORDER BY a.published_at DESC LIMIT ?`,
     )
     .bind(article.category_id, article.id, limit)
-    .all<ArticleRow>();
-  const related = (results ?? []).map(mapRow);
+    .all<ArticleListRow>();
+  const related = (results ?? []).map(mapListRow);
   if (related.length >= limit) return related;
   // Top up with latest published articles from other categories.
   const exclude = related.map((r) => r.id);
@@ -262,13 +362,13 @@ export async function getRelatedArticles(
     exclude.length > 0 ? `AND a.id NOT IN (${exclude.map(() => "?").join(", ")})` : "";
   const { results: more } = await db
     .prepare(
-      `SELECT ${ARTICLE_COLUMNS} ${ARTICLE_JOINS}
+      `SELECT ${ARTICLE_LIST_COLUMNS} ${ARTICLE_JOINS}
        WHERE a.id != ? AND a.status = 'published' ${excludeClause}
        GROUP BY a.id ORDER BY a.published_at DESC LIMIT ?`,
     )
     .bind(article.id, ...exclude, limit - related.length)
-    .all<ArticleRow>();
-  return [...related, ...(more ?? []).map(mapRow)];
+    .all<ArticleListRow>();
+  return [...related, ...(more ?? []).map(mapListRow)];
 }
 
 async function ensureUniqueSlug(
