@@ -57,10 +57,10 @@ export function ArticleCard({
 }) {
   const titleCls =
     size === "large"
-      ? "font-serif text-[30px] font-black leading-snug"
+      ? "font-serif text-balance text-[30px] font-black leading-snug"
       : size === "small"
-        ? "font-serif text-[20px] font-bold leading-snug"
-        : "font-serif text-xl font-bold leading-snug";
+        ? "font-serif text-balance text-[20px] font-bold leading-snug"
+        : "font-serif text-balance text-xl font-bold leading-snug";
   return (
     <article className="group">
       <Link to={`/article/${article.slug}`} aria-label={article.title}>
@@ -112,7 +112,7 @@ export function TextStory({
     <article className="group border-b border-slate-200 py-4 first:pt-0 last:border-b-0 last:pb-0">
       <div className="flex gap-3">
         <div className="min-w-0 flex-1">
-          <h3 className="font-serif text-[23px] font-bold leading-snug">
+          <h3 className="font-serif text-balance text-[23px] font-bold leading-snug">
             {kicker ? (
               <>
                 <span className="text-[#c1121f]">{kicker}</span>{" "}
