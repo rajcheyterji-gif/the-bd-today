@@ -121,7 +121,7 @@ export function ArticlePage({ slug }: { slug: string }) {
                 {article.category.name_bn ?? article.category.name_en}
               </Link>
             )}
-            <h1 className="mt-2 font-serif text-balance text-[28px] font-black leading-[1.35] text-slate-900 sm:text-4xl">
+            <h1 className="mt-2 font-serif text-[28px] font-black leading-[1.35] text-slate-900 sm:text-4xl">
               {article.title}
             </h1>
             <div className="mt-5 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-y border-slate-200 py-3">
