@@ -30,7 +30,7 @@ export function HeroArticle({ article }: { article: Article }) {
         </div>
       </Link>
       <div className="pt-4">
-        <h2 className="font-serif text-balance text-[30px] font-black leading-[1.25] text-[#111111] sm:text-[40px]">
+        <h2 className="font-serif text-balance text-[25px] font-black leading-[1.25] text-[#111111] sm:text-[32px]">
           <Link to={`/article/${article.slug}`} className="group-hover:text-[#c1121f]">
             {article.title}
           </Link>
