@@ -4,7 +4,6 @@ import { useSiteData } from "../hooks/useCategories";
 import { enrichArticles } from "../lib/api";
 import { toBengaliDigits } from "../lib/format";
 import { Seo } from "../components/Seo";
-import { Breadcrumbs } from "../components/Breadcrumbs";
 import { SearchBar } from "../components/SearchBar";
 import { ArticleCard } from "../components/ArticleCard";
 import { ListPageSkeleton, ErrorState } from "../components/Loading";
@@ -25,7 +24,6 @@ export function SearchPage({ initialQuery }: { initialQuery: string }) {
         title={q ? `অনুসন্ধান: ${q}` : "অনুসন্ধান"}
         description={q ? `“${q}”-এর জন্য অনুসন্ধানের ফলাফল — দ্য বিডি টুডে।` : "দ্য বিডি টুডে-তে খবর খুঁজুন।"}
       />
-      <Breadcrumbs items={[{ label: "অনুসন্ধান" }]} />
       <header className="mt-4 border-b-2 border-[#0f172a] pb-4">
         <h1 className="font-serif text-3xl font-black text-slate-900">অনুসন্ধান</h1>
         <div className="mt-4 max-w-xl">

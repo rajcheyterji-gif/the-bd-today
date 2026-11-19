@@ -4,7 +4,6 @@ import { useCategoryBySlug } from "../hooks/useCategories";
 import { enrichArticles } from "../lib/api";
 import { Seo } from "../components/Seo";
 import { pageMeta } from "../../shared/seo";
-import { Breadcrumbs } from "../components/Breadcrumbs";
 import { ArticleCard } from "../components/ArticleCard";
 import { ListPageSkeleton, ErrorState } from "../components/Loading";
 import { EmptyState } from "../components/EmptyState";
@@ -23,13 +22,9 @@ export function CategoryPage({ slug }: { slug: string }) {
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
       <Seo title={meta.title} description={meta.description} />
-      <Breadcrumbs items={[{ label: category?.name_en ?? slug }]} />
       <header className="mt-4 border-b-2 border-[#0f172a] pb-4">
-        <h1 className="font-serif text-3xl font-black text-slate-900 sm:text-4xl">
-          {category?.name_en ?? slug}
-          {category?.name_bn && category.name_bn !== category.name_en && (
-            <span className="ml-3 font-bengali text-xl font-normal text-slate-500">{category.name_bn}</span>
-          )}
+        <h1 className="font-serif text-balance text-3xl font-black text-slate-900 sm:text-4xl">
+          {category?.name_bn ?? category?.name_en ?? slug}
         </h1>
         {category?.description && <p className="mt-2 max-w-2xl text-slate-600">{category.description}</p>}
         {query.data?.pagination && (

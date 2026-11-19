@@ -1,10 +1,10 @@
 import { useState } from "react";
+import { Check, ChevronDown, SlidersHorizontal } from "lucide-react";
 import { useArticles } from "../hooks/useArticles";
 import { useSiteData } from "../hooks/useCategories";
 import { enrichArticles } from "../lib/api";
 import { Seo } from "../components/Seo";
 import { LATEST_PAGE_META } from "../../shared/seo";
-import { Breadcrumbs } from "../components/Breadcrumbs";
 import { ArticleCard } from "../components/ArticleCard";
 import { ListPageSkeleton, ErrorState } from "../components/Loading";
 import { EmptyState } from "../components/EmptyState";
@@ -14,6 +14,7 @@ import type { ArticleSort } from "../../shared/types";
 export function LatestPage() {
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState<ArticleSort>("latest");
+  const [filterOpen, setFilterOpen] = useState(false);
   const query = useArticles({ page, limit: 12, sort });
   const { data: site } = useSiteData();
   const articles = enrichArticles(query.data?.data ?? [], site?.data?.categories ?? []);
@@ -22,27 +23,58 @@ export function LatestPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
       <Seo title={LATEST_PAGE_META.title} description={LATEST_PAGE_META.description} />
-      <Breadcrumbs items={[{ label: "Latest News" }]} />
-      <header className="mt-4 flex flex-wrap items-end justify-between gap-3 border-b-2 border-[#0f172a] pb-4">
-        <div>
-          <h1 className="font-serif text-3xl font-black text-slate-900 sm:text-4xl">Latest News</h1>
-          <p className="mt-2 text-slate-600">Every published story, newest first.</p>
-        </div>
-        <label className="flex items-center gap-2 text-sm font-medium text-slate-700">
-          Sort by
-          <select
-            value={sort}
-            onChange={(e) => {
-              setSort(e.target.value as ArticleSort);
-              setPage(1);
-            }}
-            className="rounded border border-slate-300 bg-white px-2 py-1.5 text-sm focus:border-[#c1121f] focus:outline-none"
+      <header className="mt-4 flex items-center justify-between gap-3 border-b-2 border-[#0f172a] pb-4">
+        <h1 className="font-serif text-balance text-3xl font-black text-slate-900 sm:text-4xl">সর্বশেষ</h1>
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setFilterOpen((v) => !v)}
+            aria-expanded={filterOpen}
+            aria-haspopup="true"
+            className="inline-flex items-center gap-2 border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-800 hover:border-[#c1121f] hover:text-[#c1121f]"
           >
-            <option value="latest">Latest</option>
-            <option value="popular">Most read</option>
-            <option value="trending">Trending</option>
-          </select>
-        </label>
+            <SlidersHorizontal size={16} />
+            ফিল্টার
+            <ChevronDown size={14} className={filterOpen ? "rotate-180" : ""} />
+          </button>
+          {filterOpen && (
+            <>
+              <button
+                type="button"
+                aria-label="ফিল্টার বন্ধ করুন"
+                tabIndex={-1}
+                className="fixed inset-0 z-10 cursor-default"
+                onClick={() => setFilterOpen(false)}
+              />
+              <div className="absolute right-0 z-20 mt-2 w-44 border border-slate-200 bg-white shadow-lg">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSort("latest");
+                    setPage(1);
+                    setFilterOpen(false);
+                  }}
+                  className="flex w-full items-center justify-between px-4 py-2.5 text-left text-sm font-medium text-slate-800 hover:bg-slate-50"
+                >
+                  লেটেস্ট
+                  {sort === "latest" && <Check size={16} className="text-[#c1121f]" />}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSort("oldest");
+                    setPage(1);
+                    setFilterOpen(false);
+                  }}
+                  className="flex w-full items-center justify-between border-t border-slate-100 px-4 py-2.5 text-left text-sm font-medium text-slate-800 hover:bg-slate-50"
+                >
+                  ওল্ড
+                  {sort === "oldest" && <Check size={16} className="text-[#c1121f]" />}
+                </button>
+              </div>
+            </>
+          )}
+        </div>
       </header>
       {query.isPending && <ListPageSkeleton />}
       {query.isError && (

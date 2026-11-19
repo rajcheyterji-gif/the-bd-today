@@ -5,7 +5,6 @@ import { useSiteData } from "../hooks/useCategories";
 import { enrichArticles } from "../lib/api";
 import { Seo } from "../components/Seo";
 import { BREAKING_PAGE_META } from "../../shared/seo";
-import { Breadcrumbs } from "../components/Breadcrumbs";
 import { ArticleCard } from "../components/ArticleCard";
 import { ListPageSkeleton, ErrorState } from "../components/Loading";
 import { EmptyState } from "../components/EmptyState";
@@ -22,12 +21,11 @@ export function BreakingPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
       <Seo title={BREAKING_PAGE_META.title} description={BREAKING_PAGE_META.description} />
-      <Breadcrumbs items={[{ label: "Breaking News" }]} />
       <header className="mt-4 border-b-2 border-[#c1121f] pb-4">
-        <h1 className="flex items-center gap-2 font-serif text-3xl font-black text-slate-900 sm:text-4xl">
-          <span className="text-[#c1121f]"><Zap size={28} /></span> Breaking News
+        <h1 className="flex items-center gap-2 font-serif text-balance text-3xl font-black text-slate-900 sm:text-4xl">
+          <span className="text-[#c1121f]"><Zap size={28} /></span> ব্রেকিং নিউজ
         </h1>
-        <p className="mt-2 text-slate-600">The stories developing right now, updated as our newsroom confirms them.</p>
+        <p className="mt-2 text-slate-600">এই মুহূর্তে ঘটে চলা খবর — নিশ্চিত হওয়া মাত্র আপডেট করা হচ্ছে।</p>
       </header>
       {query.isPending && <ListPageSkeleton />}
       {query.isError && (

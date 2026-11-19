@@ -1,7 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { Check, Mail, MapPin } from "lucide-react";
 import { Seo } from "../components/Seo";
-import { Breadcrumbs } from "../components/Breadcrumbs";
 
 // No /api/v1/contact endpoint exists on the server, so the form opens the
 // reader's email app addressed to the newsroom (a real send, not a fake
@@ -28,7 +27,6 @@ export function ContactPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-6">
       <Seo title="Contact Us" description="Contact THE BD TODAY newsroom — tips, feedback and enquiries." />
-      <Breadcrumbs items={[{ label: "Contact Us" }]} />
       <h1 className="mt-4 font-serif text-3xl font-black text-slate-900 sm:text-4xl">Contact Us</h1>
       <p className="mt-2 text-slate-600">
         News tips, corrections, feedback or partnership enquiries — every message is read by an editor.

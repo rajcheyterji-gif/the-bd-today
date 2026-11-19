@@ -3,7 +3,6 @@ import { useAuthor } from "../hooks/useArticles";
 import { useSiteData } from "../hooks/useCategories";
 import { enrichArticles } from "../lib/api";
 import { Seo } from "../components/Seo";
-import { Breadcrumbs } from "../components/Breadcrumbs";
 import { ArticleCard } from "../components/ArticleCard";
 import { AuthorSkeleton, ErrorState } from "../components/Loading";
 import { EmptyState } from "../components/EmptyState";
@@ -33,7 +32,6 @@ export function AuthorPage({ id }: { id: number }) {
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
       <Seo title={author.name} description={author.bio || `Stories by ${author.name} — THE BD TODAY.`} />
-      <Breadcrumbs items={[{ label: "Authors" }, { label: author.name }]} />
       <header className="mt-4 flex flex-col gap-4 rounded border border-slate-200 bg-slate-50 p-6 sm:flex-row">
         {author.avatar_url ? (
           <img
@@ -47,7 +45,7 @@ export function AuthorPage({ id }: { id: number }) {
           </span>
         )}
         <div>
-          <h1 className="font-serif text-3xl font-black text-slate-900">{author.name}</h1>
+          <h1 className="font-serif text-balance text-3xl font-black text-slate-900">{author.name}</h1>
           <p className="mt-1 text-sm font-semibold uppercase tracking-wider text-[#c1121f]">{author.role}</p>
           {author.bio && <p className="mt-2 max-w-2xl leading-relaxed text-slate-600">{author.bio}</p>}
           <p className="mt-2 text-sm text-slate-500">
