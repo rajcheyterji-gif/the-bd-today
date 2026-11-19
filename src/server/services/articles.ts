@@ -197,6 +197,8 @@ function sortClause(sort: ArticleSort): string {
       // Recently published articles first, ordered by views within that window.
       // strftime() renders the cutoff in the same ISO-8601 shape as published_at.
       return `CASE WHEN a.published_at >= strftime('%Y-%m-%dT%H:%M:%fZ', 'now', '-30 days') THEN a.views ELSE 0 END DESC, a.published_at DESC`;
+    case "oldest":
+      return "COALESCE(a.published_at, a.created_at) ASC, a.id ASC";
     case "latest":
     default:
       return "COALESCE(a.published_at, a.created_at) DESC, a.id DESC";
