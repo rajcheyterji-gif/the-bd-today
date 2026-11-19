@@ -1,13 +1,11 @@
 import { Link } from "react-router-dom";
 import { Seo } from "../components/Seo";
-import { Breadcrumbs } from "../components/Breadcrumbs";
 import { Newsletter } from "../components/Newsletter";
 
 export function AboutPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-6">
       <Seo title="About Us" description="About THE BD TODAY — independent journalism from Bangladesh." />
-      <Breadcrumbs items={[{ label: "About Us" }]} />
       <h1 className="mt-4 font-serif text-3xl font-black text-slate-900 sm:text-4xl">About THE BD TODAY</h1>
       <p className="mt-2 font-bengali text-lg text-slate-600">দ্য বিডি টুডে — সত্য, সবার আগে</p>
       <div className="article-body mt-6">

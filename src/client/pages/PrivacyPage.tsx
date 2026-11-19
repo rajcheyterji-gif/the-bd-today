@@ -1,11 +1,9 @@
 import { Seo } from "../components/Seo";
-import { Breadcrumbs } from "../components/Breadcrumbs";
 
 export function PrivacyPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-6">
       <Seo title="Privacy Policy" description="Privacy Policy — THE BD TODAY." />
-      <Breadcrumbs items={[{ label: "Privacy Policy" }]} />
       <h1 className="mt-4 font-serif text-3xl font-black text-slate-900 sm:text-4xl">Privacy Policy</h1>
       <p className="mt-2 text-sm text-slate-500">Last updated: 18 November 2026</p>
       <div className="article-body mt-6">

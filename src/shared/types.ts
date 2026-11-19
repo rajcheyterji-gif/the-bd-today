@@ -4,7 +4,7 @@
 export type ArticleStatus = 'draft' | 'published' | 'scheduled' | 'archived';
 export type UserRole = 'admin' | 'editor' | 'author';
 export type CommentStatus = 'pending' | 'approved' | 'rejected' | 'spam';
-export type ArticleSort = 'latest' | 'popular' | 'trending';
+export type ArticleSort = 'latest' | 'popular' | 'trending' | 'oldest';
 
 export interface Category {
   id: number;

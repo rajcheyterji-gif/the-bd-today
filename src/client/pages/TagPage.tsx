@@ -3,7 +3,6 @@ import { useArticles } from "../hooks/useArticles";
 import { useSiteData } from "../hooks/useCategories";
 import { enrichArticles } from "../lib/api";
 import { Seo } from "../components/Seo";
-import { Breadcrumbs } from "../components/Breadcrumbs";
 import { ArticleCard } from "../components/ArticleCard";
 import { ListPageSkeleton, ErrorState } from "../components/Loading";
 import { EmptyState } from "../components/EmptyState";
@@ -20,9 +19,8 @@ export function TagPage({ slug }: { slug: string }) {
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
       <Seo title={`Tag: ${slug}`} description={`Stories tagged "${slug}" — THE BD TODAY.`} />
-      <Breadcrumbs items={[{ label: "Tags" }, { label: slug }]} />
       <header className="mt-4 border-b-2 border-[#0f172a] pb-4">
-        <h1 className="font-serif text-3xl font-black text-slate-900">
+        <h1 className="font-serif text-balance text-3xl font-black text-slate-900">
           Tag: <span className="text-[#c1121f]">{slug}</span>
         </h1>
         {query.data?.pagination && (
