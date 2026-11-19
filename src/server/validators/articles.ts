@@ -110,7 +110,7 @@ export const articleListQuerySchema = z.object({
   status: z.enum([...ARTICLE_STATUSES, "all"]).optional(),
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(12),
-  sort: z.enum(["latest", "popular", "trending"]).default("latest"),
+  sort: z.enum(["latest", "popular", "trending", "oldest"]).default("latest"),
 });
 
 export type ArticleListQuery = z.infer<typeof articleListQuerySchema>;
