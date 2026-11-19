@@ -14,7 +14,6 @@ import {
   readingTimeLabel,
 } from "../lib/format";
 import { Seo } from "../components/Seo";
-import { Breadcrumbs } from "../components/Breadcrumbs";
 import { ArticleCard, ArticleRow } from "../components/ArticleCard";
 import { ShareButtons } from "../components/ShareButtons";
 import { ArticleSkeleton, ErrorState } from "../components/Loading";
@@ -111,15 +110,6 @@ export function ArticlePage({ slug }: { slug: string }) {
         section={article.category?.name_en}
         tags={article.tags}
       />
-      <Breadcrumbs
-        items={[
-          ...(article.category
-            ? [{ label: article.category.name_en, to: `/category/${article.category.slug}` }]
-            : []),
-          { label: article.title },
-        ]}
-      />
-
       <div className="mt-6 grid gap-10 lg:grid-cols-3">
         <article className="no-copy min-w-0 lg:col-span-2" onCopy={handleProtectedCopy}>
           <header>
@@ -131,14 +121,9 @@ export function ArticlePage({ slug }: { slug: string }) {
                 {article.category.name_bn ?? article.category.name_en}
               </Link>
             )}
-            <h1 className="mt-2 font-serif text-[36px] font-black leading-[1.3] text-slate-900 sm:text-5xl">
+            <h1 className="mt-2 font-serif text-[28px] font-black leading-[1.35] text-slate-900 sm:text-4xl">
               {article.title}
             </h1>
-            {(article.subtitle || article.excerpt) && (
-              <p className="mt-3 font-serif text-xl leading-relaxed text-slate-500 sm:text-2xl">
-                {article.subtitle || article.excerpt}
-              </p>
-            )}
             <div className="mt-5 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-y border-slate-200 py-3">
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                 {article.author && (

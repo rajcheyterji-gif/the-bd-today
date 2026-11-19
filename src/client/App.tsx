@@ -10,7 +10,7 @@
 // import; that file is owned by a sibling agent.
 
 import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from "react";
-import { Route, Routes, useLocation, useParams, useSearchParams } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigationType, useParams, useSearchParams } from "react-router-dom";
 import { Masthead } from "./components/Masthead";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
@@ -65,11 +65,46 @@ const AdminApp = lazy(() =>
   import("../admin/AdminApp").then((m) => ({ default: m.AdminApp })),
 );
 
+/**
+ * Scroll handling on route changes.
+ * - Forward navigation (PUSH/REPLACE): jump to the top of the new page.
+ * - Browser back/forward (POP): restore the scroll position the reader
+ *   left that page at, so "back" really goes back instead of dumping the
+ *   reader at the top of the home page. The browser's own restoration is
+ *   turned off so the two do not fight.
+ */
 function ScrollToTop() {
-  const { pathname, search } = useLocation();
+  const { pathname, search, key } = useLocation();
+  const navType = useNavigationType();
+  const positions = useRef(new Map<string, number>());
+
   useEffect(() => {
+    window.history.scrollRestoration = "manual";
+  }, []);
+
+  // Remember the scroll position of the page being left.
+  useEffect(() => {
+    return () => {
+      positions.current.set(key, window.scrollY);
+    };
+  }, [key]);
+
+  useEffect(() => {
+    if (navType === "POP") {
+      const y = positions.current.get(key) ?? 0;
+      // Content loads async; restore after paint and once more shortly
+      // after, so the position survives the data arriving.
+      requestAnimationFrame(() =>
+        window.scrollTo({ top: y, behavior: "instant" as ScrollBehavior }),
+      );
+      const t = window.setTimeout(
+        () => window.scrollTo({ top: y, behavior: "instant" as ScrollBehavior }),
+        350,
+      );
+      return () => window.clearTimeout(t);
+    }
     window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
-  }, [pathname, search]);
+  }, [pathname, search, key, navType]);
   return null;
 }
 
