@@ -159,12 +159,8 @@ function TagRoute() {
 function PublicLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-white font-sans text-[#0f172a] antialiased">
-      {/* Sticky header block: masthead + category nav stay pinned; the
-          masthead logo shrinks once the reader scrolls (see Masthead). */}
-      <div className="sticky top-0 z-50 bg-white">
-        <Masthead />
-        <Navbar />
-      </div>
+      <Masthead />
+      <Navbar />
       <main>{children}</main>
       {/* Exchange-rates strip: its own section above the footer, with
           breathing room (see ExchangeRates: my-10) — not flush against it. */}
