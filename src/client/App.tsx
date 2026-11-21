@@ -13,6 +13,7 @@ import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from "rea
 import { Route, Routes, useLocation, useNavigationType, useParams, useSearchParams } from "react-router-dom";
 import { Masthead } from "./components/Masthead";
 import { Navbar } from "./components/Navbar";
+import { BackToTop } from "./components/BackToTop";
 import { Footer } from "./components/Footer";
 import { ExchangeRates } from "./components/ExchangeRates";
 import { Loading } from "./components/Loading";
@@ -169,6 +170,7 @@ function PublicLayout({ children }: { children: ReactNode }) {
           breathing room (see ExchangeRates: my-10) — not flush against it. */}
       <ExchangeRates />
       <Footer />
+      <BackToTop />
     </div>
   );
 }
