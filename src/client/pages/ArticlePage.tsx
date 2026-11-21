@@ -167,7 +167,11 @@ export function ArticlePage({ slug }: { slug: string }) {
               {(article.image_caption || article.image_credit) && (
                 <figcaption className="mt-2 border-b border-slate-200 pb-2 text-xs text-slate-500">
                   {article.image_caption}
-                  {article.image_credit && <span> — {article.image_credit}</span>}
+                  {article.image_credit && (
+                    <span>
+                      {article.image_caption ? " " : ""}ছবি: {article.image_credit}
+                    </span>
+                  )}
                 </figcaption>
               )}
             </figure>
