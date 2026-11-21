@@ -90,8 +90,23 @@ describe("JSON-LD", () => {
 
   it("builds an organisation object for the homepage", () => {
     const ld = siteJsonLd(SITE_URL);
-    expect(ld["@type"]).toBe("NewsMediaOrganization");
-    expect(ld.url).toBe(SITE_URL);
+    const graph = ld["@graph"] as Record<string, unknown>[];
+    const org = graph.find((n) => n["@type"] === "NewsMediaOrganization");
+    expect(org).toBeDefined();
+    expect(org?.url).toBe(SITE_URL);
+  });
+
+  it("includes a WebSite node with a SearchAction for the sitelinks search box", () => {
+    const ld = siteJsonLd(SITE_URL);
+    const graph = ld["@graph"] as Record<string, unknown>[];
+    const site = graph.find((n) => n["@type"] === "WebSite");
+    expect(site).toBeDefined();
+    const action = site?.potentialAction as Record<string, unknown>;
+    expect(action["@type"]).toBe("SearchAction");
+    const target = action.target as Record<string, string>;
+    expect(target.urlTemplate).toBe(
+      `${SITE_URL}/search?q={search_term_string}`,
+    );
   });
 
   it("includes the site logo in the NewsArticle publisher", () => {
@@ -104,7 +119,9 @@ describe("JSON-LD", () => {
 
   it("includes the site logo in the organisation object", () => {
     const ld = siteJsonLd(SITE_URL);
-    const logo = ld.logo as Record<string, string>;
+    const graph = ld["@graph"] as Record<string, unknown>[];
+    const org = graph.find((n) => n["@type"] === "NewsMediaOrganization");
+    const logo = org?.logo as Record<string, string>;
     expect(logo.url).toBe(`${SITE_URL}/logo.png`);
   });
 });

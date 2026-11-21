@@ -155,15 +155,33 @@ export function articleJsonLd(siteUrl: string, article: ArticleSeoInput): Record
 export function siteJsonLd(siteUrl: string): Record<string, unknown> {
   return {
     "@context": "https://schema.org",
-    "@type": "NewsMediaOrganization",
-    name: SITE_DEFAULTS.name,
-    url: siteUrl,
-    description: SITE_DEFAULTS.tagline,
-    inLanguage: "bn",
-    logo: {
-      "@type": "ImageObject",
-      url: absoluteUrl(siteUrl, "/logo.png"),
-    },
+    "@graph": [
+      {
+        "@type": "NewsMediaOrganization",
+        name: SITE_DEFAULTS.name,
+        url: siteUrl,
+        description: SITE_DEFAULTS.tagline,
+        inLanguage: "bn",
+        logo: {
+          "@type": "ImageObject",
+          url: absoluteUrl(siteUrl, "/logo.png"),
+        },
+      },
+      {
+        "@type": "WebSite",
+        name: SITE_DEFAULTS.name,
+        url: siteUrl,
+        inLanguage: "bn",
+        potentialAction: {
+          "@type": "SearchAction",
+          target: {
+            "@type": "EntryPoint",
+            urlTemplate: `${siteUrl}/search?q={search_term_string}`,
+          },
+          "query-input": "required name=search_term_string",
+        },
+      },
+    ],
   };
 }
 
