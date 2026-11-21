@@ -100,6 +100,12 @@ export function readingTimeLabel(minutes: number): string {
   return `${m} min read`;
 }
 
+/** Bengali reading-time label, e.g. "পড়তে ৩ মিনিট" (card meta lines). */
+export function readingTimeLabelBn(minutes: number): string {
+  const m = Math.max(1, minutes);
+  return `পড়তে ${toBengaliDigits(m)} মিনিট`;
+}
+
 export function stripHtml(html: string): string {
   return sharedStripHtml(html);
 }

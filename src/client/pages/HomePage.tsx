@@ -59,7 +59,7 @@ function TwoColList({ articles }: { articles: Article[] }) {
                   {a.title}
                 </Link>
               </h3>
-              <p className="mt-1 text-[14px] text-[#757575]">
+              <p className="mt-1 text-[14px] text-[#5f6368]">
                 <span className="font-serif">{timeOf(a)}</span>
               </p>
             </article>
@@ -97,7 +97,7 @@ function PhotoCard({ article }: { article: Article }) {
           {article.title}
         </Link>
       </h3>
-      <p className="mt-1 text-[14px] text-[#757575]">
+      <p className="mt-1 text-[14px] text-[#5f6368]">
         <span className="font-serif">{timeOf(article)}</span>
       </p>
     </article>
@@ -284,7 +284,7 @@ export function HomePage() {
         <div className="flex flex-col">
           {/* §1 Lead block: left rail / hero / right rail (rails on lg only) */}
           {(featured || leftRail.length > 0 || rightRail.length > 0) && (
-            <div className="grid gap-8 border-b border-slate-200 py-5 lg:grid-cols-12 lg:gap-0 lg:pt-4">
+            <div className="grid gap-8 border-b border-slate-200 pb-3 pt-4 lg:grid-cols-12 lg:gap-0 lg:pt-4">
               {hasLeft && (
                 <div className="order-2 hidden lg:order-1 lg:col-span-3 lg:block lg:pr-6">
                   <div className="divide-y divide-slate-200">
@@ -331,7 +331,7 @@ export function HomePage() {
 
           {/* §4 Two-up photo grid */}
           {photoGrid.length >= 2 && (
-            <div className="grid grid-cols-2 gap-x-4 gap-y-5 border-b border-slate-200 py-5 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-x-4 gap-y-5 border-b border-slate-200 pb-5 pt-3 lg:grid-cols-4">
               {photoGrid.map((a) => (
                 <ArticleCard key={a.id} article={a} size="small" />
               ))}

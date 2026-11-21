@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { useSiteData } from "../hooks/useCategories";
 import { resolveNavHref } from "./Footer";
 
 /**
- * Sticky category nav (Prothom Alo mobile header, row 2): a horizontally
+ * Category nav (Prothom Alo mobile header, row 2): a horizontally
  * scrollable row of Bengali category links — সর্বশেষ first, then every
  * category — with the hamburger pinned at the right end. The site is
  * Bengali-only: the old Eng/বাংলা Google Translate toggle was removed
@@ -14,8 +14,10 @@ import { resolveNavHref } from "./Footer";
  * The scroll row fades out at its right edge (mask) so a category never
  * looks sliced mid-word where the pinned hamburger block begins, and
  * the pinned block sits flush with the row — no card, border or shadow
- * over it. Once the reader scrolls past the masthead, the nav gains a
- * soft shadow so it stays readable over photos.
+ * over it. The whole header block (masthead + this nav) is sticky via
+ * the wrapper in App.tsx; once the reader scrolls, the nav gains a
+ * soft shadow so it stays readable over photos. The active tab is
+ * red with a 3px red underline and scrolls itself into view.
  */
 export function Navbar() {
   const { pathname } = useLocation();
@@ -24,6 +26,7 @@ export function Navbar() {
   const navigation = data?.data?.navigation ?? [];
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const rowRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -32,34 +35,44 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Keep the active category visible in the scroll row.
+  useEffect(() => {
+    rowRef.current
+      ?.querySelector('[aria-current="page"]')
+      ?.scrollIntoView({ inline: "center", block: "nearest" });
+  }, [pathname, categories.length]);
+
   const active = (href: string) => pathname === href;
 
   const linkCls = (href: string) =>
-    `shrink-0 whitespace-nowrap px-2.5 py-2.5 font-serif text-[19px] font-bold sm:px-3 ${
-      active(href) ? "font-black text-[#c1121f]" : "text-[#111111] hover:text-[#c1121f]"
+    `shrink-0 whitespace-nowrap px-2.5 py-2.5 font-serif text-[19px] font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#c1121f] sm:px-3 ${
+      active(href)
+        ? "font-black text-[#c1121f] underline decoration-[#c1121f] decoration-[3px] underline-offset-[6px]"
+        : "text-[#111111] hover:text-[#c1121f]"
     }`;
 
   return (
     <div
-      className={`sticky top-0 z-40 border-b border-slate-200 bg-white transition-shadow ${
+      className={`border-b border-slate-200 bg-white transition-shadow ${
         scrolled ? "shadow-[0_2px_12px_rgba(15,23,42,0.12)]" : ""
       }`}
     >
       <nav className="mx-auto flex max-w-[1280px] items-stretch" aria-label="Categories">
         {/* Scrollable category row — fades at the right edge so the last
             visible label never looks sliced mid-word */}
-        <div className="flex min-w-0 flex-1 items-center overflow-x-auto pr-2 [mask-image:linear-gradient(to_right,black_88%,transparent)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          <Link to="/latest" className={linkCls("/latest")}>
+        <div ref={rowRef} className="flex min-w-0 flex-1 items-center overflow-x-auto pr-2 [mask-image:linear-gradient(to_right,black_88%,transparent)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <Link to="/latest" className={linkCls("/latest")} aria-current={active("/latest") ? "page" : undefined}>
             সর্বশেষ
           </Link>
           {categories.map((c) => (
-            <Link key={c.id} to={`/category/${c.slug}`} className={linkCls(`/category/${c.slug}`)}>
+            <Link key={c.id} to={`/category/${c.slug}`} className={linkCls(`/category/${c.slug}`)} aria-current={active(`/category/${c.slug}`) ? "page" : undefined}>
               {c.name_bn ?? c.name_en}
             </Link>
           ))}
           <Link
             to="/breaking"
             className={`${linkCls("/breaking")} flex items-center gap-1.5`}
+            aria-current={active("/breaking") ? "page" : undefined}
           >
             {/* Solid red live dot — sober breaking marker, no cartoon flame */}
             <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#c1121f]" aria-hidden="true" />
@@ -74,7 +87,7 @@ export function Navbar() {
             onClick={() => setMenuOpen((v) => !v)}
             aria-expanded={menuOpen}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
-            className="rounded-md p-1.5 text-[#111111] hover:bg-slate-100"
+            className="flex h-11 w-11 items-center justify-center rounded-md text-[#111111] hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c1121f]"
           >
             {menuOpen ? <X size={24} strokeWidth={2.75} /> : <Menu size={24} strokeWidth={2.75} />}
           </button>
