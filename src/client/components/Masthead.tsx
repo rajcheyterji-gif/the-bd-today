@@ -28,25 +28,35 @@ function FilledUserIcon({ size = 24 }: { size?: number }) {
  * divider, and a solid person icon + "Login" on the RIGHT. No date row
  * and no centred logo row: Prothom Alo shows no date in the header, and
  * the pale date strip is what made ours look washed-out. The logo is
- * a 4.36:1 Bengali wordmark, so on phones it renders 48–56px tall
- * (fluid clamp, see Logo.tsx) — big and dominant like Prothom Alo's
- * ~55px wordmark — and the "Login" text hides below sm, leaving the
- * icons compact enough that everything fits one row without overlap;
- * from sm the logo is 64px (80px md, 96px lg) with the "Login" text
- * visible. Everything in the row is near-black #111111. Tapping the
- * magnifier opens a clean full-width pill search bar (Bengali
- * placeholder, clear + close controls, autofocus, Escape to close);
- * submitting still navigates to /search?q=… exactly as before.
+ * a 4.72:1 Bengali wordmark rendered 36px tall on phones (44px md,
+ * 52px lg — see Logo.tsx), and the "Login" text hides below sm,
+ * leaving the icons compact enough that everything fits one row
+ * without overlap. The header block (masthead + category nav) is
+ * sticky via the wrapper in App.tsx; once the reader scrolls past
+ * 40px the logo shrinks to 30px with a smooth transition so the
+ * sticky bar stays compact. Everything in the row is near-black
+ * #111111. Tapping the magnifier opens a clean full-width pill search
+ * bar (Bengali placeholder, clear + close controls, autofocus,
+ * Escape to close); submitting still navigates to /search?q=… exactly
+ * as before.
  */
 export function Masthead() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (searchOpen) inputRef.current?.focus();
   }, [searchOpen]);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const closeSearch = () => {
     setSearchOpen(false);
@@ -73,7 +83,7 @@ export function Masthead() {
       <div className="h-1 bg-[#c1121f]" aria-hidden="true" />
       <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-1 px-2 py-2 sm:px-4 sm:py-3">
         <Link to="/" className="min-w-0 shrink" aria-label="THE BD TODAY — home">
-          <Logo />
+          <Logo scrolled={scrolled} />
         </Link>
 
         <div className="flex shrink-0 items-center">
@@ -82,14 +92,14 @@ export function Masthead() {
             aria-expanded={searchOpen}
             aria-label={searchOpen ? "Close search" : "Open search"}
             onClick={toggleSearch}
-            className="p-1.5 text-[#111111] hover:text-[#c1121f]"
+            className="flex h-11 w-11 items-center justify-center text-[#111111] hover:text-[#c1121f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c1121f]"
           >
             {searchOpen ? <X size={26} strokeWidth={2.75} /> : <FilledSearchIcon size={26} />}
           </button>
           <span className="mx-1 h-7 w-px bg-[#d4d4d4]" aria-hidden="true" />
           <Link
             to="/admin"
-            className="flex items-center gap-1.5 p-1.5 text-[17px] font-semibold text-[#111111] hover:text-[#c1121f]"
+            className="flex h-11 items-center gap-1.5 px-2 text-[17px] font-semibold text-[#111111] hover:text-[#c1121f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c1121f]"
           >
             <FilledUserIcon size={24} />
             <span className="hidden sm:inline">Login</span>

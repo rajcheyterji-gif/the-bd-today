@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { formatRelative, excerptFrom, toBengaliDigits } from "../lib/format";
+import { formatRelative, excerptFrom, toBengaliDigits, readingTimeLabelBn } from "../lib/format";
 import { thumbUrl } from "../../shared/utils";
 import type { Article } from "../../shared/types";
 
@@ -9,6 +9,33 @@ function StoryTime({ article, className = "" }: { article: Article; className?: 
     <span className={`font-serif ${className}`}>
       {formatRelative(article.published_at ?? article.created_at, true)}
     </span>
+  );
+}
+
+/**
+ * Card meta line: category (optional) • relative time • reading time,
+ * in the high-contrast #5f6368 at 13–14px.
+ */
+function StoryMeta({
+  article,
+  showCategory = false,
+}: {
+  article: Article;
+  showCategory?: boolean;
+}) {
+  const categoryName = article.category?.name_bn ?? article.category?.name_en;
+  return (
+    <p className="mt-2 text-[13px] text-[#5f6368] sm:text-[14px]">
+      {showCategory && categoryName && (
+        <>
+          <span className="font-serif">{categoryName}</span>
+          <span aria-hidden="true"> • </span>
+        </>
+      )}
+      <StoryTime article={article} />
+      <span aria-hidden="true"> • </span>
+      <span className="font-serif">{readingTimeLabelBn(article.reading_time_minutes)}</span>
+    </p>
   );
 }
 
@@ -43,10 +70,10 @@ function ArticleImage({
 }
 
 /**
- * Flat broadsheet card — no box, border, shadow or radius; image on top,
- * serif headline below, time only under it (Prothom Alo cards show just
- * the time, not author/views/reading-time). Hover turns the headline red
- * and scales the image.
+ * Flat broadsheet card — no box, border or shadow (a 3px image radius
+ * only); image on top, small red category label, serif headline,
+ * excerpt, then the meta line (time • reading time). Hover turns the
+ * headline red and scales the image.
  */
 export function ArticleCard({
   article,
@@ -57,37 +84,39 @@ export function ArticleCard({
 }) {
   const titleCls =
     size === "large"
-      ? "font-serif text-balance text-[30px] font-black leading-snug"
+      ? "font-serif text-balance text-[30px] font-black leading-[1.4]"
       : size === "small"
-        ? "font-serif text-balance text-[20px] font-bold leading-snug"
-        : "font-serif text-balance text-xl font-bold leading-snug";
+        ? "font-serif text-balance text-[20px] font-bold leading-[1.4]"
+        : "font-serif text-balance text-xl font-bold leading-[1.4]";
+  const categoryName = article.category?.name_bn ?? article.category?.name_en;
   return (
     <article className="group">
       <Link to={`/article/${article.slug}`} aria-label={article.title}>
-        <div className="overflow-hidden">
+        <div className="overflow-hidden rounded-[3px] bg-slate-100">
           <div className="transition-transform duration-300 group-hover:scale-[1.02]">
             <ArticleImage
               article={article}
-              ratio="aspect-[16/9]"
+              ratio="aspect-[3/2]"
               width={size === "small" ? 250 : size === "large" ? 960 : 500}
             />
           </div>
         </div>
       </Link>
       <div className="pt-3">
-        <h3 className={titleCls}>
+        {categoryName && (
+          <p className="font-bengali text-[13px] font-bold text-[#c1121f]">{categoryName}</p>
+        )}
+        <h3 className={`mt-1 ${titleCls}`}>
           <Link to={`/article/${article.slug}`} className="text-[#111111] group-hover:text-[#c1121f]">
             {article.title}
           </Link>
         </h3>
         {size !== "small" && (
-          <p className="no-copy mt-1.5 line-clamp-2 font-serif text-[18px] leading-[1.6] text-[#444444]">
+          <p className="no-copy mt-1.5 line-clamp-2 font-serif text-[18px] leading-[1.8] text-[#444444]">
             {excerptFrom(article.content, article.excerpt)}
           </p>
         )}
-        <p className="mt-2 text-[14px] text-[#757575]">
-          <StoryTime article={article} />
-        </p>
+        <StoryMeta article={article} />
       </div>
     </article>
   );
@@ -112,7 +141,7 @@ export function TextStory({
     <article className="group border-b border-slate-200 py-4 first:pt-0 last:border-b-0 last:pb-0">
       <div className="flex gap-3">
         <div className="min-w-0 flex-1">
-          <h3 className="font-serif text-balance text-[23px] font-bold leading-snug">
+          <h3 className="font-serif text-balance text-[23px] font-bold leading-[1.4]">
             {kicker ? (
               <>
                 <span className="text-[#c1121f]">{kicker}</span>{" "}
@@ -124,12 +153,14 @@ export function TextStory({
             </Link>
           </h3>
           {showExcerpt && (
-            <p className="no-copy mt-1 line-clamp-3 font-serif text-[18px] leading-[1.6] text-[#444444]">
+            <p className="no-copy mt-1 line-clamp-3 font-serif text-[18px] leading-[1.8] text-[#444444]">
               {excerptFrom(article.content, article.excerpt, 130)}
             </p>
           )}
-          <p className="mt-1.5 text-[14px] text-[#757575]">
+          <p className="mt-1.5 text-[13px] text-[#5f6368] sm:text-[14px]">
             <StoryTime article={article} />
+            <span aria-hidden="true"> • </span>
+            <span className="font-serif">{readingTimeLabelBn(article.reading_time_minutes)}</span>
           </p>
         </div>
         {article.featured_image_url && (
@@ -204,7 +235,7 @@ export function ArticleRow({
         </span>
       )}
       <div className="min-w-0 flex-1">
-        <h4 className="font-serif text-[22px] font-bold leading-snug sm:text-[24px]">
+        <h4 className="font-serif text-[22px] font-bold leading-[1.4] sm:text-[24px]">
           {kicker ? (
             <>
               <span className="text-[#c1121f]">{kicker}</span>{" "}
@@ -215,8 +246,10 @@ export function ArticleRow({
             {highlightFirst ? <FirstClauseRed title={article.title} /> : article.title}
           </Link>
         </h4>
-        <p className="mt-1 text-[14px] text-[#757575]">
+        <p className="mt-1 text-[13px] text-[#5f6368] sm:text-[14px]">
           <StoryTime article={article} />
+          <span aria-hidden="true"> • </span>
+          <span className="font-serif">{readingTimeLabelBn(article.reading_time_minutes)}</span>
         </p>
       </div>
       {showThumb && article.featured_image_url && (
