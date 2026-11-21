@@ -199,6 +199,9 @@ export function createApp(): Hono<{ Bindings: Env; Variables: AppVariables }> {
           // Organisation schema on every non-article page (homepage,
           // categories, search, ...) so Google knows the publisher.
           jsonLd = JSON.stringify(siteJsonLd(origin)).replace(/</g, "\\u003c");
+          // Canonical points at the clean page URL (path only, no query)
+          // so duplicate URLs never split ranking.
+          canonical = `${origin}${path}`;
         }
         const verificationMeta = googleVerificationMetaTag(
           c.env.GOOGLE_SITE_VERIFICATION,
