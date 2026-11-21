@@ -14,10 +14,11 @@ import { resolveNavHref } from "./Footer";
  * The scroll row fades out at its right edge (mask) so a category never
  * looks sliced mid-word where the pinned hamburger block begins, and
  * the pinned block sits flush with the row — no card, border or shadow
- * over it. The whole header block (masthead + this nav) is sticky via
- * the wrapper in App.tsx; once the reader scrolls, the nav gains a
- * soft shadow so it stays readable over photos. The active tab is
- * red with a 3px red underline and scrolls itself into view.
+ * over it. The masthead above scrolls away (user's call, 2026-11-21)
+ * and this nav is the sticky part; once the reader scrolls past the
+ * masthead, the nav gains a soft shadow so it stays readable over
+ * photos. The active tab is red with a 3px red underline and scrolls
+ * itself into view.
  */
 export function Navbar() {
   const { pathname } = useLocation();
@@ -53,7 +54,7 @@ export function Navbar() {
 
   return (
     <div
-      className={`border-b border-slate-200 bg-white transition-shadow ${
+      className={`sticky top-0 z-40 border-b border-slate-200 bg-white transition-shadow ${
         scrolled ? "shadow-[0_2px_12px_rgba(15,23,42,0.12)]" : ""
       }`}
     >

@@ -28,35 +28,25 @@ function FilledUserIcon({ size = 24 }: { size?: number }) {
  * divider, and a solid person icon + "Login" on the RIGHT. No date row
  * and no centred logo row: Prothom Alo shows no date in the header, and
  * the pale date strip is what made ours look washed-out. The logo is
- * a 4.72:1 Bengali wordmark rendered 36px tall on phones (44px md,
+ * a 4.72:1 Bengali wordmark rendered 34px tall on phones (44px md,
  * 52px lg — see Logo.tsx), and the "Login" text hides below sm,
  * leaving the icons compact enough that everything fits one row
- * without overlap. The header block (masthead + category nav) is
- * sticky via the wrapper in App.tsx; once the reader scrolls past
- * 40px the logo shrinks to 30px with a smooth transition so the
- * sticky bar stays compact. Everything in the row is near-black
- * #111111. Tapping the magnifier opens a clean full-width pill search
- * bar (Bengali placeholder, clear + close controls, autofocus,
- * Escape to close); submitting still navigates to /search?q=… exactly
- * as before.
+ * without overlap. The masthead is not sticky (user's call,
+ * 2026-11-21) — it scrolls away and only the category nav sticks.
+ * Everything in the row is near-black #111111. Tapping the magnifier
+ * opens a clean full-width pill search bar (Bengali placeholder,
+ * clear + close controls, autofocus, Escape to close); submitting
+ * still navigates to /search?q=… exactly as before.
  */
 export function Masthead() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (searchOpen) inputRef.current?.focus();
   }, [searchOpen]);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   const closeSearch = () => {
     setSearchOpen(false);
@@ -83,7 +73,7 @@ export function Masthead() {
       <div className="h-1 bg-[#c1121f]" aria-hidden="true" />
       <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-1 px-2 py-2 sm:px-4 sm:py-3">
         <Link to="/" className="min-w-0 shrink" aria-label="THE BD TODAY — home">
-          <Logo scrolled={scrolled} />
+          <Logo />
         </Link>
 
         <div className="flex shrink-0 items-center">

@@ -9,15 +9,15 @@
  * as designed. The square favicon (public/favicon.png, 512x512) is a
  * separate square version of the same mark with a black rounded border.
  *
- * Heights (mobile-first UI update, 2026-11-21): 36px on phones,
- * 44px from md (≥768px), 52px from lg (≥1024px); when the sticky
- * header is scrolled the masthead passes `scrolled` and the lockup
- * shrinks to 30px (36px md, 40px lg) with a smooth height transition.
- * width/height attributes carry the intrinsic 1903x403 size so the
- * browser reserves the right box before the PNG loads (no layout
- * shift). Callers may override the image height with `markClassName`
- * (the footer does: 48px / 56px). `wordmarkClassName` is accepted for
- * API compatibility only. The optional Bengali tagline still renders
+ * Heights (mobile-first UI update, 2026-11-21; logo size set by the
+ * user the same day): 34px on phones, 44px from md (≥768px), 52px
+ * from lg (≥1024px). The masthead is NOT sticky (user's call) — it
+ * scrolls away and only the category nav sticks. width/height
+ * attributes carry the intrinsic 1903x403 size so the browser
+ * reserves the right box before the PNG loads (no layout shift).
+ * Callers may override the image height with `markClassName` (the
+ * footer does: 48px / 56px). `wordmarkClassName` is accepted for API
+ * compatibility only. The optional Bengali tagline still renders
  * under the image where a caller passes one (the footer).
  */
 
@@ -34,8 +34,6 @@ type LogoProps = {
   center?: boolean;
   /** Extra classes for the lockup. */
   className?: string;
-  /** Header scrolled state — shrinks the default lockup (ignored when markClassName is set). */
-  scrolled?: boolean;
 };
 
 export function Logo({
@@ -44,7 +42,6 @@ export function Logo({
   taglineClassName = "text-[11px]",
   center = false,
   className,
-  scrolled = false,
 }: LogoProps) {
   return (
     <span className={`inline-flex flex-col ${center ? "items-center" : "items-start"} ${className ?? ""}`}>
@@ -53,12 +50,7 @@ export function Logo({
         alt="THE BD TODAY"
         width={1903}
         height={403}
-        className={
-          markClassName ??
-          (scrolled
-            ? "h-[30px] w-auto max-w-full transition-[height] duration-200 md:h-9 lg:h-10"
-            : "h-9 w-auto max-w-full transition-[height] duration-200 md:h-11 lg:h-[52px]")
-        }
+        className={markClassName ?? "h-[34px] w-auto max-w-full md:h-11 lg:h-[52px]"}
         draggable={false}
       />
       {tagline ? (
