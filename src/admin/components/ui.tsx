@@ -2,7 +2,9 @@ import { useState, type ButtonHTMLAttributes, type InputHTMLAttributes, type Rea
 import { AlertTriangle, Eye, EyeOff, X } from "lucide-react";
 import { statusLabel } from "../lib/utils";
 
-// Shared admin UI primitives: white cards, navy text, news-red accent.
+// Shared admin UI primitives — pink-red gradient theme (matches the
+// sign-in page, user's reference 2026-11-21): white rounded cards,
+// red-gradient primary buttons, rose-tinted icon tiles.
 
 export function Button({
   variant = "primary",
@@ -10,26 +12,32 @@ export function Button({
   ...props
 }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: "primary" | "danger" | "ghost" | "outline" | "dark" }) {
   const base =
-    "inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-3.5 py-2.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50";
+    "inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400 focus-visible:ring-offset-1";
   const styles = {
-    primary: "bg-[#c1121f] text-white hover:bg-[#9e0e19]",
-    danger: "bg-red-600 text-white hover:bg-red-700",
-    dark: "bg-slate-900 text-white hover:bg-slate-700",
-    outline: "border border-slate-300 bg-white text-slate-800 hover:bg-slate-50",
-    ghost: "text-slate-700 hover:bg-slate-100",
+    primary:
+      "bg-gradient-to-r from-[#ff4157] to-[#e0112b] text-white shadow-[0_8px_20px_rgba(225,17,43,0.30)] hover:brightness-110",
+    danger:
+      "bg-gradient-to-r from-red-500 to-red-700 text-white shadow-[0_8px_20px_rgba(220,38,38,0.30)] hover:brightness-110",
+    dark: "bg-gradient-to-r from-slate-800 to-slate-950 text-white shadow-[0_8px_20px_rgba(15,23,42,0.30)] hover:brightness-125",
+    outline: "border border-rose-200 bg-white text-slate-800 hover:bg-rose-50 hover:text-[#e0112b]",
+    ghost: "text-slate-700 hover:bg-rose-50 hover:text-[#e0112b]",
   }[variant];
   return <button type="button" className={`${base} ${styles} ${className}`} {...props} />;
 }
 
 export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <div className={`rounded-xl border border-slate-200 bg-white shadow-sm ${className}`}>{children}</div>;
+  return (
+    <div className={`rounded-2xl border border-rose-100 bg-white shadow-[0_10px_30px_rgba(225,17,43,0.06)] ${className}`}>
+      {children}
+    </div>
+  );
 }
 
 export function CardHeader({ title, subtitle, action }: { title: string; subtitle?: string; action?: ReactNode }) {
   return (
-    <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2 border-b border-slate-100 px-4 py-3 sm:px-5">
+    <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2 border-b border-rose-50 px-4 py-3.5 sm:px-5">
       <div className="min-w-0 flex-1">
-        <h2 className="text-base font-semibold text-slate-900">{title}</h2>
+        <h2 className="text-base font-bold text-slate-900">{title}</h2>
         {subtitle ? <p className="mt-0.5 text-sm text-slate-500">{subtitle}</p> : null}
       </div>
       {action ? <div className="shrink-0">{action}</div> : null}
@@ -39,12 +47,16 @@ export function CardHeader({ title, subtitle, action }: { title: string; subtitl
 
 export function StatCard({ label, value, sub, icon }: { label: string; value: string; sub?: string; icon?: ReactNode }) {
   return (
-    <Card className="flex h-full flex-col justify-between gap-1 p-3.5 sm:p-5">
+    <Card className="flex h-full flex-col justify-between gap-1.5 p-4 sm:p-5">
       <div className="flex items-start justify-between gap-2">
         <p className="text-xs font-medium leading-snug text-slate-500 sm:text-sm">{label}</p>
-        {icon ? <div className="shrink-0 rounded-lg bg-red-50 p-2 text-[#c1121f]">{icon}</div> : null}
+        {icon ? (
+          <div className="shrink-0 rounded-xl bg-gradient-to-br from-[#ff4157] to-[#e0112b] p-2.5 text-white shadow-[0_6px_16px_rgba(225,17,43,0.35)]">
+            {icon}
+          </div>
+        ) : null}
       </div>
-      <p className="text-2xl font-bold tabular-nums leading-none text-slate-900 sm:text-3xl">{value}</p>
+      <p className="text-[28px] font-extrabold tabular-nums leading-none text-slate-900 sm:text-[34px]">{value}</p>
       {sub ? <p className="text-xs text-slate-500">{sub}</p> : null}
     </Card>
   );
@@ -77,7 +89,7 @@ export function Badge({ value, className = "" }: { value: string; className?: st
 export function Spinner({ label = "Loading…" }: { label?: string }) {
   return (
     <div className="flex items-center justify-center gap-2 py-10 text-sm text-slate-500">
-      <span className="h-5 w-5 animate-spin rounded-full border-2 border-slate-200 border-t-[#c1121f]" aria-label="Loading" />
+      <span className="h-5 w-5 animate-spin rounded-full border-2 border-rose-100 border-t-[#e0112b]" aria-label="Loading" />
       {label}
     </div>
   );
@@ -115,7 +127,7 @@ export function ErrorState({ message, onRetry }: { message: string; onRetry?: ()
 /** Amber notice for honest API gaps: a feature the server does not expose. */
 export function ApiGapNotice({ message }: { message: string }) {
   return (
-    <div className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+    <div className="flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
       <AlertTriangle className="mt-0.5 shrink-0" size={16} />
       <p>{message}</p>
     </div>
@@ -135,7 +147,7 @@ export function Field({ label, hint, children, required }: { label: string; hint
 }
 
 const inputCls =
-  "w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm leading-6 text-slate-900 placeholder:text-slate-400 focus:border-[#c1121f] focus:outline-none focus:ring-2 focus:ring-[#c1121f]/20";
+  "w-full rounded-xl border border-rose-200 bg-white px-3.5 py-3 text-sm leading-6 text-slate-900 placeholder:text-slate-400 shadow-[0_2px_10px_rgba(225,17,43,0.04)] focus:border-rose-400 focus:outline-none focus:ring-2 focus:ring-rose-200";
 
 export function TextInput(props: InputHTMLAttributes<HTMLInputElement>) {
   return <input {...props} className={`${inputCls} ${props.className ?? ""}`} />;
@@ -161,7 +173,7 @@ export function PasswordInput(props: InputHTMLAttributes<HTMLInputElement>) {
         aria-label={show ? "Hide password" : "Show password"}
         aria-pressed={show}
         onClick={() => setShow((s) => !s)}
-        className="absolute right-1 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+        className="absolute right-1.5 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full text-slate-500 hover:bg-rose-50 hover:text-[#e0112b]"
       >
         {show ? <EyeOff size={18} /> : <Eye size={18} />}
       </button>
@@ -185,10 +197,10 @@ export function Modal({
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label={title}>
-      <div className={`max-h-[92vh] w-full overflow-y-auto rounded-t-xl bg-white shadow-xl sm:rounded-xl ${wide ? "sm:max-w-3xl" : "sm:max-w-lg"}`}>
-        <div className="sticky top-0 flex items-center justify-between gap-2 border-b border-slate-100 bg-white px-4 py-3 sm:px-5">
-          <h3 className="min-w-0 flex-1 truncate text-base font-semibold text-slate-900">{title}</h3>
-          <button type="button" aria-label="Close dialog" onClick={onClose} className="shrink-0 rounded-lg p-2.5 text-slate-500 hover:bg-slate-100">
+      <div className={`max-h-[92vh] w-full overflow-y-auto rounded-t-3xl bg-white shadow-[0_24px_60px_rgba(225,17,43,0.18)] ring-1 ring-rose-100 sm:rounded-3xl ${wide ? "sm:max-w-3xl" : "sm:max-w-lg"}`}>
+        <div className="sticky top-0 flex items-center justify-between gap-2 border-b border-rose-50 bg-white px-4 py-3.5 sm:px-5">
+          <h3 className="min-w-0 flex-1 truncate text-base font-bold text-slate-900">{title}</h3>
+          <button type="button" aria-label="Close dialog" onClick={onClose} className="shrink-0 rounded-full p-2.5 text-slate-500 hover:bg-rose-50 hover:text-[#e0112b]">
             <X size={18} />
           </button>
         </div>
@@ -237,8 +249,8 @@ export function BarList({ rows, maxLabel }: { rows: { label: string; value: numb
       {rows.map((r) => (
         <li key={r.label} className="flex items-center gap-3 text-sm">
           <span className="w-20 shrink-0 truncate text-right text-slate-600 sm:w-24">{r.label}</span>
-          <div className="h-5 flex-1 overflow-hidden rounded bg-slate-100">
-            <div className="h-full rounded bg-[#c1121f]" style={{ width: `${Math.max(2, (r.value / max) * 100)}%` }} />
+          <div className="h-5 flex-1 overflow-hidden rounded-full bg-rose-50">
+            <div className="h-full rounded-full bg-gradient-to-r from-[#ff4157] to-[#e0112b]" style={{ width: `${Math.max(2, (r.value / max) * 100)}%` }} />
           </div>
           <span className="w-10 shrink-0 text-right font-medium tabular-nums text-slate-900 sm:w-12">{r.value.toLocaleString()}</span>
         </li>
